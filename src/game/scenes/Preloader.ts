@@ -30,6 +30,15 @@ export class Preloader extends Scene {
         this.load.image("star", "star.png");
 
         this.load.image("bg", "background.png");
+        this.load.image("samurai", "run.png");
+        this.load.spritesheet("run", "run.png", {
+            frameWidth: 600,
+            frameHeight: 600,
+        });
+        this.load.spritesheet("idle", "idle.png", {
+            frameWidth: 600,
+            frameHeight: 600,
+        });
     }
 
     create() {
