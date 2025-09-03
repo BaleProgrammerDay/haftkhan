@@ -1,29 +1,47 @@
-import React from 'react';
-import { Message } from '../types/Chat';
+import React from "react";
+import { Message } from "../types/Chat";
 
 interface MessageBubbleProps {
-  message: Message;
+    message: Message;
 }
 
 function MessageBubble({ message }: MessageBubbleProps) {
-  const isMe = message.sender === 'me';
+    const isMe = message.sender === "me";
 
-  return (
-    <div className={`flex ${isMe ? 'justify-start' : 'justify-end'}`}>
-      <div
-        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl shadow-sm ${
-          isMe
-            ? 'bg-blue-500 text-white rounded-br-md'
-            : 'bg-white text-gray-800 rounded-bl-md border border-gray-200'
-        }`}
-      >
-        <p className="text-sm leading-relaxed">{message.text}</p>
-        <p className={`text-xs mt-1 ${isMe ? 'text-blue-100' : 'text-gray-500'}`}>
-          {message.time}
-        </p>
-      </div>
-    </div>
-  );
+    return (
+        <div className={`flex ${isMe ? "justify-start" : "justify-end"}`}>
+            <div
+                className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl shadow-sm ${
+                    isMe ? "rounded-br-md" : "rounded-bl-md"
+                }`}
+                style={{
+                    backgroundColor: isMe
+                        ? "var(--color-primary-p-50)"
+                        : "var(--color-neutrals-surface)",
+                    color: isMe
+                        ? "var(--color-neutrals-on-primary)"
+                        : "var(--color-neutrals-on-app-bar)",
+                    borderColor: !isMe
+                        ? "var(--color-neutrals-n-30)"
+                        : "transparent",
+                    borderWidth: !isMe ? "1px" : "0px",
+                    borderStyle: !isMe ? "solid" : "none",
+                }}
+            >
+                <p className="text-sm leading-relaxed">{message.text}</p>
+                <p
+                    className="text-xs mt-1"
+                    style={{
+                        color: isMe
+                            ? "var(--color-neutrals-on-primary-opacity-50)"
+                            : "var(--color-neutrals-n-200)",
+                    }}
+                >
+                    {message.time}
+                </p>
+            </div>
+        </div>
+    );
 }
 
 export default MessageBubble;
