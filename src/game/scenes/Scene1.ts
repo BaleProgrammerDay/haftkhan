@@ -13,10 +13,10 @@ export class Scene1 extends Scene {
     create() {
         const { width, height } = this.scale;
 
-        this.background = this.add.image(width / 2, height / 2, "bg");
-        this.background.setOrigin(0.5, 0.5);
-        this.background.displayWidth = width;
-        this.background.displayHeight = height;
+        // this.background = this.add.image(width / 2, height / 2, "bg");
+        // this.background.setOrigin(0.5, 0.5);
+        // this.background.displayWidth = width;
+        // this.background.displayHeight = height;
 
         this.player = new Player(this, 250, height, "samurai");
         this.cursors = this.input.keyboard!.createCursorKeys();

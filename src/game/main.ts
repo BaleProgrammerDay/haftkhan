@@ -10,8 +10,10 @@ import { Scene1 } from "./scenes/Scene1";
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width:
+        document.getElementById("message-list-container")?.clientWidth || 800,
+    height:
+        document.getElementById("message-list-container")?.clientHeight || 600,
     parent: "game-container",
     backgroundColor: "#028af8",
     physics: {
