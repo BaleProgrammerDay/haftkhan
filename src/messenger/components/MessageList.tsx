@@ -9,42 +9,7 @@ interface MessageListProps {
 
 // Sample messages for demonstration
 const sampleMessages: Record<string, Message[]> = {
-    "1": [
-        { id: "1", text: "سلام علی! چطوری؟", sender: "other", time: "14:20" },
-        {
-            id: "2",
-            text: "سلام، ممنون. خوبم، تو چطوری؟",
-            sender: "me",
-            time: "14:22",
-        },
-        {
-            id: "3",
-            text: "منم خوبم، مرسی. کارت چطوره؟",
-            sender: "other",
-            time: "14:25",
-        },
-        {
-            id: "4",
-            text: "کارم خوب پیش میره. پروژه جدید شروع کردم",
-            sender: "me",
-            time: "14:28",
-        },
-        { id: "5", text: "عالیه! موفق باشی", sender: "other", time: "14:30" },
-    ],
-    "2": [
-        {
-            id: "1",
-            text: "سلام مریم، جلسه فردا ساعت چنده؟",
-            sender: "me",
-            time: "12:10",
-        },
-        {
-            id: "2",
-            text: "سلام، ساعت ۱۰ صبح. فراموش نکن!",
-            sender: "other",
-            time: "12:15",
-        },
-    ],
+    "1": [{ id: "1", text: "سلام چطوری؟", sender: "other", time: "14:20" }],
 };
 
 function MessageList({ chatId }: MessageListProps) {

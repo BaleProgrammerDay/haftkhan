@@ -47,7 +47,7 @@ function MessageInput() {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         onKeyPress={handleKeyPress}
-                        placeholder="پیام بنویسید..."
+                        placeholder="پیام خود را بنویسید..."
                         className="w-full p-3 pr-12 rounded-2xl resize-none focus:outline-none max-h-32 min-h-[44px]"
                         style={{
                             backgroundColor: "var(--color-neutrals-n-20)",
@@ -94,3 +94,4 @@ function MessageInput() {
 }
 
 export default MessageInput;
+
