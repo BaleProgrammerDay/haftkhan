@@ -35,8 +35,12 @@ export class Preloader extends Scene {
             frameWidth: 600,
             frameHeight: 600,
         });
+        this.load.spritesheet("walk", "walk.png", {
+            frameWidth: 200,
+            frameHeight: 600,
+        });
         this.load.spritesheet("idle", "idle.png", {
-            frameWidth: 600,
+            frameWidth: 200,
             frameHeight: 600,
         });
     }
