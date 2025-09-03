@@ -15,7 +15,7 @@ const config: Phaser.Types.Core.GameConfig = {
     height:
         document.getElementById("message-list-container")?.clientHeight || 600,
     parent: "game-container",
-    backgroundColor: "#028af8",
+    transparent: true,
     physics: {
         default: "arcade",
         arcade: {
