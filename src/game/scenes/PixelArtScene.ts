@@ -6,7 +6,7 @@ export class PixelArtScene extends Scene {
     background: GameObjects.Image;
     player: Rostam;
     cursors: Types.Input.Keyboard.CursorKeys;
-    door: Door;
+    doors: Door[] = [];
 
     constructor() {
         super("PixelArtScene");
@@ -14,23 +14,32 @@ export class PixelArtScene extends Scene {
 
     create() {
         const { width, height } = this.scale;
-        this.door = new Door(this, 400, height, "door");
-        this.door.setY(this.door.y - this.door.height / 2);
-        this.door.body?.updateFromGameObject();
+
+        const doorData = [
+            { x: 300, label: "فروتنی" },
+            { x: 500, label: "هوشمندی" },
+            { x: 700, label: "ولع" },
+        ];
+
+        this.doors = doorData.map(({ x, label }) => {
+            const door = new Door(this, x, height, "door");
+            door.setY(door.y - door.height / 2);
+            door.body?.updateFromGameObject();
+            this.add
+                .text(door.x, door.y - door.height / 2 - 20, label, {
+                    fontFamily: "sorena",
+                    fontSize: "20px",
+                    color: "#ffffff",
+                })
+                .setOrigin(0.5, 1);
+            return door;
+        });
+
         this.player = new Rostam(this, 250, height, "rostam");
         this.cursors = this.input.keyboard!.createCursorKeys();
-        this.add
-            .text(
-                this.door.x,
-                this.door.y - this.door.height / 2 - 20,
-                "فروتنی",
-                {
-                    font: "20px sorena",
-                    color: "#ffffff",
-                }
-            )
-            .setOrigin(0.5, 1);
-        this.physics.add.overlap(this.player, this.door, this.onPressurePlate);
+        this.doors.forEach((door) => {
+            this.physics.add.overlap(this.player, door, this.onPressurePlate);
+        });
     }
 
     onPressurePlate(player: any, door: any) {
@@ -38,12 +47,14 @@ export class PixelArtScene extends Scene {
     }
 
     update() {
-        if (this.door.isActivate) {
-            this.door.setTint(0x00ff00);
-            this.door.isActivate = false;
-        } else {
-            this.door.setTint(0xffffff);
-        }
+        this.doors.forEach((door) => {
+            if (door.isActivate) {
+                door.setTint(0x00ff00);
+                door.isActivate = false;
+            } else {
+                door.setTint(0xffffff);
+            }
+        });
         this.player.handleInput(this.cursors);
     }
 }
