@@ -39,8 +39,17 @@ export class Preloader extends Scene {
             frameWidth: 200,
             frameHeight: 600,
         });
+        this.load.image("rostam", "rostam_walk.png");
+        this.load.spritesheet("rostam_walk", "rostam_walk.png", {
+            frameWidth: 64,
+            frameHeight: 64,
+        });
         this.load.spritesheet("idle", "idle.png", {
             frameWidth: 200,
+            frameHeight: 600,
+        });
+        this.load.spritesheet("jump", "jump.png", {
+            frameWidth: 400,
             frameHeight: 600,
         });
     }
@@ -50,6 +59,7 @@ export class Preloader extends Scene {
         //  For example, you can define global animations here, so we can use them in other scenes.
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        this.scene.start("Scene1");
+        // this.scene.start("Scene1");
+        this.scene.start("PixelArtScene");
     }
 }
