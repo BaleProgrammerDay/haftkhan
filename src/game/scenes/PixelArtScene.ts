@@ -11,6 +11,8 @@ export class PixelArtScene extends Scene {
     box: Box;
     box2: Box;
     transparentPlatform: Phaser.Physics.Arcade.StaticGroup;
+    allActivated: boolean;
+    messageIsSent: boolean;
 
     constructor() {
         super("PixelArtScene");
@@ -102,14 +104,20 @@ export class PixelArtScene extends Scene {
     }
 
     update() {
+        this.allActivated = true;
         this.doors.forEach((door) => {
             if (door.isActivate) {
                 door.setTint(0x00ff00);
                 door.isActivate = false;
             } else {
+                this.allActivated = false;
                 door.setTint(0xffffff);
             }
         });
+        if (this.allActivated && !this.messageIsSent) {
+            window.dispatchEvent(new Event("allDoorsActivated"));
+            this.messageIsSent = true;
+        }
         this.player.handleInput(this.cursors);
     }
 }

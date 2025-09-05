@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Message } from "../types/Chat";
 import MessageBubble from "./MessageBubble";
 import { IRefPhaserGame, PhaserGame } from "../../PhaserGame";
@@ -37,6 +37,20 @@ function MessageList({ chatId }: MessageListProps) {
     const handleDelete = (id: string) => {
         setMessages((msgs) => msgs.filter((msg) => msg.id !== id));
     };
+
+    useEffect(() => {
+        window.addEventListener("allDoorsActivated", () => {
+            setMessages((msgs) => [
+                ...msgs,
+                {
+                    id: Date.now().toString(),
+                    text: "تو استخدامی!",
+                    sender: "other",
+                    time: new Date().toLocaleTimeString(),
+                },
+            ]);
+        });
+    }, []);
 
     return (
         <div
