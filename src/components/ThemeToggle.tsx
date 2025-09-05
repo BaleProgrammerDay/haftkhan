@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const ThemeToggle: React.FC = () => {
-    const [isDark, setIsDark] = useState(false);
+    const [isDark, setIsDark] = useState(true);
 
     useEffect(() => {
         // Check if dark theme is already set

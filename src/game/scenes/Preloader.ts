@@ -39,8 +39,16 @@ export class Preloader extends Scene {
             frameWidth: 200,
             frameHeight: 600,
         });
-        this.load.image("rostam", "rostam_walk.png");
+        this.load.image("rostam", "rostam_idle.png");
         this.load.spritesheet("rostam_walk", "rostam_walk.png", {
+            frameWidth: 64,
+            frameHeight: 64,
+        });
+        this.load.spritesheet("rostam_idle", "rostam_idle.png", {
+            frameWidth: 64,
+            frameHeight: 64,
+        });
+        this.load.spritesheet("rostam_jump", "rostam_jump.png", {
             frameWidth: 64,
             frameHeight: 64,
         });
