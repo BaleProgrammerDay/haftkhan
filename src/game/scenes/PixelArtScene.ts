@@ -1,12 +1,14 @@
 import { GameObjects, Scene, Types } from "phaser";
 import Rostam from "../characters/Rostam";
 import Door from "../objects/Door";
+import Box from "../objects/Box";
 
 export class PixelArtScene extends Scene {
     background: GameObjects.Image;
     player: Rostam;
     cursors: Types.Input.Keyboard.CursorKeys;
     doors: Door[] = [];
+    box: Box;
 
     constructor() {
         super("PixelArtScene");
@@ -35,14 +37,18 @@ export class PixelArtScene extends Scene {
             return door;
         });
 
+        this.box = new Box(this, 400, height, "box");
+
         this.player = new Rostam(this, 250, height, "rostam");
         this.cursors = this.input.keyboard!.createCursorKeys();
         this.doors.forEach((door) => {
-            this.physics.add.overlap(this.player, door, this.onPressurePlate);
+            this.physics.add.overlap(this.player, door, this.onEnterDoor);
+            this.physics.add.overlap(this.box, door, this.onEnterDoor);
         });
+        this.physics.add.collider(this.player, this.box);
     }
 
-    onPressurePlate(player: any, door: any) {
+    onEnterDoor(player: any, door: any) {
         door.isActivate = true;
     }
 

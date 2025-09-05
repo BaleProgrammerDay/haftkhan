@@ -27,19 +27,8 @@ export class Preloader extends Scene {
         this.load.setPath("assets");
 
         this.load.image("logo", "logo.png");
-        this.load.image("star", "star.png");
         this.load.image("door", "door.png");
-
-        this.load.image("bg", "background.png");
-        this.load.image("samurai", "run.png");
-        this.load.spritesheet("run", "run.png", {
-            frameWidth: 600,
-            frameHeight: 600,
-        });
-        this.load.spritesheet("walk", "walk.png", {
-            frameWidth: 200,
-            frameHeight: 600,
-        });
+        this.load.image("box", "box.png");
         this.load.image("rostam", "rostam_idle.png");
         this.load.spritesheet("rostam_walk", "rostam_walk.png", {
             frameWidth: 64,
@@ -68,7 +57,6 @@ export class Preloader extends Scene {
         //  For example, you can define global animations here, so we can use them in other scenes.
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        // this.scene.start("Scene1");
         this.scene.start("PixelArtScene");
     }
 }

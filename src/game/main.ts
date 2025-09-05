@@ -4,7 +4,6 @@ import { Game as MainGame } from "./scenes/Game";
 import { MainMenu } from "./scenes/MainMenu";
 import { AUTO, Game, Scale } from "phaser";
 import { Preloader } from "./scenes/Preloader";
-import { Scene1 } from "./scenes/Scene1";
 import { PixelArtScene } from "./scenes/PixelArtScene";
 
 //  Find out more information about the Game Config at:
@@ -31,15 +30,7 @@ const config: Phaser.Types.Core.GameConfig = {
         mode: Scale.RESIZE,
         autoCenter: Scale.CENTER_BOTH,
     },
-    scene: [
-        Boot,
-        Preloader,
-        Scene1,
-        MainMenu,
-        MainGame,
-        GameOver,
-        PixelArtScene,
-    ],
+    scene: [Boot, Preloader, MainMenu, MainGame, GameOver, PixelArtScene],
 };
 
 const StartGame = (parent: string) => {
