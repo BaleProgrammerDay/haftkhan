@@ -9,6 +9,8 @@ export class PixelArtScene extends Scene {
     cursors: Types.Input.Keyboard.CursorKeys;
     doors: Door[] = [];
     box: Box;
+    box2: Box;
+    transparentPlatform: Phaser.Physics.Arcade.StaticGroup;
 
     constructor() {
         super("PixelArtScene");
@@ -37,15 +39,62 @@ export class PixelArtScene extends Scene {
             return door;
         });
 
+        // Add a transparent static object to match #message-3
+        const msgElem = document.getElementById("message-3");
+        if (msgElem && this.game && this.game.canvas) {
+            const rect = msgElem.getBoundingClientRect();
+            // Convert DOM coordinates to Phaser world coordinates
+            const gameRect = this.game.canvas.getBoundingClientRect();
+            const x = rect.left - gameRect.left + rect.width / 2;
+            const y = rect.top - gameRect.top + rect.height / 2;
+            const widthRect = rect.width;
+            const heightRect = rect.height;
+            this.transparentPlatform = this.physics.add.staticGroup();
+            const platform = this.add.rectangle(
+                x,
+                y,
+                widthRect,
+                heightRect,
+                0x000000,
+                0
+            );
+            this.transparentPlatform.add(platform);
+
+            // Observe DOM for removal of #message-3 and remove platform
+            const observer = new MutationObserver(() => {
+                if (!document.getElementById("message-3")) {
+                    if (this.transparentPlatform) {
+                        this.transparentPlatform.clear(true, true);
+                    }
+                    observer.disconnect();
+                }
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+
         this.box = new Box(this, 400, height, "box");
+        // Get the y position of the transparent platform's first child
+        const platformChild =
+            this.transparentPlatform.getChildren()[0] as Phaser.GameObjects.Rectangle;
+
+        this.box2 = new Box(
+            this,
+            100,
+            platformChild.y - platformChild.height,
+            "box"
+        );
 
         this.player = new Rostam(this, 250, height, "rostam");
         this.cursors = this.input.keyboard!.createCursorKeys();
         this.doors.forEach((door) => {
             this.physics.add.overlap(this.player, door, this.onEnterDoor);
             this.physics.add.overlap(this.box, door, this.onEnterDoor);
+            this.physics.add.overlap(this.box2, door, this.onEnterDoor);
         });
         this.physics.add.collider(this.player, this.box);
+        this.physics.add.collider(this.player, this.box2);
+        this.physics.add.collider(this.player, this.transparentPlatform);
+        this.physics.add.collider(this.box2, this.transparentPlatform);
     }
 
     onEnterDoor(player: any, door: any) {

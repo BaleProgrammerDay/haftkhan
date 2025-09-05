@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Message } from "../types/Chat";
 import MessageBubble from "./MessageBubble";
 import { IRefPhaserGame, PhaserGame } from "../../PhaserGame";
@@ -8,12 +8,23 @@ interface MessageListProps {
 }
 
 // Sample messages for demonstration
-const sampleMessages: Record<string, Message[]> = {
-    "1": [{ id: "1", text: "سلام چطوری؟", sender: "other", time: "14:20" }],
+const initialMessages: Record<string, Message[]> = {
+    "1": [
+        { id: "1", text: "سلام", sender: "other", time: "14:20" },
+        { id: "2", text: "سلام", sender: "me", time: "14:21" },
+        {
+            id: "3",
+            text: "سه ویژگی بازیکن تیمی ایده آل رو داری؟",
+            sender: "other",
+            time: "14:22",
+        },
+    ],
 };
 
 function MessageList({ chatId }: MessageListProps) {
-    const messages = sampleMessages[chatId] || [];
+    const [messages, setMessages] = useState<Message[]>(
+        initialMessages[chatId] || []
+    );
 
     //  References to the PhaserGame component (game and scene are exposed)
     const phaserRef = useRef<IRefPhaserGame | null>(null);
@@ -23,6 +34,10 @@ function MessageList({ chatId }: MessageListProps) {
         // Scene change handler - can be used for future functionality
         console.log("Current scene:", scene.scene.key);
     };
+    const handleDelete = (id: string) => {
+        setMessages((msgs) => msgs.filter((msg) => msg.id !== id));
+    };
+
     return (
         <div
             className="flex-1 relative"
@@ -34,7 +49,12 @@ function MessageList({ chatId }: MessageListProps) {
             </div>
             <div className="relative z-10 p-4 overflow-y-auto space-y-3">
                 {messages.map((message) => (
-                    <MessageBubble key={message.id} message={message} />
+                    <MessageBubble
+                        key={message.id}
+                        message={message}
+                        id={"message-" + message.id}
+                        onDelete={handleDelete}
+                    />
                 ))}
             </div>
         </div>

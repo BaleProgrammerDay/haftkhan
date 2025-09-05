@@ -9,7 +9,7 @@ const sampleChats: Chat[] = [
     {
         id: "1",
         name: "پاتریک لنچونی",
-        lastMessage: "سلام، چطوری؟",
+        lastMessage: "سلام",
         time: "14:30",
         avatar: "/assets/avatar.jpg",
         unreadCount: 0,
