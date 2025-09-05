@@ -1,7 +1,7 @@
-import { Search } from "lucide-react";
 import { Chat } from "../types/Chat";
 import ChatItem from "./ChatItem";
-import Logo from "./Logo";
+import Search from "./icons/Search";
+import PixelLogo from "./PixelLogo";
 
 interface ChatSidebarProps {
     chats: Chat[];
@@ -30,14 +30,15 @@ function ChatSidebar({ chats, selectedChat, onSelectChat }: ChatSidebarProps) {
                 }}
             >
                 <div className="flex justify-center mb-3">
-                    <Logo width={32} height={32} />
+                    <PixelLogo width={32} height={32} />
                 </div>
 
                 {/* Search */}
                 <div className="relative">
                     <Search
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4"
-                        style={{ color: "var(--color-neutrals-n-200)" }}
+                        width={24}
+                        height={24}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2"
                     />
                     <input
                         type="text"
@@ -46,7 +47,6 @@ function ChatSidebar({ chats, selectedChat, onSelectChat }: ChatSidebarProps) {
                         style={{
                             backgroundColor: "var(--color-neutrals-n-20)",
                             color: "var(--color-neutrals-on-app-bar)",
-                            focusRingColor: "var(--color-primary-p-50)",
                         }}
                     />
                 </div>

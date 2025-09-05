@@ -11,7 +11,7 @@ const sampleChats: Chat[] = [
         name: "پاتریک لنچونی",
         lastMessage: "سلام",
         time: "14:30",
-        avatar: "/assets/avatar.jpg",
+        avatar: "/assets/avatar.png",
         unreadCount: 0,
     },
 ];

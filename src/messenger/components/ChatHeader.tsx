@@ -39,7 +39,7 @@ function ChatHeader({ chat }: ChatHeaderProps) {
             </div>
 
             <div className="flex items-center gap-2">
-                <button
+                {/* <button
                     className="p-2 rounded-full transition-colors duration-200"
                     style={{
                         color: "var(--color-neutrals-n-200)",
@@ -60,7 +60,7 @@ function ChatHeader({ chat }: ChatHeaderProps) {
                     }}
                 >
                     <Video className="w-5 h-5" />
-                </button>
+                </button> */}
                 <button
                     className="p-2 rounded-full transition-colors duration-200"
                     style={{
@@ -78,3 +78,4 @@ function ChatHeader({ chat }: ChatHeaderProps) {
 }
 
 export default ChatHeader;
+

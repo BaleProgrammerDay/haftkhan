@@ -19,6 +19,8 @@ const ThemeToggle: React.FC = () => {
         localStorage.setItem("theme", newTheme);
     };
 
+    return null;
+
     return (
         <button
             onClick={toggleTheme}
