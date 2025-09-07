@@ -1,0 +1,22 @@
+.TypedText {
+    width: 480px;
+    font-size: 24px;
+    min-height: 36px;
+}
+
+.waitingCursor {
+    animation: blink 1s infinite;
+    color: var(--color-neutrals-n-10);
+}
+
+@keyframes blink {
+    0%,
+    50% {
+        opacity: 1;
+    }
+    51%,
+    100% {
+        opacity: 0;
+    }
+}
+

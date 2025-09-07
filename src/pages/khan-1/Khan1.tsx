@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./Khan1.module.scss";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
@@ -65,8 +65,25 @@ export const Khan1 = (props: PageProps) => {
         handleLogin();
     };
 
+    const [blurBg, setBlurBg] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setBlurBg((prev) => {
+                if (prev + 1 >= 10) {
+                    return 0;
+                }
+                return prev + 1;
+            });
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
     return (
-        <div className={styles.Page}>
+        <div
+            className={styles.Page}
+            style={{ filter: blurBg > 0 ? `${blurBg}px` : "none" }}
+        >
             <div className={styles.Content}>
                 <video
                     src="/rakhsh_app/horse_states/asleep.mp4"
