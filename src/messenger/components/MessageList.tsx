@@ -5,11 +5,12 @@ import { IRefPhaserGame, PhaserGame } from "../../PhaserGame";
 
 interface MessageListProps {
     chatId: string;
+    phaserRef: React.RefObject<IRefPhaserGame | null>;
 }
 
 // Sample messages for demonstration
 const initialMessages: Record<string, Message[]> = {
-    "1": [
+    TeamPlayer: [
         { id: "1", text: "سلام", sender: "other", time: "14:20" },
         { id: "2", text: "سلام", sender: "me", time: "14:21" },
         {
@@ -19,15 +20,13 @@ const initialMessages: Record<string, Message[]> = {
             time: "14:22",
         },
     ],
+    RakhshChat: [{ id: "1", text: "سلام", sender: "other", time: "9:19" }],
 };
 
-function MessageList({ chatId }: MessageListProps) {
+function MessageList({ chatId, phaserRef }: MessageListProps) {
     const [messages, setMessages] = useState<Message[]>(
         initialMessages[chatId] || []
     );
-
-    //  References to the PhaserGame component (game and scene are exposed)
-    const phaserRef = useRef<IRefPhaserGame | null>(null);
 
     // Event emitted from the PhaserGame component
     const currentScene = (scene: Phaser.Scene) => {
@@ -51,6 +50,10 @@ function MessageList({ chatId }: MessageListProps) {
             ]);
         });
     }, []);
+
+    useEffect(() => {
+        setMessages(initialMessages[chatId]);
+    }, [chatId]);
 
     return (
         <div

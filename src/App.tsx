@@ -1,22 +1,34 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ChatSidebar from "./messenger/components/ChatSidebar";
 import ChatArea from "./messenger/components/ChatArea";
 import ThemeToggle from "./components/ThemeToggle";
 import { Chat } from "./messenger/types/Chat";
+import { IRefPhaserGame } from "./PhaserGame";
 
 // Sample Persian chat data
 const sampleChats: Chat[] = [
     {
-        id: "1",
+        id: "TeamPlayer",
         name: "پاتریک لنچونی",
         lastMessage: "سلام",
         time: "14:30",
-        avatar: "/assets/avatar.png",
+        avatar: "/assets/patrick_avatar.png",
         unreadCount: 0,
+    },
+    {
+        id: "RakhshChat",
+        name: "رخش",
+        lastMessage: "سلام",
+        time: "9:20",
+        avatar: "/assets/rakhsh_avatar.jpg",
+        unreadCount: 1,
     },
 ];
 
 function App() {
+    //  References to the PhaserGame component (game and scene are exposed)
+    const phaserRef = useRef<IRefPhaserGame | null>(null);
+
     const [selectedChat, setSelectedChat] = useState<Chat>(sampleChats[0]);
 
     useEffect(() => {
@@ -24,6 +36,14 @@ function App() {
         const savedTheme = localStorage.getItem("theme") || "dark";
         document.documentElement.setAttribute("data-theme", savedTheme);
     }, []);
+
+    const handleSelectChat = (chat: Chat) => {
+        setSelectedChat(chat);
+        setTimeout(() => {
+            //@ts-ignore
+            phaserRef.current?.scene?.changeScene(chat.id);
+        }, 100);
+    };
 
     return (
         <div
@@ -46,11 +66,11 @@ function App() {
                 <ChatSidebar
                     chats={sampleChats}
                     selectedChat={selectedChat}
-                    onSelectChat={setSelectedChat}
+                    onSelectChat={handleSelectChat}
                 />
 
                 {/* Chat Area - Left side in RTL */}
-                <ChatArea selectedChat={selectedChat} />
+                <ChatArea selectedChat={selectedChat} phaserRef={phaserRef} />
             </div>
         </div>
     );

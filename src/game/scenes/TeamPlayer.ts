@@ -1,11 +1,11 @@
-import { GameObjects, Scene, Types } from "phaser";
+import { Scene, Types } from "phaser";
 import Rostam from "../characters/Rostam";
 import Door from "../objects/Door";
 import Box from "../objects/Box";
+import { EventBus } from "../EventBus";
 
-export class PixelArtScene extends Scene {
-    background: GameObjects.Image;
-    player: Rostam;
+export class TeamPlayer extends Scene {
+    rostam: Rostam;
     cursors: Types.Input.Keyboard.CursorKeys;
     doors: Door[] = [];
     box: Box;
@@ -14,8 +14,16 @@ export class PixelArtScene extends Scene {
     allActivated: boolean;
     messageIsSent: boolean;
 
+    onEnterDoor(player: any, door: any) {
+        door.isActivate = true;
+    }
+
+    changeScene(scene: string) {
+        this.scene.start(scene);
+    }
+
     constructor() {
-        super("PixelArtScene");
+        super("TeamPlayer");
     }
 
     create() {
@@ -75,7 +83,6 @@ export class PixelArtScene extends Scene {
         }
 
         this.box = new Box(this, 400, height, "box");
-        // Get the y position of the transparent platform's first child
         const platformChild =
             this.transparentPlatform.getChildren()[0] as Phaser.GameObjects.Rectangle;
 
@@ -86,21 +93,19 @@ export class PixelArtScene extends Scene {
             "box"
         );
 
-        this.player = new Rostam(this, 250, height, "rostam");
+        this.rostam = new Rostam(this, 250, height, "rostam");
         this.cursors = this.input.keyboard!.createCursorKeys();
         this.doors.forEach((door) => {
-            this.physics.add.overlap(this.player, door, this.onEnterDoor);
+            this.physics.add.overlap(this.rostam, door, this.onEnterDoor);
             this.physics.add.overlap(this.box, door, this.onEnterDoor);
             this.physics.add.overlap(this.box2, door, this.onEnterDoor);
         });
-        this.physics.add.collider(this.player, this.box);
-        this.physics.add.collider(this.player, this.box2);
-        this.physics.add.collider(this.player, this.transparentPlatform);
+        this.physics.add.collider(this.rostam, this.box);
+        this.physics.add.collider(this.rostam, this.box2);
+        this.physics.add.collider(this.rostam, this.transparentPlatform);
         this.physics.add.collider(this.box2, this.transparentPlatform);
-    }
 
-    onEnterDoor(player: any, door: any) {
-        door.isActivate = true;
+        EventBus.emit("current-scene-ready", this);
     }
 
     update() {
@@ -118,6 +123,6 @@ export class PixelArtScene extends Scene {
             window.dispatchEvent(new Event("allDoorsActivated"));
             this.messageIsSent = true;
         }
-        this.player.handleInput(this.cursors);
+        this.rostam.handleInput(this.cursors);
     }
 }

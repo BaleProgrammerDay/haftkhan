@@ -1,10 +1,8 @@
 import { Boot } from "./scenes/Boot";
-import { GameOver } from "./scenes/GameOver";
-import { Game as MainGame } from "./scenes/Game";
-import { MainMenu } from "./scenes/MainMenu";
 import { AUTO, Game, Scale } from "phaser";
 import { Preloader } from "./scenes/Preloader";
-import { PixelArtScene } from "./scenes/PixelArtScene";
+import { TeamPlayer } from "./scenes/TeamPlayer";
+import { RakhshChat } from "./scenes/RakhshChat";
 
 //  Find out more information about the Game Config at:
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
@@ -30,7 +28,7 @@ const config: Phaser.Types.Core.GameConfig = {
         mode: Scale.RESIZE,
         autoCenter: Scale.CENTER_BOTH,
     },
-    scene: [Boot, Preloader, MainMenu, MainGame, GameOver, PixelArtScene],
+    scene: [Boot, Preloader, TeamPlayer, RakhshChat],
 };
 
 const StartGame = (parent: string) => {
