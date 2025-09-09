@@ -1,12 +1,8 @@
 import { useState, useEffect } from "react";
 import styles from "./Khan2.module.scss";
-import { Input } from "../../components/ui/Input";
-import { Button } from "../../components/ui/Button";
-import { API } from "../../api/api";
-import { PageProps } from "../khan-1/Khan1";
-import { TypingText } from "../../components/TypingText/TypingText";
 
-import clsx from "clsx";
+import { PageProps } from "~/pages/khan-1/Khan1";
+import { TypingText } from "~/components/TypingText/TypingText";
 
 export const Khan2 = (props: PageProps) => {
     const texts = [
@@ -29,12 +25,10 @@ export const Khan2 = (props: PageProps) => {
 
     return (
         <div className={styles.Page}>
-            {/* Blur overlay */}
             <div
                 className={styles.BlurOverlay}
                 style={{
                     filter: `blur(${blurValue}px)`,
-                    // filter: `blur(${blurValue}px)`,
                 }}
             />
 

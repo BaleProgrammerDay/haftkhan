@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./TypingText.module.scss";
 import { getTextDirection } from "../../utils";
 
@@ -9,73 +9,78 @@ interface TypingTextProps {
 
 export const TypingText = (props: TypingTextProps) => {
     const [currentTextIndex, setCurrentTextIndex] = useState(0);
-    const [isWaiting, setIsWaiting] = useState(false);
     const { waitDelay = 2000 } = props; // Default 2 seconds wait
 
-    const handleTypingComplete = () => {
-        setIsWaiting(true);
-
-        // Only advance to next text if we're not at the last one
-        if (currentTextIndex < props.text.length - 1) {
-            setTimeout(() => {
-                setCurrentTextIndex((prev) => prev + 1);
-                setIsWaiting(false);
-            }, waitDelay);
-        }
+    const handleComplete = () => {
+        if (currentTextIndex == props.text.length - 1) return;
+        setCurrentTextIndex((prev) => prev + 1);
     };
+
+    // useEffect(() => {
+    //     if (currentTextIndex < props.text.length - 1) {
+    //         setTimeout(() => {
+    //             setCurrentTextIndex((prev) => prev + 1);
+    //         }, waitDelay);
+    //     }
+    // }, [currentTextIndex, props.text, waitDelay]);
 
     return (
         <TypedText
             text={props.text[currentTextIndex] || ""}
-            onTypingComplete={handleTypingComplete}
-            isWaiting={isWaiting}
-            key={currentTextIndex} // Force re-render when text changes
+            onComplete={handleComplete}
+            waitingTime={waitDelay}
         />
     );
 };
 
 const TypedText = (props: {
     text: string;
-    onTypingComplete?: () => void;
-    isWaiting?: boolean;
+    onComplete: () => void;
+    waitingTime: number;
 }) => {
     const [currentTextIndex, setCurrentTextIndex] = useState(0);
-    const [isTyping, setIsTyping] = useState(false);
 
-    useEffect(() => {
-        // Reset state when component mounts or text changes
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    console.log("@#@# text", currentTextIndex);
+
+    const handleComplete = () => {
         setCurrentTextIndex(0);
-        setIsTyping(false);
-
-        // Start typing after a small delay
-        const startTimer = setTimeout(() => {
-            setIsTyping(true);
-        }, 150);
-
-        return () => clearTimeout(startTimer);
-    }, [props.text]);
+        timeoutRef.current = setTimeout(() => {
+            props.onComplete();
+        }, props.waitingTime);
+    };
 
     useEffect(() => {
-        if (!isTyping || !props.text) return;
-
-        if (currentTextIndex >= props.text.length) {
-            // Typing is complete, call the callback
-            props.onTypingComplete?.();
-            return;
-        }
+        if (!props.text) return;
 
         const interval = setInterval(() => {
             setCurrentTextIndex((prev) => prev + 1);
         }, 125);
 
+        if (currentTextIndex >= props.text.length) {
+            // Typing is complete, call the callback
+            clearInterval(interval);
+
+            setCurrentTextIndex(0);
+            handleComplete();
+            return;
+        }
+
         return () => clearInterval(interval);
-    }, [currentTextIndex, props.text, props.onTypingComplete, isTyping]);
+    }, [currentTextIndex, props.text, handleComplete]);
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
 
     return (
         <div className={styles.TypedText} dir={getTextDirection(props.text)}>
-            {isTyping && props.text
-                ? props.text.slice(0, currentTextIndex)
-                : ""}
+            {props.text ? props.text.slice(0, currentTextIndex) : ""}
         </div>
     );
 };
