@@ -111,7 +111,7 @@ export const Khan2 = (props: PageProps) => {
         title="rakhsh/home/desktop/anti-virus"
       >
         <Draggable
-          initialPosition={{ x: 20, y: 20 }}
+          initialPosition={{ x: 20, y: 60 }}
           className={styles.Folder}
           onDoubleClick={handleFolderClick}
           doubleClickDelay={300}

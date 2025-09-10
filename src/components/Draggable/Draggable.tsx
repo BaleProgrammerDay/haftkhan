@@ -12,6 +12,7 @@ interface DraggableProps {
   onDoubleClick?: () => void;
   doubleClickDelay?: number;
   disabled?: boolean;
+  constrainToParent?: boolean;
 }
 
 export const Draggable: React.FC<DraggableProps> = ({
@@ -25,6 +26,7 @@ export const Draggable: React.FC<DraggableProps> = ({
   onDoubleClick,
   doubleClickDelay = 300,
   disabled = false,
+  constrainToParent = true,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState(initialPosition);
@@ -74,11 +76,39 @@ export const Draggable: React.FC<DraggableProps> = ({
     // Calculate position relative to the container
     if (draggableRef.current) {
       const container = draggableRef.current.offsetParent as HTMLElement;
-      const containerRect = container ? container.getBoundingClientRect() : { left: 0, top: 0 };
+      const elementRect = draggableRef.current.getBoundingClientRect();
+      
+      // Calculate the desired position
+      let newX = e.clientX - dragOffsetRef.current.x;
+      let newY = e.clientY - dragOffsetRef.current.y;
+      
+      // Apply boundary constraints if enabled
+      if (constrainToParent && container) {
+        const containerRect = container.getBoundingClientRect();
+        const elementWidth = elementRect.width;
+        const elementHeight = elementRect.height;
+        const containerWidth = containerRect.width;
+        const containerHeight = containerRect.height;
+        
+        // Adjust coordinates to be relative to container
+        newX = e.clientX - containerRect.left - dragOffsetRef.current.x;
+        newY = e.clientY - containerRect.top - dragOffsetRef.current.y;
+        
+        // Clamp X position to stay within container bounds
+        newX = Math.max(0, Math.min(newX, containerWidth - elementWidth));
+        
+        // Clamp Y position to stay within container bounds
+        newY = Math.max(0, Math.min(newY, containerHeight - elementHeight));
+      } else if (container) {
+        // If not constraining but still need relative positioning
+        const containerRect = container.getBoundingClientRect();
+        newX = e.clientX - containerRect.left - dragOffsetRef.current.x;
+        newY = e.clientY - containerRect.top - dragOffsetRef.current.y;
+      }
       
       const newPosition = {
-        x: e.clientX - containerRect.left - dragOffsetRef.current.x,
-        y: e.clientY - containerRect.top - dragOffsetRef.current.y,
+        x: newX,
+        y: newY,
       };
 
       setPosition(newPosition);
