@@ -1,57 +1,224 @@
 .Page {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw;
-    background-color: #000;
-    color: #fff;
-    position: relative;
-    overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #000;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
 }
 
 .BlurOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.1);
-    transition: backdrop-filter 0.1s ease-out;
-    z-index: 1;
-    pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  transition: backdrop-filter 0.1s ease-out;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .Content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    padding: 24px;
-    box-sizing: border-box;
-    max-width: 720px;
-    position: relative;
-    z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  max-width: 720px;
+  position: relative;
+  z-index: 2;
 }
 
 .FolderIce {
-    width: 80px;
-    height: 80px;
-    padding: 10px;
+  width: 80px;
+  height: 80px;
+  padding: 10px;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+  z-index: 10;
+
+  &:hover {
+    background-color: rgba(var(--color-bubble-in-secondary-rgb), 0.2);
+  }
+}
+
+.FolderIceImage {
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.FolderImage {
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease;
+
+  cursor: pointer;
+}
+
+// Ice breaking animation
+@keyframes iceBreaking {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+    filter: brightness(1) saturate(1);
+  }
+  25% {
+    transform: scale(1.1) rotate(-2deg);
+    opacity: 0.9;
+    filter: brightness(1.2) saturate(1.1);
+  }
+  50% {
+    transform: scale(0.95) rotate(1deg);
+    opacity: 0.7;
+    filter: brightness(1.4) saturate(1.3);
+  }
+  75% {
+    transform: scale(0.9) rotate(-1deg);
+    opacity: 0.4;
+    filter: brightness(1.6) saturate(1.5);
+  }
+  100% {
+    transform: scale(0.8) rotate(0deg);
+    opacity: 0;
+    filter: brightness(2) saturate(2);
+  }
+}
+
+// Folder appearing animation
+@keyframes folderAppearing {
+  0% {
+    transform: scale(0.5) rotate(-10deg);
+    opacity: 0;
+    filter: brightness(0.5) saturate(0.5);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+    opacity: 0.8;
+    filter: brightness(1.1) saturate(1.1);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+    filter: brightness(1) saturate(1);
+  }
+}
+
+// Ice cracking effect
+@keyframes iceCracking {
+  0% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  25% {
+    filter: drop-shadow(0 0 2px #87ceeb) drop-shadow(0 0 4px #87ceeb);
+  }
+  50% {
+    filter: drop-shadow(0 0 4px #87ceeb) drop-shadow(0 0 8px #87ceeb)
+      drop-shadow(0 0 12px #87ceeb);
+  }
+  75% {
+    filter: drop-shadow(0 0 6px #87ceeb) drop-shadow(0 0 12px #87ceeb)
+      drop-shadow(0 0 18px #87ceeb);
+  }
+  100% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+}
+
+.IceBreaking {
+  animation: iceBreaking 1.6s ease-in-out forwards, iceCracking 0.8s ease-in-out;
+}
+
+.IceBroken {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.FolderAppearing {
+  animation: folderAppearing 0.8s ease-out forwards;
+}
+
+.ViewFolder {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .ViewFolderContainer {
+    width: 800px;
+    height: 600px;
+
+    background-color: rgba(var(--color-neutrals-n-200-rgb), 0.8);
     border-radius: 10px;
-    transition: background-color 0.2s ease;
-    z-index: 10;
+    box-sizing: border-box;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+    padding: 24px;
+  }
 
-    .FolderIceImage {
-        width: 100%;
-        height: 100%;
-    }
+  .FolderHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 30px;
+  }
 
-    &:hover {
-        background-color: rgba(var(--color-bubble-in-secondary-rgb), 0.2);
+  .FolderTitle {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 24px;
+    color: var(--color-neutrals-n-600);
+    width: 100%;
+    text-align: center;
+  }
+
+  .FolderActionBar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 10px;
+    z-index: 1;
+
+    .ActionBarItem {
+      width: 16px;
+      height: 16px;
+      background-color: var(--color-neutrals-n-100);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      &:hover {
+        opacity: 0.6;
+      }
+
+      &.CloseFolder {
+        background-color: var(--color-error);
+      }
+      &.MinimizeFolder {
+        background-color: var(--color-neutrals-gold-bg);
+      }
+      &.FullscreenFolder {
+        background-color: var(--color-primary-p-40);
+      }
     }
+  }
 }
 

@@ -1,21 +1,22 @@
 .Draggable {
-    position: absolute;
-    cursor: grab;
-    user-select: none;
-    transition: transform 0.1s ease;
+  position: absolute;
+  user-select: none;
+  transition: transform 0.1s ease;
+  cursor: default;
 
-    &.Dragging {
-        cursor: grabbing;
-        transform: scale(1.05);
-    }
+  &.Dragging {
+    cursor: grabbing;
+    transform: scale(1.05);
+  }
 
-    &.Disabled {
-        cursor: default;
-        pointer-events: none;
-    }
+  &.Disabled {
+    cursor: default;
+    pointer-events: none;
+  }
 
-    // Ensure child elements don't interfere with drag events
-    * {
-        pointer-events: none;
-    }
+  // Ensure child elements don't interfere with drag events
+  * {
+    pointer-events: none;
+  }
 }
+

@@ -3,72 +3,72 @@ import { Smile } from "lucide-react";
 import Send from "./icons/Send";
 
 function MessageInput() {
-    const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("");
 
-    const handleSend = () => {
-        if (message.trim()) {
-            // Here you would handle sending the message
-            console.log("Sending message:", message);
-            setMessage("");
-        }
-    };
+  const handleSend = () => {
+    if (message.trim()) {
+      // Here you would handle sending the message
+      console.log("Sending message:", message);
+      setMessage("");
+    }
+  };
 
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleSend();
-        }
-    };
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
-    return (
-        <div
-            style={{
-                backgroundColor: "var(--color-neutrals-surface)",
-                borderTopColor: "var(--color-neutrals-n-30)",
-                borderTopWidth: "1px",
-                borderTopStyle: "solid",
-            }}
+  return (
+    <div
+      style={{
+        backgroundColor: "var(--color-neutrals-surface)",
+        borderTopColor: "var(--color-neutrals-n-30)",
+        borderTopWidth: "1px",
+        borderTopStyle: "solid",
+      }}
+    >
+      <div className="flex items-center gap-2">
+        <button
+          onClick={handleSend}
+          className="p-3 rounded-full transition-all duration-200 shadow-md hover:shadow-lg"
+          style={{
+            opacity: message.trim() ? 1 : 0.5,
+            cursor: message.trim() ? "pointer" : "not-allowed",
+          }}
+          disabled={!message.trim()}
         >
-            <div className="flex items-center gap-2">
-                <button
-                    onClick={handleSend}
-                    className="p-3 rounded-full transition-all duration-200 shadow-md hover:shadow-lg"
-                    style={{
-                        opacity: message.trim() ? 1 : 0.5,
-                        cursor: message.trim() ? "pointer" : "not-allowed",
-                    }}
-                    disabled={!message.trim()}
-                >
-                    <Send width={32} height={32} />
-                </button>
+          <Send width={32} height={32} />
+        </button>
 
-                <div className="flex-1 relative">
-                    <textarea
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="پیام خود را بنویسید..."
-                        className="w-full p-3 resize-none focus:outline-none max-h-32 min-h-[44px]"
-                        style={{
-                            color: "var(--color-neutrals-on-app-bar)",
-                        }}
-                        rows={1}
-                    />
-                    <button
-                        className="absolute left-3 bottom-3 rounded-full p-1 transition-colors duration-200"
-                        style={{
-                            color: "var(--color-neutrals-n-200)",
-                            ":hover": {
-                                backgroundColor: "var(--color-neutrals-n-20)",
-                            },
-                        }}
-                    >
-                        <Smile className="w-5 h-5" />
-                    </button>
-                </div>
-            </div>
+        <div className="flex-1 relative">
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="پیام خود را بنویسید..."
+            className="w-full p-3 resize-none focus:outline-none max-h-32 min-h-[44px]"
+            style={{
+              color: "var(--color-neutrals-on-app-bar)",
+            }}
+            rows={1}
+          />
+          <button
+            className="absolute left-3 bottom-3 rounded-full p-1 transition-colors duration-200"
+            style={{
+              color: "var(--color-neutrals-n-200)",
+              ":hover": {
+                backgroundColor: "var(--color-neutrals-n-20)",
+              },
+            }}
+          >
+            <Smile className="w-5 h-5" />
+          </button>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
 export default MessageInput;

@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./Khan1.module.scss";
 import { Input } from "../../components/ui/Input";
 import { Button } from "../../components/ui/Button";
-import { API } from "../../api/api";
-
-export interface PageProps {
-    setStep: (step: number) => void;
-}
+import { PageProps } from "~/types";
 
 export const Khan1 = (props: PageProps) => {
     const [inputs, setInputs] = useState({
