@@ -13,6 +13,8 @@ import { Draggable } from "~/components/Draggable";
 import { Modal } from "~/components/Modal";
 import { PasswordInput, PasswordInputRef } from "~/components/ui";
 
+import { Scratch } from "./Scratch";
+
 // Folders component that handles all folder-related logic including modal
 interface FoldersProps {
   storyIsEnded: boolean;
@@ -27,7 +29,7 @@ const Folders: React.FC<FoldersProps> = ({ storyIsEnded }) => {
 
   const [openFolder, setOpenFolder] = useState(false);
   const [openSeriFolder, setOpenSeriFolder] = useState(false);
-  const [password, setPassword] = useState("");
+  const [, setPassword] = useState("");
   const passwordInputRef = useRef<PasswordInputRef>(null);
 
   // Function to trigger ice breaking animation
@@ -139,7 +141,7 @@ const Folders: React.FC<FoldersProps> = ({ storyIsEnded }) => {
   );
 };
 
-export const Khan2 = (props: PageProps) => {
+export const Khan2 = (_props: PageProps) => {
   const texts = [
     "یه چیزایی یادمه...اون...همون دیگه...",
     "درست یادم نمیاد...شاید حافظمو ...حافظمو...",
@@ -171,7 +173,10 @@ export const Khan2 = (props: PageProps) => {
       </div>
 
       <Folders storyIsEnded={storyIsEnded} />
+
+      <Scratch />
     </div>
   );
 };
+
 
