@@ -4,13 +4,12 @@ import styles from "./Khan2.module.scss";
 import { PageProps } from "~/types";
 import { TypingText } from "~/components/TypingText/TypingText";
 import { Slider } from "~/components/Slider/Slider";
-import { Draggable } from "~/components/Draggable";
-import { FolderClickHandler } from "~/components/Folder";
 import folder from "./folder.png";
 import antiVirus from "./anti_virus.png";
 
 import folderIce from "./frozen_folder.png";
 import clsx from "clsx";
+import { Draggable } from "~/components/Draggable";
 
 export const Khan2 = (props: PageProps) => {
   const texts = [
@@ -78,10 +77,11 @@ export const Khan2 = (props: PageProps) => {
         )}
       </div>
 
-      <FolderClickHandler
-        doubleClickDelay={300}
+      <Draggable
+        initialPosition={{ x: 20, y: 20 }}
         className={clsx(styles.FolderIce)}
-        onClick={handleFolderClick}
+        onDoubleClick={handleFolderClick}
+        doubleClickDelay={300}
       >
         {(animationPhase === "ice" || animationPhase === "breaking") && (
           <img
@@ -101,7 +101,7 @@ export const Khan2 = (props: PageProps) => {
             )}
           />
         )}
-      </FolderClickHandler>
+      </Draggable>
 
       {openFolder && (
         <div className={styles.ViewFolder}>

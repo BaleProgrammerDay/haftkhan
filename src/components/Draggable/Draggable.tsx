@@ -9,6 +9,8 @@ interface DraggableProps {
   onDragEnd?: () => void;
   onPositionChange?: (position: { x: number; y: number }) => void;
   onClick?: () => void;
+  onDoubleClick?: () => void;
+  doubleClickDelay?: number;
   disabled?: boolean;
 }
 
@@ -20,6 +22,8 @@ export const Draggable: React.FC<DraggableProps> = ({
   onDragEnd,
   onPositionChange,
   onClick,
+  onDoubleClick,
+  doubleClickDelay = 300,
   disabled = false,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
@@ -30,6 +34,10 @@ export const Draggable: React.FC<DraggableProps> = ({
   const dragOffsetRef = useRef({ x: 0, y: 0 });
   const startPositionRef = useRef({ x: 0, y: 0 });
   const dragThreshold = 1; // Minimum pixels to move before considering it a drag
+
+  // Double-click detection
+  const clickTimeoutRef = useRef<number | null>(null);
+  const [clickCount, setClickCount] = useState(0);
 
   // Mouse event handlers for drag functionality
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -78,11 +86,44 @@ export const Draggable: React.FC<DraggableProps> = ({
       setHasMoved(false); // Reset hasMoved state
       onDragEnd?.();
 
-      // Only fire onClick if it was truly a click (no movement)
-      if (wasClick && onClick) {
-        onClick();
+      // Only handle clicks if it was truly a click (no movement)
+      if (wasClick) {
+        handleClick();
       }
     }
+  };
+
+  const handleClick = () => {
+    setClickCount((prev) => {
+      const newCount = prev + 1;
+
+      // If this is the first click, start the timer
+      if (newCount === 1) {
+        clickTimeoutRef.current = setTimeout(() => {
+          // Timeout reached - not a double click, fire single click
+          if (onClick) {
+            onClick();
+          }
+          setClickCount(0);
+        }, doubleClickDelay);
+      }
+      // If this is the second click within the delay period
+      else if (newCount === 2) {
+        // Clear the timeout
+        if (clickTimeoutRef.current) {
+          clearTimeout(clickTimeoutRef.current);
+          clickTimeoutRef.current = null;
+        }
+
+        // This is a double click - fire double click handler
+        if (onDoubleClick) {
+          onDoubleClick();
+        }
+        return 0;
+      }
+
+      return newCount;
+    });
   };
 
   // Add global mouse event listeners
@@ -97,6 +138,15 @@ export const Draggable: React.FC<DraggableProps> = ({
       document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDragging, disabled]);
+
+  // Cleanup click timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (clickTimeoutRef.current) {
+        clearTimeout(clickTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div
