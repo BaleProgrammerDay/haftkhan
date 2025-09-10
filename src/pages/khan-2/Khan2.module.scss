@@ -37,7 +37,7 @@
   z-index: 2;
 }
 
-.FolderIce {
+.Folder {
   width: 80px;
   height: 80px;
   padding: 10px;
@@ -50,18 +50,10 @@
   }
 }
 
-.FolderIceImage {
-  width: 100%;
-  height: 100%;
-  transition: all 0.3s ease;
-}
-
 .FolderImage {
   width: 100%;
   height: 100%;
-  transition: all 0.3s ease;
-
-  cursor: pointer;
+  object-fit: cover;
 }
 
 // Ice breaking animation
@@ -144,81 +136,5 @@
 
 .FolderAppearing {
   animation: folderAppearing 0.8s ease-out forwards;
-}
-
-.ViewFolder {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  .ViewFolderContainer {
-    width: 800px;
-    height: 600px;
-
-    background-color: rgba(var(--color-neutrals-n-200-rgb), 0.8);
-    border-radius: 10px;
-    box-sizing: border-box;
-    backdrop-filter: blur(4px);
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-    padding: 24px;
-  }
-
-  .FolderHeader {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 30px;
-  }
-
-  .FolderTitle {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 24px;
-    color: var(--color-neutrals-n-600);
-    width: 100%;
-    text-align: center;
-  }
-
-  .FolderActionBar {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    column-gap: 10px;
-    z-index: 1;
-
-    .ActionBarItem {
-      width: 16px;
-      height: 16px;
-      background-color: var(--color-neutrals-n-100);
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      &:hover {
-        opacity: 0.6;
-      }
-
-      &.CloseFolder {
-        background-color: var(--color-error);
-      }
-      &.MinimizeFolder {
-        background-color: var(--color-neutrals-gold-bg);
-      }
-      &.FullscreenFolder {
-        background-color: var(--color-primary-p-40);
-      }
-    }
-  }
 }
 

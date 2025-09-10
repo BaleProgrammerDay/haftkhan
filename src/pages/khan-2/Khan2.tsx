@@ -10,6 +10,7 @@ import antiVirus from "./anti_virus.png";
 import folderIce from "./frozen_folder.png";
 import clsx from "clsx";
 import { Draggable } from "~/components/Draggable";
+import { Modal } from "~/components/Modal";
 
 export const Khan2 = (props: PageProps) => {
   const texts = [
@@ -79,7 +80,7 @@ export const Khan2 = (props: PageProps) => {
 
       <Draggable
         initialPosition={{ x: 20, y: 20 }}
-        className={clsx(styles.FolderIce)}
+        className={styles.Folder}
         onDoubleClick={handleFolderClick}
         doubleClickDelay={300}
       >
@@ -87,7 +88,7 @@ export const Khan2 = (props: PageProps) => {
           <img
             src={folderIce}
             className={clsx(
-              styles.FolderIceImage,
+              styles.FolderImage,
               animationPhase === "breaking" && styles.IceBreaking
             )}
           />
@@ -95,40 +96,29 @@ export const Khan2 = (props: PageProps) => {
         {animationPhase === "folder" && (
           <img
             src={folder}
-            className={clsx(
-              styles.FolderImage,
-              isAnimating && styles.FolderAppearing
-            )}
+            className={clsx(styles.FolderImage, {
+              [styles.FolderAppearing]: isAnimating,
+            })}
           />
         )}
       </Draggable>
 
-      {openFolder && (
-        <div className={styles.ViewFolder}>
-          <div className={styles.ViewFolderContainer}>
-            <div className={styles.FolderHeader}>
-              <div className={styles.FolderActionBar}>
-                <div
-                  className={clsx(styles.ActionBarItem, styles.CloseFolder)}
-                />
-                <div
-                  className={clsx(styles.ActionBarItem, styles.MinimizeFolder)}
-                />
-                <div
-                  className={clsx(
-                    styles.ActionBarItem,
-                    styles.FullscreenFolder
-                  )}
-                />
-              </div>
-              <div className={styles.FolderTitle}>
-                rakhsh/home/desktop/anti-virus
-              </div>
-            </div>
-            <img src={antiVirus} alt="" />
-          </div>
-        </div>
-      )}
+      <Modal
+        isOpen={openFolder}
+        onClose={() => setOpenFolder(false)}
+        onMinimize={() => {}}
+        onFullscreen={() => {}}
+        title="rakhsh/home/desktop/anti-virus"
+      >
+        <Draggable
+          initialPosition={{ x: 20, y: 20 }}
+          className={styles.Folder}
+          onDoubleClick={handleFolderClick}
+          doubleClickDelay={300}
+        >
+          <img src={antiVirus} alt="" className={styles.FolderImage} />
+        </Draggable>
+      </Modal>
     </div>
   );
 };

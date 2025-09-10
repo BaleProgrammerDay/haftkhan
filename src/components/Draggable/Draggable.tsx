@@ -50,6 +50,7 @@ export const Draggable: React.FC<DraggableProps> = ({
 
     if (draggableRef.current) {
       const rect = draggableRef.current.getBoundingClientRect();
+      // Calculate offset more precisely by using the actual click position
       dragOffsetRef.current = {
         x: e.clientX - rect.left,
         y: e.clientY - rect.top,
@@ -69,13 +70,20 @@ export const Draggable: React.FC<DraggableProps> = ({
     }
 
     e.preventDefault();
-    const newPosition = {
-      x: e.clientX - dragOffsetRef.current.x,
-      y: e.clientY - dragOffsetRef.current.y,
-    };
+    
+    // Calculate position relative to the container
+    if (draggableRef.current) {
+      const container = draggableRef.current.offsetParent as HTMLElement;
+      const containerRect = container ? container.getBoundingClientRect() : { left: 0, top: 0 };
+      
+      const newPosition = {
+        x: e.clientX - containerRect.left - dragOffsetRef.current.x,
+        y: e.clientY - containerRect.top - dragOffsetRef.current.y,
+      };
 
-    setPosition(newPosition);
-    onPositionChange?.(newPosition);
+      setPosition(newPosition);
+      onPositionChange?.(newPosition);
+    }
   };
 
   const handleMouseUp = () => {
