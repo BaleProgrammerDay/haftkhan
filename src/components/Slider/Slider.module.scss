@@ -1,0 +1,37 @@
+.Controls {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    translate: 0;
+}
+
+.BackIcon {
+    position: absolute;
+    right: 200px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+.NextIcon {
+    position: absolute;
+    left: 200px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.Slider {
+    display: flex;
+}
+
+.Item {
+    font-size: 24px;
+    direction: rtl;
+    transition: transform 0.5s ease-in-out;
+    will-change: transform;
+    width: 100vw;
+    text-align: center;
+}
+

@@ -1,0 +1,21 @@
+.Draggable {
+    position: absolute;
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.1s ease;
+
+    &.Dragging {
+        cursor: grabbing;
+        transform: scale(1.05);
+    }
+
+    &.Disabled {
+        cursor: default;
+        pointer-events: none;
+    }
+
+    // Ensure child elements don't interfere with drag events
+    * {
+        pointer-events: none;
+    }
+}

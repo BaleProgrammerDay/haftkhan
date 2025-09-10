@@ -37,3 +37,21 @@
     z-index: 2;
 }
 
+.FolderIce {
+    width: 80px;
+    height: 80px;
+    padding: 10px;
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+    z-index: 10;
+
+    .FolderIceImage {
+        width: 100%;
+        height: 100%;
+    }
+
+    &:hover {
+        background-color: rgba(var(--color-bubble-in-secondary-rgb), 0.2);
+    }
+}
+
