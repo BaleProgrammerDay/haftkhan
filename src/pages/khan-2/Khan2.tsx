@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styles from "./Khan2.module.scss";
 
 import { PageProps } from "~/types";
@@ -11,21 +11,24 @@ import folderIce from "./frozen_folder.png";
 import clsx from "clsx";
 import { Draggable } from "~/components/Draggable";
 import { Modal } from "~/components/Modal";
+import { PasswordInput, PasswordInputRef } from "~/components/ui";
 
-export const Khan2 = (props: PageProps) => {
-  const texts = [
-    "یه چیزایی یادمه...اون...همون دیگه...",
-    "درست یادم نمیاد...شاید حافظمو ...حافظمو...",
-  ];
+// Folders component that handles all folder-related logic including modal
+interface FoldersProps {
+  storyIsEnded: boolean;
+}
 
-  const [storyIsEnded, setStoryIsEnded] = useState(false);
-
-  // Optimized state management - only 2 states instead of 4
+const Folders: React.FC<FoldersProps> = ({ storyIsEnded }) => {
+  // Folder animation state
   const [animationPhase, setAnimationPhase] = useState<
     "ice" | "breaking" | "folder"
   >("ice");
   const [isAnimating, setIsAnimating] = useState(false);
+
   const [openFolder, setOpenFolder] = useState(false);
+  const [openSeriFolder, setOpenSeriFolder] = useState(false);
+  const [password, setPassword] = useState("");
+  const passwordInputRef = useRef<PasswordInputRef>(null);
 
   // Function to trigger ice breaking animation
   const breakIce = () => {
@@ -51,9 +54,98 @@ export const Khan2 = (props: PageProps) => {
     }
   }, [storyIsEnded]);
 
-  const handleFolderClick = () => {
+  const handleFolderOpen = () => {
     setOpenFolder(true);
   };
+
+  const handleSeriFolderOpen = () => {
+    setOpenSeriFolder(true);
+    // Focus the password input when modal opens
+    setTimeout(() => {
+      passwordInputRef.current?.focus();
+    }, 100); // Small delay to ensure modal is fully rendered
+  };
+
+  return (
+    <>
+      {/* Main folder with ice animation */}
+      <Draggable
+        initialPosition={{ x: 20, y: 20 }}
+        className={styles.Folder}
+        onDoubleClick={handleFolderOpen}
+      >
+        {(animationPhase === "ice" || animationPhase === "breaking") && (
+          <img
+            src={folderIce}
+            className={clsx(
+              styles.FolderImage,
+              animationPhase === "breaking" && styles.IceBreaking
+            )}
+          />
+        )}
+        {animationPhase === "folder" && (
+          <img
+            src={folder}
+            className={clsx(styles.FolderImage, {
+              [styles.FolderAppearing]: isAnimating,
+            })}
+          />
+        )}
+        <p>اژدرکش</p>
+      </Draggable>
+
+      {/* Second folder */}
+      <Draggable
+        initialPosition={{ x: 120, y: 20 }}
+        className={styles.Folder}
+        onDoubleClick={handleSeriFolderOpen}
+      >
+        <img src={folder} className={styles.FolderImage} />
+        <p>سری</p>
+      </Draggable>
+
+      {/* Modal */}
+      <Modal
+        isOpen={openFolder}
+        onClose={() => setOpenFolder(false)}
+        title="rakhsh/home/desktop/anti-virus"
+      >
+        <Draggable
+          initialPosition={{ x: 20, y: 60 }}
+          className={styles.Folder}
+          onDoubleClick={handleFolderOpen}
+          doubleClickDelay={300}
+        >
+          <img src={antiVirus} alt="" className={styles.FolderImage} />
+        </Draggable>
+      </Modal>
+
+      {/* Modal */}
+      <Modal
+        isOpen={openSeriFolder}
+        onClose={() => setOpenSeriFolder(false)}
+        title="rakhsh/home/desktop/seri"
+        fitContentSize
+        modalContentClassName={styles.PasswordInputContainer}
+      >
+        <PasswordInput
+          ref={passwordInputRef}
+          length={4}
+          onChange={setPassword}
+          isDark
+        />
+      </Modal>
+    </>
+  );
+};
+
+export const Khan2 = (props: PageProps) => {
+  const texts = [
+    "یه چیزایی یادمه...اون...همون دیگه...",
+    "درست یادم نمیاد...شاید حافظمو ...حافظمو...",
+  ];
+
+  const [storyIsEnded, setStoryIsEnded] = useState(false);
 
   return (
     <div className={styles.Page}>
@@ -78,47 +170,7 @@ export const Khan2 = (props: PageProps) => {
         )}
       </div>
 
-      <Draggable
-        initialPosition={{ x: 20, y: 20 }}
-        className={styles.Folder}
-        onDoubleClick={handleFolderClick}
-        doubleClickDelay={300}
-      >
-        {(animationPhase === "ice" || animationPhase === "breaking") && (
-          <img
-            src={folderIce}
-            className={clsx(
-              styles.FolderImage,
-              animationPhase === "breaking" && styles.IceBreaking
-            )}
-          />
-        )}
-        {animationPhase === "folder" && (
-          <img
-            src={folder}
-            className={clsx(styles.FolderImage, {
-              [styles.FolderAppearing]: isAnimating,
-            })}
-          />
-        )}
-      </Draggable>
-
-      <Modal
-        isOpen={openFolder}
-        onClose={() => setOpenFolder(false)}
-        onMinimize={() => {}}
-        onFullscreen={() => {}}
-        title="rakhsh/home/desktop/anti-virus"
-      >
-        <Draggable
-          initialPosition={{ x: 20, y: 60 }}
-          className={styles.Folder}
-          onDoubleClick={handleFolderClick}
-          doubleClickDelay={300}
-        >
-          <img src={antiVirus} alt="" className={styles.FolderImage} />
-        </Draggable>
-      </Modal>
+      <Folders storyIsEnded={storyIsEnded} />
     </div>
   );
 };

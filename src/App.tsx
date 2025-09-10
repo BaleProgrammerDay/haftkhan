@@ -2,16 +2,30 @@ import { useState } from "react";
 import { Khan1 } from "./pages/khan-1/Khan1";
 
 import { Khan2 } from "./pages/khan-2/Khan2";
+import styles from "./App.module.scss";
+import { useNotification } from "./context/Notification";
 
 function App() {
-    const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1);
 
-    return (
-        <>
-            {step === 1 && <Khan1 setStep={setStep} />}
-            {step === 2 && <Khan2 setStep={setStep} />}
-        </>
-    );
+  const { notificationText, setNotificationText } = useNotification();
+
+  const handleCloseNotification = () => {
+    setNotificationText("");
+  };
+
+  return (
+    <>
+      {step === 1 && <Khan1 setStep={setStep} />}
+      {step === 2 && <Khan2 setStep={setStep} />}
+
+      {notificationText && (
+        <div className={styles.Notification} onClick={handleCloseNotification}>
+          <p>{notificationText}</p>
+        </div>
+      )}
+    </>
+  );
 }
 
 export default App;

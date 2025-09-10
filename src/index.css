@@ -3,57 +3,62 @@
 @import "./palette.css";
 
 @font-face {
-    font-family: sorena;
-    src: url("/Sorena-Pixel.woff2");
+  font-family: sorena;
+  src: url("/Sorena-Pixel.woff2");
 }
 
 @font-face {
-    font-family: "Yekan Bakh";
-    src: url("/fonts/YekanBakh-Light.woff");
-    font-weight: 300;
+  font-family: "Yekan Bakh";
+  src: url("/fonts/YekanBakh-Light.woff");
+  font-weight: 300;
 }
 @font-face {
-    font-family: "Yekan Bakh";
-    src: url("/fonts/YekanBakh-Regular.woff");
-    font-weight: 400;
-}
-
-@font-face {
-    font-family: "Yekan Bakh";
-    src: url("/fonts/YekanBakh-SemiBold.woff");
-    font-weight: 500;
+  font-family: "Yekan Bakh";
+  src: url("/fonts/YekanBakh-Regular.woff");
+  font-weight: 400;
 }
 
 @font-face {
-    font-family: "Yekan Bakh";
-    src: url("/fonts/YekanBakh-Bold.woff");
-    font-weight: 700;
+  font-family: "Yekan Bakh";
+  src: url("/fonts/YekanBakh-SemiBold.woff");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Yekan Bakh";
+  src: url("/fonts/YekanBakh-Bold.woff");
+  font-weight: 700;
 }
 
 body {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
-    font-family: "Yekan Bakh";
+  font-family: "Yekan Bakh";
 }
 
 /* Custom scrollbar for better appearance */
 ::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--color-neutrals-n-20, #f1f1f1);
+  background: var(--color-neutrals-n-20, #f1f1f1);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--color-neutrals-n-50, #c1c1c1);
-    border-radius: 3px;
+  background: var(--color-neutrals-n-50, #c1c1c1);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-neutrals-n-100, #a8a8a8);
+  background: var(--color-neutrals-n-100, #a8a8a8);
 }
 
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}

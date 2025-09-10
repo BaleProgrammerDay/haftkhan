@@ -1,0 +1,24 @@
+@keyframes slide-up {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.Notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--color-neutrals-surface);
+  color: var(--color-neutrals-on-app-bar);
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  animation: slide-up 0.3s ease;
+}
+

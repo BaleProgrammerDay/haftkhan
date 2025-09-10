@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import styles from "./Modal.module.scss";
 import clsx from "clsx";
+import { useNotification } from "~/context/Notification";
 
 interface ModalProps {
   isOpen: boolean;
@@ -11,6 +12,8 @@ interface ModalProps {
   showActionBar?: boolean;
   onMinimize?: () => void;
   onFullscreen?: () => void;
+  fitContentSize?: boolean;
+  modalContentClassName?: string;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -22,12 +25,36 @@ export const Modal: React.FC<ModalProps> = ({
   showActionBar = true,
   onMinimize,
   onFullscreen,
+  fitContentSize = false,
+  modalContentClassName = "",
 }) => {
   if (!isOpen) return null;
 
+  const { setNotificationText } = useNotification();
+
+  const handleMinimize = () => {
+    if (onMinimize) {
+      onMinimize();
+    } else {
+      setNotificationText("دنبال چی شما آقای فردوسی پوررررر");
+    }
+  };
+
+  const handleFullscreen = () => {
+    if (onFullscreen) {
+      onFullscreen();
+    } else {
+      handleMinimize();
+    }
+  };
+
   return (
     <div className={styles.Modal}>
-      <div className={clsx(styles.ModalContainer, className)}>
+      <div
+        className={clsx(styles.ModalContainer, className, {
+          [styles.FitContentSize]: fitContentSize,
+        })}
+      >
         {showActionBar && (
           <div className={styles.ModalHeader}>
             <div className={styles.ActionBar}>
@@ -35,24 +62,23 @@ export const Modal: React.FC<ModalProps> = ({
                 className={clsx(styles.ActionBarItem, styles.CloseButton)}
                 onClick={onClose}
               />
-              {onMinimize && (
-                <div
-                  className={clsx(styles.ActionBarItem, styles.MinimizeButton)}
-                  onClick={onMinimize}
-                />
-              )}
-              {onFullscreen && (
-                <div
-                  className={clsx(styles.ActionBarItem, styles.FullscreenButton)}
-                  onClick={onFullscreen}
-                />
-              )}
+              <div
+                className={clsx(styles.ActionBarItem, styles.MinimizeButton)}
+                onClick={handleMinimize}
+              />
+              <div
+                className={clsx(styles.ActionBarItem, styles.FullscreenButton)}
+                onClick={handleFullscreen}
+              />
             </div>
             {title && <div className={styles.ModalTitle}>{title}</div>}
           </div>
         )}
-        <div className={styles.ModalContent}>{children}</div>
+        <div className={clsx(styles.ModalContent, modalContentClassName)}>
+          {children}
+        </div>
       </div>
     </div>
   );
 };
+
