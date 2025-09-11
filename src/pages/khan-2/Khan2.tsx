@@ -66,7 +66,7 @@ export const Khan2 = (_props: PageProps) => {
         )}
       </div>
 
-      <Folders storyIsEnded={storyIsEnded} />
+      <Folders />
 
       <Scratch />
     </div>
