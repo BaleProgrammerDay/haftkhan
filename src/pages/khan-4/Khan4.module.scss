@@ -1,0 +1,144 @@
+.Video {
+  width: 480px;
+  height: 480px;
+  object-fit: cover;
+}
+
+.VideoContainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+}
+
+.LuijiBubble {
+  display: flex;
+  flex-wrap: wrap;
+  width: 400px;
+  height: 200px;
+
+  padding: 10px;
+
+  border: 1px solid red;
+
+  position: absolute;
+  top: 0;
+  right: -250px;
+}
+
+.UserBubble {
+  display: flex;
+  flex-wrap: wrap;
+  width: 400px;
+  height: 200px;
+
+  padding: 10px;
+
+  border: 1px solid blue;
+
+  margin-inline-start: 40px;
+  margin-block-start: 40px;
+}
+
+.UserInputContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.UserInput {
+  flex: 1;
+  background: transparent;
+  border: 2px solid #4a9eff;
+  border-radius: 15px;
+  padding: 8px 12px;
+  color: white;
+  font-size: 16px;
+  font-family: 'YekanBakh', sans-serif;
+  text-align: right;
+  direction: rtl;
+  outline: none;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  &:focus {
+    border-color: #5aaeff;
+    box-shadow: 0 0 10px rgba(74, 158, 255, 0.3);
+  }
+}
+
+.SendButton {
+  background: linear-gradient(135deg, #4a9eff, #0066cc);
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 15px;
+  font-size: 14px;
+  font-family: 'YekanBakh', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #5aaeff, #0077dd);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+.Khan4Page {
+  direction: rtl;
+  flex-direction: column;
+}
+
+.InputContainer {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 100%;
+  max-width: 500px;
+  padding: 0 20px;
+}
+
+.StartButtonContainer {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.StartButton {
+  background: linear-gradient(135deg, #4a9eff, #0066cc);
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-family: 'YekanBakh', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(74, 158, 255, 0.3);
+
+  &:hover {
+    background: linear-gradient(135deg, #5aaeff, #0077dd);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+

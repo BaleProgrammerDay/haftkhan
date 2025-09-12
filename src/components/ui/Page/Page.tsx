@@ -1,8 +1,10 @@
 import styles from "./Page.module.scss";
 import { FC } from "react";
+import clsx from "clsx";
 
 export interface PageProps {
   children: React.ReactNode;
+  className?: string;
 }
 
 export interface PageContentProps {
@@ -10,7 +12,9 @@ export interface PageContentProps {
 }
 
 export const Page: FC<PageProps> = (props) => {
-  return <div className={styles.Page}>{props.children}</div>;
+  return (
+    <div className={clsx(styles.Page, props.className)}>{props.children}</div>
+  );
 };
 
 export const PageContent: FC<PageContentProps> = (props) => {

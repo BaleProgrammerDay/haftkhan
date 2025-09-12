@@ -9,3 +9,6 @@ export {
 } from "./textDirection";
 
 export { detectCollision } from "./colision";
+
+// Typing speed utilities
+export { calculateTypingSpeed } from "./typingSpeed";
