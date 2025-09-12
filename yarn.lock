@@ -1777,6 +1777,11 @@ normalize-range@^0.1.2:
   resolved "https://registry.yarnpkg.com/normalize-range/-/normalize-range-0.1.2.tgz#2d10c06bdfd312ea9777695a4d28439456b75942"
   integrity sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==
 
+openai@^5.20.1:
+  version "5.20.1"
+  resolved "https://registry.yarnpkg.com/openai/-/openai-5.20.1.tgz#ec9fae4c249de3b15bd908b9df0afff69981ba0a"
+  integrity sha512-UndCB0R5V3iB9I98NyF69zNP6YfwU4+Fjk0eW4HhooTm+Awlpm/MGjJTwJsyNV/qkH1NJi0GG+9odwukGTqExQ==
+
 optionator@^0.9.3:
   version "0.9.4"
   resolved "https://registry.yarnpkg.com/optionator/-/optionator-0.9.4.tgz#7ea1c1a5d91d764fb282139c88fe11e182a3a734"

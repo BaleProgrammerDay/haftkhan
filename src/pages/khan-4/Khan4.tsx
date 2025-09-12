@@ -11,37 +11,40 @@ import { TypedText } from "~/components/TypingText/TypingText";
 import { Send } from "./Send";
 
 const initialConversation = [
-  {
-    role: "luigi",
-    message:
-      "نگران نباش! گویدو اینجاست که کمکت کنه!\nزودتعمیر میشی و آماده حرکت میشی",
-  },
-  { role: "user", message: "کو پس نیم ساعته منتظرم..." },
-  {
-    role: "luigi",
-    message:
-      "باور کن گویدو هر کاری از دستش بر بیاد انجام میده، فقط بهم اعتماد کن.",
-  },
-  { role: "user", message: "دروغ نگو" },
+  // {
+  //   role: "luigi",
+  //   message:
+  //     "نگران نباش! گویدو اینجاست که کمکت کنه!\nزودتعمیر میشی و آماده حرکت میشی",
+  // },
+  // { role: "user", message: "کو پس نیم ساعته منتظرم..." },
+  // {
+  //   role: "luigi",
+  //   message:
+  //     "باور کن گویدو هر کاری از دستش بر بیاد انجام میده، فقط بهم اعتماد کن.",
+  // },
+  // { role: "user", message: "دروغ نگو" },
   { role: "luigi", message: "دروغ چیه الاغ(اسب)، برو خان ۴ رو بخون" },
 ];
 
 export const Khan4 = () => {
   const [video, setVideo] = useState<
     "azhdar" | "luiji" | "remembering" | "cant_remembering"
-  >("remembering");
+  >("luiji");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const horseText = "نمیفهمم هنوزم چرا چیزی یادم نمیاد...";
 
   const [currentDialogIndex, setCurrentDialogIndex] = useState(0);
   const [showInitialConversation, setShowInitialConversation] = useState(true);
   const [lastUserMessage, setLastUserMessage] = useState<string>("");
+  const [isLuigiTypingComplete, setIsLuigiTypingComplete] = useState(false);
 
   // Character limit configuration
   const CHARACTER_LIMIT = 128;
 
   // Use the conversation hook (start with empty message since we handle initial conversation)
-  const conversation = useConversation("");
+  const conversation = useConversation("", () => {
+    setIsLuigiTypingComplete(false); // Reset to false when new message arrives so typing can start
+  });
 
   // Auto-resize textarea hook
   const { textareaRef, handleInput, handleKeyDown, resetHeight } =
@@ -54,23 +57,23 @@ export const Khan4 = () => {
   // Initialize input with last sent message (only on first load, not after sending)
   // Removed this useEffect as it was causing infinite loops
 
-  useEffect(() => {
-    timerRef.current = setTimeout(() => {
-      setVideo("azhdar");
-      timerRef.current = setTimeout(() => {
-        setVideo("cant_remembering");
-        timerRef.current = setTimeout(() => {
-          setVideo("luiji");
-        }, 9000);
-      }, 7000);
-    }, 8000);
+  // useEffect(() => {
+  //   timerRef.current = setTimeout(() => {
+  //     setVideo("azhdar");
+  //     timerRef.current = setTimeout(() => {
+  //       setVideo("cant_remembering");
+  //       timerRef.current = setTimeout(() => {
+  //         setVideo("luiji");
+  //       }, 9000);
+  //     }, 7000);
+  //   }, 8000);
 
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
+  //   return () => {
+  //     if (timerRef.current) {
+  //       clearTimeout(timerRef.current);
+  //     }
+  //   };
+  // }, []);
 
   const videoContent = () => {
     switch (video) {
@@ -121,6 +124,7 @@ export const Khan4 = () => {
     // When Luigi finishes talking, stop typing and allow user to input
     conversation.finishLuigiTyping();
     conversation.setConversationPhase("user-input");
+    setIsLuigiTypingComplete(true); // Set to true when typing animation completes
   };
 
   const handleInitialDialogComplete = () => {
@@ -131,6 +135,7 @@ export const Khan4 = () => {
       // All initial conversation completed, show input
       setShowInitialConversation(false);
       conversation.setConversationPhase("user-input");
+      setIsLuigiTypingComplete(false); // Set to true when initial conversation completes
     }
   };
 
@@ -247,7 +252,7 @@ export const Khan4 = () => {
                   onComplete={handleLuigiTextComplete}
                   keepLastText={!conversation.isLuigiTyping}
                   waitingTime={500}
-                  storyIsEnded={false}
+                  storyIsEnded={isLuigiTypingComplete}
                 />
               ) : null}
             </div>

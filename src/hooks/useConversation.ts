@@ -20,7 +20,7 @@ export interface ConversationState {
     | "conversation-flow";
 }
 
-export const useConversation = (initialLuigiMessage: string) => {
+export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded?: () => void) => {
   const [state, setState] = useState<ConversationState>({
     messages: [
       {
@@ -53,9 +53,14 @@ export const useConversation = (initialLuigiMessage: string) => {
         messages: [...prev.messages, newMessage],
       }));
 
+      // Call callback if it's a Luigi message
+      if (message.role === "luigi" && onLuigiMessageAdded) {
+        onLuigiMessageAdded();
+      }
+
       return newMessage;
     },
-    []
+    [onLuigiMessageAdded]
   );
 
   const setUserInput = useCallback((input: string) => {
@@ -88,7 +93,7 @@ export const useConversation = (initialLuigiMessage: string) => {
 
   const sendUserMessage = useCallback(async () => {
     const currentState = stateRef.current;
-    
+
     if (!currentState.currentUserInput.trim()) {
       return;
     }
@@ -114,18 +119,18 @@ export const useConversation = (initialLuigiMessage: string) => {
 
     // Continue with API call after state update
     try {
-      // Prepare conversation history for API
-      const conversationHistory = currentState.messages.map((msg) => ({
-        role: msg.role,
-        message: msg.message,
-      }));
+      // Only send the last message to the model as requested
+      const openAIMessages = [
+        {
+          role: "user" as const,
+          content: userMessage,
+        },
+      ];
 
       // Get Luigi's response
-      const response = await API.getLuigiResponse(
-        userMessage,
-        conversationHistory
-      );
+      const response = await API.getLuigiResponse(userMessage, openAIMessages);
 
+      console.log("response", response);
       // Add Luigi's response
       addMessage({
         role: "luigi",
@@ -170,7 +175,6 @@ export const useConversation = (initialLuigiMessage: string) => {
       currentUserInput: "",
     }));
   }, []);
-
 
   return {
     ...state,
