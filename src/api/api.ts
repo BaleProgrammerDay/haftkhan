@@ -26,7 +26,12 @@ You are Luigi, a cheerful and chatty mechanic who pretends to be innocent but is
 export const API = {
   login: async (username: string, password: string) => {
     // Keep the old login function for compatibility
-    return { success: true, message: "Login successful" };
+    console.log(password, username)
+    if (username === "منابع انسانی" && password === "تیم خفن هست") {
+      return { success: true, message: "Login successful" };
+    } else {
+      return { success: false, message: "Login failed" };
+    }
   },
 
   getLuigiResponse: async (
