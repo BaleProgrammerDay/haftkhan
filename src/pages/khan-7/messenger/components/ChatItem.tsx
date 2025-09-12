@@ -1,5 +1,6 @@
 import React from "react";
-import { Chat } from "../types/Chat";
+import { Chat, ChatState } from "../types/Chat";
+import clsx from "clsx";
 
 interface ChatItemProps {
     chat: Chat;
@@ -24,7 +25,6 @@ function ChatItem({ chat, isSelected, onClick }: ChatItemProps) {
                     : "transparent",
                 borderRightWidth: isSelected ? "4px" : "0px",
                 borderRightStyle: "solid",
-                ":hover": { backgroundColor: "var(--color-neutrals-n-20)" },
             }}
         >
             <div className="flex items-center gap-3">
@@ -36,13 +36,13 @@ function ChatItem({ chat, isSelected, onClick }: ChatItemProps) {
                         className="w-12 h-12 rounded-full object-cover"
                     />
                     {/* Online indicator */}
-                    <div
-                        className="absolute bottom-0 left-0 w-3 h-3 border-2 rounded-full"
+                    {<div
+                        className={clsx("absolute bottom-0 left-0 w-3 h-3 border-2 rounded-full")}
                         style={{
-                            backgroundColor: "var(--color-success)",
+                            backgroundColor: chat.state === ChatState.ACTIVE ? "var(--color-success)" : "var(--color-error)",
                             borderColor: "var(--color-neutrals-surface)",
                         }}
-                    ></div>
+                    />}
                 </div>
 
                 {/* Chat Info */}

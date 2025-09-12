@@ -3,6 +3,10 @@ import Rostam from "../characters/Rostam";
 import Door from "../objects/Door";
 import Box from "../objects/Box";
 import { EventBus } from "../EventBus";
+import { store } from "~/store/store";
+import { addMessage } from "~/store/chat/chat.slice";
+import { Chats } from "../../messenger/types/Chat";
+import { powerOutage } from "../scenarios/powerOutage";
 
 export class TeamPlayer extends Scene {
     rostam: Rostam;
@@ -16,6 +20,9 @@ export class TeamPlayer extends Scene {
 
     onEnterDoor(player: any, door: any) {
         door.isActivate = true;
+    }
+    onExitDoor(player: any, door: any) {
+        door.isActivate = false;
     }
 
     changeScene(scene: string) {
@@ -95,11 +102,6 @@ export class TeamPlayer extends Scene {
 
         this.rostam = new Rostam(this, 250, height, "rostam");
         this.cursors = this.input.keyboard!.createCursorKeys();
-        this.doors.forEach((door) => {
-            this.physics.add.overlap(this.rostam, door, this.onEnterDoor);
-            this.physics.add.overlap(this.box, door, this.onEnterDoor);
-            this.physics.add.overlap(this.box2, door, this.onEnterDoor);
-        });
         this.physics.add.collider(this.rostam, this.box);
         this.physics.add.collider(this.rostam, this.box2);
         this.physics.add.collider(this.rostam, this.transparentPlatform);
@@ -111,17 +113,28 @@ export class TeamPlayer extends Scene {
     update() {
         this.allActivated = true;
         this.doors.forEach((door) => {
-            if (door.isActivate) {
+            if (this.physics.overlap(this.rostam, door) ||
+                this.physics.overlap(this.box, door) ||
+                this.physics.overlap(this.box2, door)) {
+                door.isActivate = true;
                 door.setTint(0x00ff00);
-                door.isActivate = false;
             } else {
+                door.isActivate = false;
                 this.allActivated = false;
                 door.setTint(0xffffff);
             }
         });
         if (this.allActivated && !this.messageIsSent) {
-            window.dispatchEvent(new Event("allDoorsActivated"));
+            // window.dispatchEvent(new Event("allDoorsActivated"));
+            store.dispatch(addMessage({chatId: Chats.TeamPlayer, message: {
+                    text: "تو استخدامی!",
+                    sender: "other",
+                    time: new Date().toLocaleTimeString(),
+            }}))
             this.messageIsSent = true;
+            setTimeout(() => {
+                powerOutage()
+            }, 1000);
         }
         this.rostam.handleInput(this.cursors);
     }

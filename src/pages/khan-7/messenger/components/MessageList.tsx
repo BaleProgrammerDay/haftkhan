@@ -1,32 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import { Message } from "../types/Chat";
 import MessageBubble from "./MessageBubble";
 import { IRefPhaserGame, PhaserGame } from "../../PhaserGame";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "~/store/store";
+import {  deleteMessage } from "~/store/chat/chat.slice";
+import { Chats } from "../types/Chat";
 
 interface MessageListProps {
     chatId: string;
     phaserRef: React.RefObject<IRefPhaserGame | null>;
 }
 
-// Sample messages for demonstration
-const initialMessages: Record<string, Message[]> = {
-    TeamPlayer: [
-        { id: "1", text: "سلام", sender: "other", time: "14:20" },
-        { id: "2", text: "سلام", sender: "me", time: "14:21" },
-        {
-            id: "3",
-            text: "سه ویژگی بازیکن تیمی ایده آل رو داری؟",
-            sender: "other",
-            time: "14:22",
-        },
-    ],
-    RakhshChat: [{ id: "1", text: "سلام", sender: "other", time: "9:19" }],
-};
 
 function MessageList({ chatId, phaserRef }: MessageListProps) {
-    const [messages, setMessages] = useState<Message[]>(
-        initialMessages[chatId] || []
-    );
+    const dispatch = useDispatch();
+    const messages = useSelector((state: RootState) => state.chat.list[chatId as Chats].messages || []);
 
     // Event emitted from the PhaserGame component
     const currentScene = (scene: Phaser.Scene) => {
@@ -34,26 +21,8 @@ function MessageList({ chatId, phaserRef }: MessageListProps) {
         console.log("Current scene:", scene.scene.key);
     };
     const handleDelete = (id: string) => {
-        setMessages((msgs) => msgs.filter((msg) => msg.id !== id));
+       dispatch(deleteMessage({ chatId: chatId as Chats, messageId: id }));
     };
-
-    useEffect(() => {
-        window.addEventListener("allDoorsActivated", () => {
-            setMessages((msgs) => [
-                ...msgs,
-                {
-                    id: Date.now().toString(),
-                    text: "تو استخدامی!",
-                    sender: "other",
-                    time: new Date().toLocaleTimeString(),
-                },
-            ]);
-        });
-    }, []);
-
-    useEffect(() => {
-        setMessages(initialMessages[chatId]);
-    }, [chatId]);
 
     return (
         <div

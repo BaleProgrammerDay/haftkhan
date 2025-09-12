@@ -1,12 +1,13 @@
-import { Chat } from "../types/Chat";
+import { Chats, ChatsList } from "../types/Chat";
 import ChatItem from "./ChatItem";
 import Search from "./icons/Search";
 import PixelLogo from "./PixelLogo";
+import { Chat } from "../types/Chat";
 
 interface ChatSidebarProps {
-    chats: Chat[];
+    chats: ChatsList;
     selectedChat: Chat;
-    onSelectChat: (chat: Chat) => void;
+    onSelectChat: (chat: Chats) => void;
 }
 
 function ChatSidebar({ chats, selectedChat, onSelectChat }: ChatSidebarProps) {
@@ -54,12 +55,14 @@ function ChatSidebar({ chats, selectedChat, onSelectChat }: ChatSidebarProps) {
 
             {/* Chat List */}
             <div className="flex-1 overflow-y-auto">
-                {chats.map((chat) => (
+                {Object.values(chats).sort((a, b) => {
+                    return Number(b.time.split(":")[0]) - Number(a.time.split(":")[0]) + Number(b.time.split(":")[1]) - Number(a.time.split(":")[1]);
+                }).map((chat) => (
                     <ChatItem
                         key={chat.id}
                         chat={chat}
                         isSelected={selectedChat.id === chat.id}
-                        onClick={() => onSelectChat(chat)}
+                        onClick={() => onSelectChat(chat.id)}
                     />
                 ))}
             </div>

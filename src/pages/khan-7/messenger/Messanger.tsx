@@ -2,33 +2,21 @@ import { useState, useEffect, useRef } from "react";
 import ChatSidebar from "./components/ChatSidebar";
 import ChatArea from "./components/ChatArea";
 import ThemeToggle from "../../../components/ThemeToggle";
-import { Chat } from "./types/Chat";
 import { IRefPhaserGame } from "../PhaserGame";
-
-const sampleChats: Chat[] = [
-  {
-    id: "TeamPlayer",
-    name: "پاتریک لنچونی",
-    lastMessage: "سلام",
-    time: "14:30",
-    avatar: "/assets/patrick_avatar.png",
-    unreadCount: 0,
-  },
-  {
-    id: "RakhshChat",
-    name: "رخش",
-    lastMessage: "سلام",
-    time: "9:20",
-    avatar: "/assets/rakhsh_avatar.jpg",
-    unreadCount: 1,
-  },
-];
+import { Chats } from "./types/Chat";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "~/store/store";
+import PowerControl from "./components/PowerControl";
+import { setCurrentChat } from "~/store/chat/chat.slice";
 
 function Messanger() {
   // References to the PhaserGame component (game and scene are exposed)
   const phaserRef = useRef<IRefPhaserGame | null>(null);
-
-  const [selectedChat, setSelectedChat] = useState<Chat>(sampleChats[0]);
+  
+  const dispatch = useDispatch();
+  const chats = useSelector((state: RootState) => state.chat.list)
+  const selectedChatIndex = useSelector((state: RootState) => state.chat.current)
+  const selectedChat = useSelector((state: RootState) => state.chat.list[selectedChatIndex])
 
   useEffect(() => {
     // Initialize theme from localStorage
@@ -36,17 +24,18 @@ function Messanger() {
     document.documentElement.setAttribute("data-theme", savedTheme);
   }, []);
 
-  const handleSelectChat = (chat: Chat) => {
-    setSelectedChat(chat);
+
+  const handleSelectChat = (id: Chats) => {
+    dispatch(setCurrentChat(id));
     setTimeout(() => {
       //@ts-ignore
-      phaserRef.current?.scene?.changeScene(chat.id);
+      phaserRef.current?.scene?.changeScene(id);
     }, 100);
   };
 
   return (
     <div
-      className="h-screen flex items-center justify-center"
+      className="h-screen flex items-center justify-center relative"
       style={{
         backgroundColor: "var(--color-neutrals-n-20)",
       }}
@@ -63,7 +52,7 @@ function Messanger() {
 
         {/* Chat Sidebar - Right side in RTL */}
         <ChatSidebar
-          chats={sampleChats}
+          chats={chats}
           selectedChat={selectedChat}
           onSelectChat={handleSelectChat}
         />
@@ -71,6 +60,8 @@ function Messanger() {
         {/* Chat Area - Left side in RTL */}
         <ChatArea selectedChat={selectedChat} phaserRef={phaserRef} />
       </div>
+
+      <PowerControl />
     </div>
   );
 }
