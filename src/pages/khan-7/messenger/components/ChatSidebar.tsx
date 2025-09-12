@@ -55,8 +55,8 @@ function ChatSidebar({ chats, selectedChat, onSelectChat }: ChatSidebarProps) {
 
             {/* Chat List */}
             <div className="flex-1 overflow-y-auto">
-                {Object.values(chats).sort((a, b) => {
-                    return Number(b.time.split(":")[0]) - Number(a.time.split(":")[0]) + Number(b.time.split(":")[1]) - Number(a.time.split(":")[1]);
+                {Object.values(chats).filter((chat) => chat.messages.length > 0).sort((a, b) => {
+                    return b.messages[b.messages.length - 1].time - a.messages[a.messages.length - 1].time;
                 }).map((chat) => (
                     <ChatItem
                         key={chat.id}

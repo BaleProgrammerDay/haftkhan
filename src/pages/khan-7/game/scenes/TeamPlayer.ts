@@ -90,22 +90,33 @@ export class TeamPlayer extends Scene {
         }
 
         this.box = new Box(this, 400, height, "box");
-        const platformChild =
-            this.transparentPlatform.getChildren()[0] as Phaser.GameObjects.Rectangle;
+        
+        // Only create box2 if transparentPlatform exists
+        if (this.transparentPlatform && this.transparentPlatform.getChildren().length > 0) {
+            const platformChild =
+                this.transparentPlatform.getChildren()[0] as Phaser.GameObjects.Rectangle;
 
-        this.box2 = new Box(
-            this,
-            100,
-            platformChild.y - platformChild.height,
-            "box"
-        );
+            this.box2 = new Box(
+                this,
+                100,
+                platformChild.y - platformChild.height,
+                "box"
+            );
+        } else {
+            // Fallback position if transparentPlatform doesn't exist
+            this.box2 = new Box(this, 100, height - 200, "box");
+        }
 
         this.rostam = new Rostam(this, 250, height, "rostam");
         this.cursors = this.input.keyboard!.createCursorKeys();
         this.physics.add.collider(this.rostam, this.box);
         this.physics.add.collider(this.rostam, this.box2);
-        this.physics.add.collider(this.rostam, this.transparentPlatform);
-        this.physics.add.collider(this.box2, this.transparentPlatform);
+        
+        // Only add colliders if transparentPlatform exists
+        if (this.transparentPlatform) {
+            this.physics.add.collider(this.rostam, this.transparentPlatform);
+            this.physics.add.collider(this.box2, this.transparentPlatform);
+        }
 
         EventBus.emit("current-scene-ready", this);
     }
@@ -129,7 +140,6 @@ export class TeamPlayer extends Scene {
             store.dispatch(addMessage({chatId: Chats.TeamPlayer, message: {
                     text: "تو استخدامی!",
                     sender: "other",
-                    time: new Date().toLocaleTimeString(),
             }}))
             this.messageIsSent = true;
             setTimeout(() => {

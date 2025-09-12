@@ -15,16 +15,17 @@ const chatSlice = createSlice({
 		const { chatId, messageId } = action.payload;
 		state.list[chatId].messages = state.list[chatId].messages.filter(msg => msg.id !== messageId);
 	},
-	addMessage(state, action: PayloadAction<{ chatId: Chats; message: Omit<Message, 'id'> }>) {
+	addMessage(state, action: PayloadAction<{ chatId: Chats; message: Omit<Message, 'id' | 'time'> }>) {
 		const { chatId, message } = action.payload;
 		if (!state.list[chatId]) {
 			throw new Error(`Chat with id ${chatId} does not exist.`);
 		}
 		state.list[chatId].messages.push({
 			...message, 
+			time: new Date().getTime(),
 			id: Date.now().toString()
 		});
-		state.list[chatId].lastMessage = message.text;
+
 		if (state.current !== chatId) {
 			state.list[chatId].unreadCount += 1;
 		}
