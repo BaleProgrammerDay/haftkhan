@@ -3,7 +3,7 @@ import { API } from "~/api/api";
 
 export interface ConversationMessage {
   id: string;
-  role: "user" | "luigi";
+  role: "user" | "luigi" | "wizard";
   message: string;
   timestamp: number;
 }
@@ -11,16 +11,25 @@ export interface ConversationMessage {
 export interface ConversationState {
   messages: ConversationMessage[];
   isLuigiTyping: boolean;
+  isWizardTyping: boolean;
   isUserTyping: boolean;
   currentUserInput: string;
+  isWizardRevealed: boolean;
   conversationPhase:
     | "luigi-start"
     | "user-input"
     | "luigi-response"
+    | "wizard-transformation"
+    | "wizard-response"
     | "conversation-flow";
 }
 
-export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded?: () => void) => {
+export const useConversation = (
+  initialLuigiMessage: string, 
+  onLuigiMessageAdded?: () => void,
+  onWizardRevealed?: () => void,
+  onWizardDestroyed?: () => void
+) => {
   const [state, setState] = useState<ConversationState>({
     messages: [
       {
@@ -31,8 +40,10 @@ export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded
       },
     ],
     isLuigiTyping: true, // Luigi starts typing the initial message
+    isWizardTyping: false,
     isUserTyping: false,
     currentUserInput: "",
+    isWizardRevealed: false,
     conversationPhase: "luigi-start",
   });
 
@@ -57,6 +68,11 @@ export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded
       if (message.role === "luigi" && onLuigiMessageAdded) {
         onLuigiMessageAdded();
       }
+      
+      // Call callback if it's a wizard message  
+      if (message.role === "wizard" && onLuigiMessageAdded) {
+        onLuigiMessageAdded(); // Reuse the same callback for simplicity
+      }
 
       return newMessage;
     },
@@ -71,11 +87,12 @@ export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded
   }, []);
 
   const setTypingState = useCallback(
-    (isLuigiTyping: boolean, isUserTyping: boolean) => {
+    (isLuigiTyping: boolean, isUserTyping: boolean, isWizardTyping?: boolean) => {
       setState((prev) => ({
         ...prev,
         isLuigiTyping,
         isUserTyping,
+        isWizardTyping: isWizardTyping ?? prev.isWizardTyping,
       }));
     },
     []
@@ -91,6 +108,57 @@ export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded
     []
   );
 
+  const checkForWizardPhrase = useCallback((message: string) => {
+    const wizardPhrase = "یا ایزد منان";
+    return message.includes(wizardPhrase);
+  }, []);
+
+  const checkForWizardAttackPhrase = useCallback((message: string) => {
+    const attackPhrase = "میانش به خنجر به دو نیم کرد";
+    return message.includes(attackPhrase);
+  }, []);
+
+  const revealWizard = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      isWizardRevealed: true,
+      conversationPhase: "wizard-transformation",
+      isLuigiTyping: false,
+      isWizardTyping: true,
+    }));
+    
+    // Add wizard transformation message
+    setTimeout(() => {
+      addMessage({
+        role: "wizard",
+        message: "آه! کشف شدم! من جادوگر هستم، نه لوئیجی! حالا با من صحبت کن، جوان!",
+      });
+    }, 1000);
+    
+    if (onWizardRevealed) {
+      onWizardRevealed();
+    }
+  }, [addMessage, onWizardRevealed]);
+
+  const destroyWizard = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      conversationPhase: "conversation-flow",
+      isWizardTyping: false,
+      isLuigiTyping: false,
+    }));
+    
+    // Add wizard destruction message
+    addMessage({
+      role: "wizard",
+      message: "آه! نه! ... (جادوگر با درد فرو می‌ریزد و ناپدید می‌شود)",
+    });
+    
+    if (onWizardDestroyed) {
+      onWizardDestroyed();
+    }
+  }, [addMessage, onWizardDestroyed]);
+
   const sendUserMessage = useCallback(async () => {
     const currentState = stateRef.current;
 
@@ -100,6 +168,46 @@ export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded
 
     const userMessage = currentState.currentUserInput.trim();
 
+    // Check if this message reveals the wizard
+    if (!currentState.isWizardRevealed && checkForWizardPhrase(userMessage)) {
+      // Add user message
+      addMessage({
+        role: "user",
+        message: userMessage,
+      });
+      
+      // Clear input
+      setState((prevState) => ({
+        ...prevState,
+        currentUserInput: "",
+        isUserTyping: false,
+      }));
+      
+      // Trigger wizard reveal
+      revealWizard();
+      return;
+    }
+
+    // Check if this message attacks the wizard
+    if (currentState.isWizardRevealed && checkForWizardAttackPhrase(userMessage)) {
+      // Add user message
+      addMessage({
+        role: "user",
+        message: userMessage,
+      });
+      
+      // Clear input
+      setState((prevState) => ({
+        ...prevState,
+        currentUserInput: "",
+        isUserTyping: false,
+      }));
+      
+      // Trigger wizard destruction
+      destroyWizard();
+      return;
+    }
+
     // Add user message
     addMessage({
       role: "user",
@@ -108,12 +216,14 @@ export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded
 
     // Clear input and set typing states immediately
     setState((prevState) => {
+      const isWizardMode = prevState.isWizardRevealed;
       return {
         ...prevState,
         currentUserInput: "",
         isUserTyping: false,
-        isLuigiTyping: true,
-        conversationPhase: "luigi-response" as const,
+        isLuigiTyping: !isWizardMode,
+        isWizardTyping: isWizardMode,
+        conversationPhase: isWizardMode ? "wizard-response" : "luigi-response",
       };
     });
 
@@ -127,22 +237,27 @@ export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded
         },
       ];
 
-      // Get Luigi's response
-      const response = await API.getLuigiResponse(userMessage, openAIMessages);
+      const isWizardMode = stateRef.current.isWizardRevealed;
+      
+      // Get appropriate response based on current mode
+      const response = isWizardMode 
+        ? await API.getWizardResponse(userMessage, openAIMessages)
+        : await API.getLuigiResponse(userMessage, openAIMessages);
 
       console.log("response", response);
-      // Add Luigi's response
+      // Add appropriate character's response
       addMessage({
-        role: "luigi",
+        role: isWizardMode ? "wizard" : "luigi",
         message:
           response.message || response.text || "Sorry, I could not respond.",
       });
     } catch (error) {
-      console.error("Failed to get Luigi response:", error);
-
+      console.error("Failed to get character response:", error);
+      
+      const isWizardMode = stateRef.current.isWizardRevealed;
       // Add fallback message
       addMessage({
-        role: "luigi",
+        role: isWizardMode ? "wizard" : "luigi",
         message: "Sorry, I had trouble responding. Please try again.",
       });
     }
@@ -154,6 +269,20 @@ export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded
       .pop();
     return lastLuigiMessage?.message || "";
   }, [state.messages]);
+  
+  const getCurrentWizardMessage = useCallback(() => {
+    const lastWizardMessage = state.messages
+      .filter((msg) => msg.role === "wizard")
+      .pop();
+    return lastWizardMessage?.message || "";
+  }, [state.messages]);
+  
+  const getCurrentCharacterMessage = useCallback(() => {
+    if (state.isWizardRevealed) {
+      return getCurrentWizardMessage();
+    }
+    return getCurrentLuigiMessage();
+  }, [state.isWizardRevealed, getCurrentWizardMessage, getCurrentLuigiMessage]);
 
   const getCurrentUserMessage = useCallback(() => {
     const lastUserMessage = state.messages
@@ -166,6 +295,21 @@ export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded
     setState((prev) => ({
       ...prev,
       isLuigiTyping: false,
+    }));
+  }, []);
+  
+  const finishWizardTyping = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      isWizardTyping: false,
+    }));
+  }, []);
+  
+  const finishCharacterTyping = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      isLuigiTyping: false,
+      isWizardTyping: false,
     }));
   }, []);
 
@@ -184,9 +328,17 @@ export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded
     setConversationPhase,
     sendUserMessage,
     getCurrentLuigiMessage,
+    getCurrentWizardMessage,
+    getCurrentCharacterMessage,
     getCurrentUserMessage,
     finishLuigiTyping,
+    finishWizardTyping,
+    finishCharacterTyping,
     clearUserInput,
+    revealWizard,
+    destroyWizard,
+    checkForWizardPhrase,
+    checkForWizardAttackPhrase,
   };
 };
 

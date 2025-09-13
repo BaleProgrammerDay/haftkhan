@@ -27,7 +27,7 @@ function App() {
           {step === 1 && <Khan1 setStep={setStep} />}
           {step === 2 && <Khan2 setStep={setStep} />}
           {step === 3 && <Khan3 setStep={setStep} />}
-          {step === 4 && <Khan4 />}
+          {step === 4 && <Khan4 setStep={setStep} />}
           {step === 7 && <Messanger />}
         </div>
         {notificationText && (

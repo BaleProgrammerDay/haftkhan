@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Page } from "~/components";
 import { PageContent } from "~/components/ui/Page/Page";
 import { calculateTypingSpeed } from "~/utils";
@@ -9,42 +9,73 @@ import styles from "./Khan4.module.scss";
 import { TypedText } from "~/components/TypingText/TypingText";
 
 import { Send } from "./Send";
+import { PageProps } from "~/types";
 
 const initialConversation = [
-  {
-    role: "luigi",
-    message:
-      "نگران نباش! گویدو اینجاست که کمکت کنه!\nزودتعمیر میشی و آماده حرکت میشی",
-  },
-  { role: "user", message: "کو پس نیم ساعته منتظرم..." },
-  {
-    role: "luigi",
-    message:
-      "باور کن گویدو هر کاری از دستش بر بیاد انجام میده، فقط بهم اعتماد کن.",
-  },
-  { role: "user", message: "دروغ نگو" },
+  // {
+  //   role: "luigi",
+  //   message:
+  //     "نگران نباش! گویدو اینجاست که کمکت کنه!\nزودتعمیر میشی و آماده حرکت میشی",
+  // },
+  // { role: "user", message: "کو پس نیم ساعته منتظرم..." },
+  // {
+  //   role: "luigi",
+  //   message:
+  //     "باور کن گویدو هر کاری از دستش بر بیاد انجام میده، فقط بهم اعتماد کن.",
+  // },
+  // { role: "user", message: "دروغ نگو" },
   { role: "luigi", message: "دروغ چیه الاغ(اسب)، برو خان ۴ رو بخون" },
 ];
 
-export const Khan4 = () => {
+export const Khan4 = ({ setStep }: PageProps) => {
   const [video, setVideo] = useState<
-    "luiji" | "remembering" | "cant_remembering"
-  >("remembering");
+    | "luiji"
+    | "remembering"
+    | "cant_remembering"
+    | "wizard_break"
+    | "wizard_idle"
+    | "transforming"
+  >("luiji");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const horseText = "نمیفهمم هنوزم چرا چیزی یادم نمیاد...";
 
   const [currentDialogIndex, setCurrentDialogIndex] = useState(0);
   const [showInitialConversation, setShowInitialConversation] = useState(true);
   const [lastUserMessage, setLastUserMessage] = useState<string>("");
-  const [isLuigiTypingComplete, setIsLuigiTypingComplete] = useState(false);
+  const [isCharacterTypingComplete, setIsCharacterTypingComplete] =
+    useState(false);
 
   // Character limit configuration
   const CHARACTER_LIMIT = 128;
 
+  // Handle wizard reveal with fade animation
+  const handleWizardRevealed = () => {
+    setVideo("transforming");
+
+    // After fade animation completes, show wizard
+    setTimeout(() => {
+      setVideo("wizard_idle");
+    }, 2000); // 2 second transformation
+  };
+
+  // Handle wizard destruction when attacked
+  const handleWizardDestruction = () => {
+    setVideo("wizard_break");
+    // After wizard destruction animation, move to step 6
+    setTimeout(() => {
+      setStep(6);
+    }, 5000); // Give time for wizard_break video to play
+  };
+
   // Use the conversation hook (start with empty message since we handle initial conversation)
-  const conversation = useConversation("", () => {
-    setIsLuigiTypingComplete(false); // Reset to false when new message arrives so typing can start
-  });
+  const conversation = useConversation(
+    "",
+    () => {
+      setIsCharacterTypingComplete(false); // Reset to false when new message arrives so typing can start
+    },
+    handleWizardRevealed,
+    handleWizardDestruction
+  );
 
   // Auto-resize textarea hook
   const { textareaRef, handleInput, handleKeyDown, resetHeight } =
@@ -57,20 +88,20 @@ export const Khan4 = () => {
   // Initialize input with last sent message (only on first load, not after sending)
   // Removed this useEffect as it was causing infinite loops
 
-  useEffect(() => {
-    timerRef.current = setTimeout(() => {
-      setVideo("cant_remembering");
-      timerRef.current = setTimeout(() => {
-        setVideo("luiji");
-      }, 9000);
-    }, 7000);
+  // useEffect(() => {
+  //   timerRef.current = setTimeout(() => {
+  //     setVideo("cant_remembering");
+  //     timerRef.current = setTimeout(() => {
+  //       setVideo("luiji");
+  //     }, 9000);
+  //   }, 7000);
 
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
+  //   return () => {
+  //     if (timerRef.current) {
+  //       clearTimeout(timerRef.current);
+  //     }
+  //   };
+  // }, []);
 
   const videoContent = () => {
     switch (video) {
@@ -104,14 +135,56 @@ export const Khan4 = () => {
             className={styles.Video}
           />
         );
+      case "transforming":
+        return (
+          <div className={styles.TransformationContainer}>
+            <video
+              src="/rakhsh_app/horse_states/guido.mp4"
+              autoPlay
+              loop
+              muted
+              className={`${styles.Video} ${styles.FadeOut}`}
+            />
+            <video
+              src="/rakhsh_app/horse_states/wizard_idle.mp4"
+              autoPlay
+              loop
+              muted
+              className={`${styles.Video} ${styles.FadeIn}`}
+            />
+          </div>
+        );
+      case "wizard_break":
+        return (
+          <video
+            src="/rakhsh_app/horse_states/wizard_break.mp4"
+            autoPlay
+            muted
+            className={styles.Video}
+            onEnded={() => {
+              // Only transition to wizard_idle if this is not a destruction
+              // (destruction will be handled by setStep(6) timeout)
+            }}
+          />
+        );
+      case "wizard_idle":
+        return (
+          <video
+            src="/rakhsh_app/horse_states/wizard_idle.mp4"
+            autoPlay
+            loop
+            muted
+            className={styles.Video}
+          />
+        );
     }
   };
 
-  const handleLuigiTextComplete = () => {
-    // When Luigi finishes talking, stop typing and allow user to input
-    conversation.finishLuigiTyping();
+  const handleCharacterTextComplete = () => {
+    // When character finishes talking, stop typing and allow user to input
+    conversation.finishCharacterTyping();
     conversation.setConversationPhase("user-input");
-    setIsLuigiTypingComplete(true); // Set to true when typing animation completes
+    setIsCharacterTypingComplete(true); // Set to true when typing animation completes
   };
 
   const handleInitialDialogComplete = () => {
@@ -122,7 +195,7 @@ export const Khan4 = () => {
       // All initial conversation completed, show input
       setShowInitialConversation(false);
       conversation.setConversationPhase("user-input");
-      setIsLuigiTypingComplete(false); // Set to true when initial conversation completes
+      setIsCharacterTypingComplete(false); // Set to true when initial conversation completes
     }
   };
 
@@ -164,7 +237,10 @@ export const Khan4 = () => {
       )}
 
       {/* User Message Display - Show initial conversation or input */}
-      {video === "luiji" && (
+      {(video === "luiji" ||
+        video === "wizard_idle" ||
+        video === "wizard_break" ||
+        video === "transforming") && (
         <div className={styles.UserBubble}>
           {showInitialConversation &&
           initialConversation[currentDialogIndex]?.role === "user" ? (
@@ -220,9 +296,18 @@ export const Khan4 = () => {
         <div className={styles.VideoContainer}>
           {videoContent()}
 
-          {/* Luigi Message Display */}
-          {video === "luiji" && (
-            <div className={styles.LuijiBubble}>
+          {/* Character Message Display (Luigi or Wizard) */}
+          {(video === "luiji" ||
+            video === "wizard_idle" ||
+            video === "wizard_break" ||
+            video === "transforming") && (
+            <div
+              className={
+                conversation.isWizardRevealed
+                  ? styles.WizardBubble
+                  : styles.LuijiBubble
+              }
+            >
               {showInitialConversation &&
               initialConversation[currentDialogIndex]?.role === "luigi" ? (
                 <TypedText
@@ -233,13 +318,15 @@ export const Khan4 = () => {
                   storyIsEnded={false}
                 />
               ) : !showInitialConversation &&
-                conversation.getCurrentLuigiMessage() ? (
+                conversation.getCurrentCharacterMessage() ? (
                 <TypedText
-                  text={conversation.getCurrentLuigiMessage()}
-                  onComplete={handleLuigiTextComplete}
-                  keepLastText={!conversation.isLuigiTyping}
+                  text={conversation.getCurrentCharacterMessage()}
+                  onComplete={handleCharacterTextComplete}
+                  keepLastText={
+                    !(conversation.isLuigiTyping || conversation.isWizardTyping)
+                  }
                   waitingTime={500}
-                  storyIsEnded={isLuigiTypingComplete}
+                  storyIsEnded={isCharacterTypingComplete}
                 />
               ) : null}
             </div>
