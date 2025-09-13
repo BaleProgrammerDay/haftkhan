@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "~/store/store";
 import PowerControl from "./components/PowerControl";
 import { setCurrentChat } from "~/store/chat/chat.slice";
+import { powerOutage } from "../game/scenarios/powerOutage";
 
 function Messanger() {
   // References to the PhaserGame component (game and scene are exposed)
@@ -26,6 +27,7 @@ function Messanger() {
 
 
   const handleSelectChat = (id: Chats) => {
+    console.log("!@!", id)
     dispatch(setCurrentChat(id));
     setTimeout(() => {
       //@ts-ignore

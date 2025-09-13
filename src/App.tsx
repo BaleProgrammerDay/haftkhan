@@ -9,9 +9,10 @@ import Messanger from "./pages/khan-7/messenger";
 import { store } from "./store/store";
 import { Provider } from "react-redux";
 import { Khan4 } from "./pages/khan-4/Khan4";
+import { getTextDirection } from "./utils";
 
 function App() {
-  const [step, setStep] = useState(4);
+  const [step, setStep] = useState(1);
   const [isKhan, setIsKhan] = useState(true);
 
   const { notificationText, setNotificationText } = useNotification();
@@ -38,7 +39,12 @@ function App() {
             className={styles.Notification}
             onClick={handleCloseNotification}
           >
-            <p>{notificationText}</p>
+            <pre
+              dir={getTextDirection(notificationText)}
+              className={styles.NotificationText}
+            >
+              {notificationText}
+            </pre>
           </div>
         )}
       </Provider>

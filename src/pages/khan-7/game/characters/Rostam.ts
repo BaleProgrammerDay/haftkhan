@@ -1,6 +1,7 @@
 import { Input, Physics, Scene, Types } from "phaser";
 
 export default class Rostam extends Physics.Arcade.Sprite {
+    
     constructor(scene: Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture);
         scene.add.existing(this);

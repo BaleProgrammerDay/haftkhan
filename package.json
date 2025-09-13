@@ -31,6 +31,7 @@
         "@tailwindcss/postcss": "^4.1.12",
         "@tailwindcss/vite": "^4.1.12",
         "lucide-react": "^0.542.0",
+        "openai": "^5.20.1",
         "phaser": "^3.90.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",

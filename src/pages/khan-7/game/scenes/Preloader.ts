@@ -1,5 +1,6 @@
 import { Scene } from "phaser";
 import { EventBus } from "../EventBus";
+import { Chats } from "../../messenger/types/Chat";
 
 export class Preloader extends Scene {
     constructor() {
@@ -51,12 +52,21 @@ export class Preloader extends Scene {
             frameWidth: 80,
             frameHeight: 64,
         });
+        this.load.spritesheet("lightning_particle", "particles/lightning.png", {
+            frameWidth: 32,
+            frameHeight: 22,
+        });
+
+        this.load.image("items/wrench", "items/wrench.png");
+        this.load.image("power_gen", "general/power_gen.png");
+        this.load.audio("recharge", "sounds/recharge.wav");
+        // this.load.image('keyboard-keys', '/keyboard-keys.png');
     }
 
     create() {
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
         //  For example, you can define global animations here, so we can use them in other scenes.
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        this.scene.start("TeamPlayer");
+        this.scene.start(Chats.TeamPlayer);
     }
 }

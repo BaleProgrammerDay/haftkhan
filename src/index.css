@@ -62,3 +62,8 @@ body {
   margin: 0;
   box-sizing: border-box;
 } */
+
+
+.flashlight_cursor, .flashlight_cursor * {
+  cursor: url("/cursors/flashlight.png"), auto;
+}

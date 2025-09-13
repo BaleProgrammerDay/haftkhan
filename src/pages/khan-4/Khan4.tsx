@@ -1,23 +1,29 @@
 import { useEffect, useRef, useState } from "react";
-import { Page, ConversationInput } from "~/components";
+import { Page } from "~/components";
 import { PageContent } from "~/components/ui/Page/Page";
 import { calculateTypingSpeed } from "~/utils";
 import { useConversation } from "~/hooks/useConversation";
+import { useAutoResizeTextarea } from "~/hooks/useAutoResizeTextarea";
 
 import styles from "./Khan4.module.scss";
-import {
-  ManualTypingText,
-  ManualTypingTextRef,
-  TypedText,
-  TypingText,
-} from "~/components/TypingText/TypingText";
+import { TypedText } from "~/components/TypingText/TypingText";
+
+import { Send } from "./Send";
 
 const initialConversation = [
-  { role: "luigi", message: "نگران نباش! گویدو اینجاست که کمکت کنه!\nزودتعمیر میشی و آماده حرکت میشی" },
-  { role: "user", message: "کو پس نیم ساعته منتظرم..." },
-  { role: "luigi", message: "باور کن گویدو هر کاری از دستش بر بیاد انجام میده، فقط بهم اعتماد کن." },
-  { role: "user", message: "دروغ نگو، به نام ایزد منان" },
-  { role: "luigi", message: "عهههههههه" }
+  // {
+  //   role: "luigi",
+  //   message:
+  //     "نگران نباش! گویدو اینجاست که کمکت کنه!\nزودتعمیر میشی و آماده حرکت میشی",
+  // },
+  // { role: "user", message: "کو پس نیم ساعته منتظرم..." },
+  // {
+  //   role: "luigi",
+  //   message:
+  //     "باور کن گویدو هر کاری از دستش بر بیاد انجام میده، فقط بهم اعتماد کن.",
+  // },
+  // { role: "user", message: "دروغ نگو" },
+  { role: "luigi", message: "دروغ چیه الاغ(اسب)، برو خان ۴ رو بخون" },
 ];
 
 export const Khan4 = () => {
@@ -26,22 +32,30 @@ export const Khan4 = () => {
   >("luiji");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const horseText = "نمیفهمم هنوزم چرا چیزی یادم نمیاد...";
-  
+
   const [currentDialogIndex, setCurrentDialogIndex] = useState(0);
   const [showInitialConversation, setShowInitialConversation] = useState(true);
+  const [lastUserMessage, setLastUserMessage] = useState<string>("");
+  const [isLuigiTypingComplete, setIsLuigiTypingComplete] = useState(false);
+
+  // Character limit configuration
+  const CHARACTER_LIMIT = 128;
 
   // Use the conversation hook (start with empty message since we handle initial conversation)
-  const conversation = useConversation("");
+  const conversation = useConversation("", () => {
+    setIsLuigiTypingComplete(false); // Reset to false when new message arrives so typing can start
+  });
 
-  // Initialize input with last sent message
-  useEffect(() => {
-    if (
-      !conversation.currentUserInput &&
-      conversation.getCurrentUserMessage()
-    ) {
-      conversation.setUserInput(conversation.getCurrentUserMessage());
-    }
-  }, [conversation]);
+  // Auto-resize textarea hook
+  const { textareaRef, handleInput, handleKeyDown, resetHeight } =
+    useAutoResizeTextarea({
+      maxHeight: 300,
+      minHeight: 40,
+      value: conversation.currentUserInput, // Pass the current input value
+    });
+
+  // Initialize input with last sent message (only on first load, not after sending)
+  // Removed this useEffect as it was causing infinite loops
 
   // useEffect(() => {
   //   timerRef.current = setTimeout(() => {
@@ -50,7 +64,7 @@ export const Khan4 = () => {
   //       setVideo("cant_remembering");
   //       timerRef.current = setTimeout(() => {
   //         setVideo("luiji");
-  //       }, 8000);
+  //       }, 9000);
   //     }, 7000);
   //   }, 8000);
 
@@ -61,19 +75,6 @@ export const Khan4 = () => {
   //   };
   // }, []);
 
-  // Handle conversation phase changes
-  useEffect(() => {
-    if (conversation.conversationPhase === "luigi-start") {
-      // Luigi starts talking, show luiji video
-      setVideo("luiji");
-    } else if (conversation.conversationPhase === "user-input") {
-      // User can input, keep luiji video
-      setVideo("luiji");
-    } else if (conversation.conversationPhase === "luigi-response") {
-      // Luigi is responding, show luiji video
-      setVideo("luiji");
-    }
-  }, [conversation.conversationPhase]);
   const videoContent = () => {
     switch (video) {
       case "remembering":
@@ -99,7 +100,7 @@ export const Khan4 = () => {
       case "cant_remembering":
         return (
           <video
-            src="/rakhsh_app/horse_states/confused_idle.mp4"
+            src="/rakhsh_app/horse_states/wondering.mp4"
             autoPlay
             loop
             muted
@@ -109,7 +110,7 @@ export const Khan4 = () => {
       case "luiji":
         return (
           <video
-            src="/rakhsh_app/horse_states/asleep.mp4"
+            src="/rakhsh_app/horse_states/guido.mp4"
             autoPlay
             loop
             muted
@@ -123,64 +124,110 @@ export const Khan4 = () => {
     // When Luigi finishes talking, stop typing and allow user to input
     conversation.finishLuigiTyping();
     conversation.setConversationPhase("user-input");
-  };
-
-  const handleUserTextComplete = () => {
-    // User text display is complete, no automatic sending
-    // User must manually send via button or Enter key
+    setIsLuigiTypingComplete(true); // Set to true when typing animation completes
   };
 
   const handleInitialDialogComplete = () => {
     if (currentDialogIndex < initialConversation.length - 1) {
       // Move to next dialog
-      setCurrentDialogIndex(prev => prev + 1);
+      setCurrentDialogIndex((prev) => prev + 1);
     } else {
       // All initial conversation completed, show input
       setShowInitialConversation(false);
       conversation.setConversationPhase("user-input");
+      setIsLuigiTypingComplete(false); // Set to true when initial conversation completes
     }
   };
 
-  console.log("@#@#", conversation.isLuigiTyping);
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    if (value.length <= CHARACTER_LIMIT) {
+      conversation.setUserInput(value);
+      handleInput();
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (conversation.currentUserInput.trim()) {
+      // Save the current message before sending
+      setLastUserMessage(conversation.currentUserInput.trim());
+
+      // Manually clear the textarea first
+      if (textareaRef.current) {
+        textareaRef.current.value = "";
+        textareaRef.current.style.height = "40px";
+      }
+
+      conversation.sendUserMessage();
+
+      // Reset textarea height after sending
+      setTimeout(() => {
+        resetHeight();
+      }, 0);
+    }
+  };
 
   return (
     <Page className={styles.Khan4Page}>
+      {/* Last User Message Display - Show on left side */}
+      {lastUserMessage && (
+        <div className={styles.LastUserMessageBubble}>
+          <div className={styles.LastUserMessageText}>{lastUserMessage}</div>
+        </div>
+      )}
+
       {/* User Message Display - Show initial conversation or input */}
-      <div className={styles.UserBubble}>
-        {showInitialConversation && initialConversation[currentDialogIndex]?.role === "user" ? (
-          <TypedText
-            text={initialConversation[currentDialogIndex].message}
-            onComplete={handleInitialDialogComplete}
-            keepLastText={false}
-            waitingTime={2000}
-            storyIsEnded={false}
-          />
-        ) : !showInitialConversation ? (
-          <div className={styles.UserInputContainer}>
-            <input
-              type="text"
-              value={conversation.currentUserInput}
-              onChange={(e) => conversation.setUserInput(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === "Enter" && conversation.currentUserInput.trim()) {
-                  conversation.sendUserMessage();
-                }
-              }}
-              placeholder="پاسخ خود را بنویسید..."
-              className={styles.UserInput}
-              autoFocus
-              dir="rtl"
+      {video === "luiji" && (
+        <div className={styles.UserBubble}>
+          {showInitialConversation &&
+          initialConversation[currentDialogIndex]?.role === "user" ? (
+            <TypedText
+              text={initialConversation[currentDialogIndex].message}
+              onComplete={handleInitialDialogComplete}
+              keepLastText={false}
+              waitingTime={2000}
+              storyIsEnded={false}
             />
-            <button
-              className={styles.SendButton}
-              onClick={conversation.sendUserMessage}
-              disabled={!conversation.currentUserInput.trim()}
-            >
-              ارسال
-            </button>
-          </div>
-        ) : null}
-      </div>
+          ) : !showInitialConversation ? (
+            <div className={styles.UserInputContainer}>
+              <textarea
+                ref={textareaRef}
+                value={conversation.currentUserInput}
+                onChange={handleInputChange}
+                onKeyDown={(e) => {
+                  handleKeyDown(e);
+                  if (
+                    e.key === "Enter" &&
+                    conversation.currentUserInput.trim()
+                  ) {
+                    handleSendMessage();
+                  }
+                }}
+                placeholder="هرچی دل تنگت میخواهد بگو..."
+                className={styles.UserInput}
+                autoFocus
+                dir="rtl"
+              />
+              <button
+                className={styles.SendButton}
+                onClick={handleSendMessage}
+                disabled={!conversation.currentUserInput.trim()}
+              >
+                <Send />
+              </button>
+            </div>
+          ) : null}
+
+          {/* Character count display */}
+          {!showInitialConversation && (
+            <div className={styles.CharacterCount}>
+              <span className={styles.CharacterCountText}>
+                {conversation.currentUserInput.length}/{CHARACTER_LIMIT}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
 
       <PageContent>
         <div className={styles.VideoContainer}>
@@ -189,8 +236,8 @@ export const Khan4 = () => {
           {/* Luigi Message Display */}
           {video === "luiji" && (
             <div className={styles.LuijiBubble}>
-              {/* <img src="" alt="" /> */}
-              {showInitialConversation && initialConversation[currentDialogIndex]?.role === "luigi" ? (
+              {showInitialConversation &&
+              initialConversation[currentDialogIndex]?.role === "luigi" ? (
                 <TypedText
                   text={initialConversation[currentDialogIndex].message}
                   onComplete={handleInitialDialogComplete}
@@ -198,13 +245,14 @@ export const Khan4 = () => {
                   waitingTime={2000}
                   storyIsEnded={false}
                 />
-              ) : !showInitialConversation && conversation.getCurrentLuigiMessage() ? (
+              ) : !showInitialConversation &&
+                conversation.getCurrentLuigiMessage() ? (
                 <TypedText
                   text={conversation.getCurrentLuigiMessage()}
                   onComplete={handleLuigiTextComplete}
                   keepLastText={!conversation.isLuigiTyping}
                   waitingTime={500}
-                  storyIsEnded={false}
+                  storyIsEnded={isLuigiTypingComplete}
                 />
               ) : null}
             </div>

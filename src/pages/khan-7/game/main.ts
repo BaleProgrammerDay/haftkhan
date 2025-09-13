@@ -3,6 +3,7 @@ import { AUTO, Game, Scale } from "phaser";
 import { Preloader } from "./scenes/Preloader";
 import { TeamPlayer } from "./scenes/TeamPlayer";
 import { RakhshChat } from "./scenes/RakhshChat";
+import { Barghman } from "./scenes/Barghman";
 
 //  Find out more information about the Game Config at:
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
@@ -28,7 +29,7 @@ const config: Phaser.Types.Core.GameConfig = {
         mode: Scale.RESIZE,
         autoCenter: Scale.CENTER_BOTH,
     },
-    scene: [Boot, Preloader, TeamPlayer, RakhshChat],
+    scene: [Boot, Preloader, TeamPlayer, RakhshChat, Barghman],
 };
 
 const StartGame = (parent: string) => {

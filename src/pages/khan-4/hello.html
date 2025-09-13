@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glowing Bubble Input</title>
+  <style>
+    body {
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .bubble-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    textarea {
+      width: 420px;
+      min-height: 50px;
+      max-height: 200px;
+      padding: 14px 24px;
+      font-size: 16px;
+      color: #fff;
+      line-height: 1.5;
+      border: none;
+      border-radius: 40px;
+      outline: none;
+      resize: none;
+      background: #000;
+      box-shadow:
+        0 0 20px rgba(0, 255, 200, 0.9),
+        0 0 40px rgba(0, 255, 200, 0.7),
+        0 0 60px rgba(0, 255, 200, 0.5);
+    }
+
+    /* The tail (same glow as bubble) */
+    .bubble-wrapper::after {
+      content: "";
+      position: absolute;
+      right: -22px;
+      top: 18px;
+      width: 0;
+      height: 0;
+      border-top: 22px solid transparent;
+      border-bottom: 22px solid transparent;
+      border-left: 26px solid #000; /* inner fill */
+      filter: drop-shadow(0 0 20px rgba(0, 255, 200, 0.9));
+    }
+  </style>
+</head>
+<body>
+  <div class="bubble-wrapper">
+    <textarea placeholder="Type a message..."></textarea>
+  </div>
+
+  <script>
+    const textarea = document.querySelector("textarea");
+
+    textarea.addEventListener("input", () => {
+      textarea.style.height = "auto"; 
+      textarea.style.height = textarea.scrollHeight + "px";
+    });
+  </script>
+</body>
+</html>

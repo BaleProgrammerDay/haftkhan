@@ -2,13 +2,14 @@ export interface Message {
   id: string;
   text: string;
   sender: 'me' | 'other';
-  time: string;
+  time: number;
 }
 
 export enum Chats {
 	TeamPlayer = "TeamPlayer",
 	RakhshChat = "RakhshChat",
-	Barghman = "Barghman"
+	Barghman = "Barghman",
+	Tajamolian = "Tajamolian",
 }
 
 export enum ChatState {
@@ -21,8 +22,6 @@ export enum ChatState {
 export interface Chat {
 	id: Chats;
 	name: string;
-	lastMessage: string;
-	time: string;
 	avatar: string;
 	unreadCount: number;
 	state: ChatState;

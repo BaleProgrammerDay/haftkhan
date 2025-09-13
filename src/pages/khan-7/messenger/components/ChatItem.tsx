@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Chat, ChatState } from "../types/Chat";
 import clsx from "clsx";
 
@@ -9,6 +9,8 @@ interface ChatItemProps {
 }
 
 function ChatItem({ chat, isSelected, onClick }: ChatItemProps) {
+    const lastMessage = chat.messages[chat.messages.length - 1]
+
     return (
         <div
             onClick={onClick}
@@ -60,7 +62,7 @@ function ChatItem({ chat, isSelected, onClick }: ChatItemProps) {
                             className="text-xs whitespace-nowrap mr-2"
                             style={{ color: "var(--color-neutrals-n-200)" }}
                         >
-                            {chat.time}
+                            {new Date(lastMessage.time).toLocaleTimeString("fa-IR", { hour: '2-digit', minute: '2-digit' })}
                         </span>
                     </div>
 
@@ -69,11 +71,11 @@ function ChatItem({ chat, isSelected, onClick }: ChatItemProps) {
                             className="text-sm truncate"
                             style={{ color: "var(--color-neutrals-n-300)" }}
                         >
-                            {chat.lastMessage}
+                            {lastMessage.text}
                         </p>
                         {chat.unreadCount > 0 && (
                             <div
-                                className="text-white text-xs rounded-full h-5 w-5 flex items-center justify-center mr-2"
+                                className="text-white text-xs rounded-full h-5 min-w-5 w-5 flex items-center justify-center mr-2"
                                 style={{
                                     backgroundColor:
                                         "var(--color-primary-p-50)",

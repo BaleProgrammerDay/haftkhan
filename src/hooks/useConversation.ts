@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { API } from "~/api/api";
 
 export interface ConversationMessage {
@@ -20,7 +20,7 @@ export interface ConversationState {
     | "conversation-flow";
 }
 
-export const useConversation = (initialLuigiMessage: string) => {
+export const useConversation = (initialLuigiMessage: string, onLuigiMessageAdded?: () => void) => {
   const [state, setState] = useState<ConversationState>({
     messages: [
       {
@@ -36,6 +36,10 @@ export const useConversation = (initialLuigiMessage: string) => {
     conversationPhase: "luigi-start",
   });
 
+  // Keep a ref to the current state for use in callbacks
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
   const addMessage = useCallback(
     (message: Omit<ConversationMessage, "id" | "timestamp">) => {
       const newMessage: ConversationMessage = {
@@ -49,9 +53,14 @@ export const useConversation = (initialLuigiMessage: string) => {
         messages: [...prev.messages, newMessage],
       }));
 
+      // Call callback if it's a Luigi message
+      if (message.role === "luigi" && onLuigiMessageAdded) {
+        onLuigiMessageAdded();
+      }
+
       return newMessage;
     },
-    []
+    [onLuigiMessageAdded]
   );
 
   const setUserInput = useCallback((input: string) => {
@@ -83,9 +92,13 @@ export const useConversation = (initialLuigiMessage: string) => {
   );
 
   const sendUserMessage = useCallback(async () => {
-    if (!state.currentUserInput.trim()) return;
+    const currentState = stateRef.current;
 
-    const userMessage = state.currentUserInput.trim();
+    if (!currentState.currentUserInput.trim()) {
+      return;
+    }
+
+    const userMessage = currentState.currentUserInput.trim();
 
     // Add user message
     addMessage({
@@ -93,39 +106,37 @@ export const useConversation = (initialLuigiMessage: string) => {
       message: userMessage,
     });
 
-    // Keep input value and set typing states
-    setState((prev) => ({
-      ...prev,
-      isUserTyping: false,
-      isLuigiTyping: true,
-      conversationPhase: "luigi-response",
-    }));
+    // Clear input and set typing states immediately
+    setState((prevState) => {
+      return {
+        ...prevState,
+        currentUserInput: "",
+        isUserTyping: false,
+        isLuigiTyping: true,
+        conversationPhase: "luigi-response" as const,
+      };
+    });
 
+    // Continue with API call after state update
     try {
-      // Prepare conversation history for API
-      const conversationHistory = state.messages.map((msg) => ({
-        role: msg.role,
-        message: msg.message,
-      }));
+      // Only send the last message to the model as requested
+      const openAIMessages = [
+        {
+          role: "user" as const,
+          content: userMessage,
+        },
+      ];
 
       // Get Luigi's response
-      const response = await API.getLuigiResponse(
-        userMessage,
-        conversationHistory
-      );
+      const response = await API.getLuigiResponse(userMessage, openAIMessages);
 
+      console.log("response", response);
       // Add Luigi's response
       addMessage({
         role: "luigi",
         message:
           response.message || response.text || "Sorry, I could not respond.",
       });
-
-      setState((prev) => ({
-        ...prev,
-        isLuigiTyping: false,
-        conversationPhase: "user-input",
-      }));
     } catch (error) {
       console.error("Failed to get Luigi response:", error);
 
@@ -134,14 +145,8 @@ export const useConversation = (initialLuigiMessage: string) => {
         role: "luigi",
         message: "Sorry, I had trouble responding. Please try again.",
       });
-
-      setState((prev) => ({
-        ...prev,
-        isLuigiTyping: false,
-        conversationPhase: "user-input",
-      }));
     }
-  }, [state.currentUserInput, state.messages, addMessage]);
+  }, [addMessage]);
 
   const getCurrentLuigiMessage = useCallback(() => {
     const lastLuigiMessage = state.messages
