@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Page } from "~/components";
 import { PageContent } from "~/components/ui/Page/Page";
 import { calculateTypingSpeed } from "~/utils";
@@ -12,18 +12,18 @@ import { Send } from "./Send";
 import { PageProps } from "~/types";
 
 const initialConversation = [
-  // {
-  //   role: "luigi",
-  //   message:
-  //     "نگران نباش! گویدو اینجاست که کمکت کنه!\nزودتعمیر میشی و آماده حرکت میشی",
-  // },
-  // { role: "user", message: "کو پس نیم ساعته منتظرم..." },
-  // {
-  //   role: "luigi",
-  //   message:
-  //     "باور کن گویدو هر کاری از دستش بر بیاد انجام میده، فقط بهم اعتماد کن.",
-  // },
-  // { role: "user", message: "دروغ نگو" },
+  {
+    role: "luigi",
+    message:
+      "نگران نباش! گویدو اینجاست که کمکت کنه!\nزودتعمیر میشی و آماده حرکت میشی",
+  },
+  { role: "user", message: "کو پس نیم ساعته منتظرم..." },
+  {
+    role: "luigi",
+    message:
+      "باور کن گویدو هر کاری از دستش بر بیاد انجام میده، فقط بهم اعتماد کن.",
+  },
+  { role: "user", message: "دروغ نگو" },
   { role: "luigi", message: "دروغ چیه الاغ(اسب)، برو خان ۴ رو بخون" },
 ];
 
@@ -35,7 +35,7 @@ export const Khan4 = ({ setStep }: PageProps) => {
     | "wizard_break"
     | "wizard_idle"
     | "transforming"
-  >("luiji");
+  >("remembering");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const horseText = "نمیفهمم هنوزم چرا چیزی یادم نمیاد...";
 
@@ -88,20 +88,20 @@ export const Khan4 = ({ setStep }: PageProps) => {
   // Initialize input with last sent message (only on first load, not after sending)
   // Removed this useEffect as it was causing infinite loops
 
-  // useEffect(() => {
-  //   timerRef.current = setTimeout(() => {
-  //     setVideo("cant_remembering");
-  //     timerRef.current = setTimeout(() => {
-  //       setVideo("luiji");
-  //     }, 9000);
-  //   }, 7000);
+  useEffect(() => {
+    timerRef.current = setTimeout(() => {
+      setVideo("cant_remembering");
+      timerRef.current = setTimeout(() => {
+        setVideo("luiji");
+      }, 9000);
+    }, 7000);
 
-  //   return () => {
-  //     if (timerRef.current) {
-  //       clearTimeout(timerRef.current);
-  //     }
-  //   };
-  // }, []);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   const videoContent = () => {
     switch (video) {
