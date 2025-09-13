@@ -1,0 +1,83 @@
+.Video {
+  width: 480px;
+  height: 480px;
+  object-fit: scale-down;
+}
+
+.VideoContainer {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.VideoText {
+  position: absolute;
+  bottom: 75px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  direction: rtl;
+}
+
+.FoldersContainer {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  overflow: auto;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+.FolderItem {
+  cursor: pointer;
+  
+  &:hover {
+    background-color: rgba(var(--color-bubble-in-secondary-rgb), 0.3);
+  }
+}
+
+.FolderContent {
+  padding: 20px;
+  text-align: center;
+  direction: rtl;
+  
+  h3 {
+    color: var(--color-primary-p-50);
+    margin-bottom: 15px;
+    font-size: 18px;
+  }
+  
+  p {
+    margin-bottom: 20px;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+  }
+}
+
+.FileList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.File {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  background: rgba(var(--color-primary-p-10-rgb), 0.1);
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background: rgba(var(--color-primary-p-20-rgb), 0.2);
+    cursor: pointer;
+  }
+}
+
+// Remove all special visual effects - all folders look the same

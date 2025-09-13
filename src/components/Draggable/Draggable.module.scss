@@ -1,7 +1,6 @@
 .Draggable {
   position: absolute;
   user-select: none;
-  transition: transform 0.1s ease;
   cursor: default;
 
   z-index: 1;
@@ -9,6 +8,7 @@
   &.Dragging {
     cursor: grabbing;
     transform: scale(1.05);
+    transition: transform 0.1s ease; /* Only apply transition when dragging for scale effect */
   }
 
   &.Disabled {
