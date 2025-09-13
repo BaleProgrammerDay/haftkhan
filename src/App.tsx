@@ -13,7 +13,6 @@ import { getTextDirection } from "./utils";
 
 function App() {
   const [step, setStep] = useState(1);
-  const [isKhan, setIsKhan] = useState(true);
 
   const { notificationText, setNotificationText } = useNotification();
 
@@ -24,16 +23,13 @@ function App() {
   return (
     <>
       <Provider store={store}>
-        {isKhan ? (
-          <div>
-            {step === 1 && <Khan1 setStep={setStep} />}
-            {step === 2 && <Khan2 setStep={setStep} />}
-            {step === 3 && <Khan3 setStep={setStep} />}
-            {step === 4 && <Khan4 />}
-          </div>
-        ) : (
-          <Messanger />
-        )}
+        <div>
+          {step === 1 && <Khan1 setStep={setStep} />}
+          {step === 2 && <Khan2 setStep={setStep} />}
+          {step === 3 && <Khan3 setStep={setStep} />}
+          {step === 4 && <Khan4 />}
+          {step === 7 && <Messanger />}
+        </div>
         {notificationText && (
           <div
             className={styles.Notification}

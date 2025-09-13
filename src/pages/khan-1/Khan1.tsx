@@ -40,6 +40,7 @@ export const Khan1 = (props: PageProps) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("!@!", inputs.password);
     const handleValidation = () => {
       if (inputs.password === "") {
         setNotificationText(
@@ -51,6 +52,10 @@ export const Khan1 = (props: PageProps) => {
       }
     };
     handleValidation();
+
+    if (inputs.password === "77777هفت") {
+      props.setStep(7);
+    }
 
     if (inputs.username === "" || inputs.password === "") {
       return;
