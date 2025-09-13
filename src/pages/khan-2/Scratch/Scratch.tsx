@@ -35,7 +35,7 @@ export const Scratch = () => {
 
   const handleMoveOnNpc = () => {
     if (state.isStatic) return;
-    setState((prev) => ({ ...prev, npcTranslateX: -140 }));
+    setState((prev) => ({ ...prev, npcTranslateX: -110 }));
   };
 
   const handleMoveOutNpc = () => {
@@ -44,9 +44,10 @@ export const Scratch = () => {
   };
 
   const handleClickNPC = () => {
+    if (state.isStatic) return;
     setState((prev) => ({
       ...prev,
-      npcTranslateX: -350,
+      npcTranslateX: -250,
       isStatic: true,
     }));
   };

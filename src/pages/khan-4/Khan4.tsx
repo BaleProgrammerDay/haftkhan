@@ -11,25 +11,25 @@ import { TypedText } from "~/components/TypingText/TypingText";
 import { Send } from "./Send";
 
 const initialConversation = [
-  // {
-  //   role: "luigi",
-  //   message:
-  //     "نگران نباش! گویدو اینجاست که کمکت کنه!\nزودتعمیر میشی و آماده حرکت میشی",
-  // },
-  // { role: "user", message: "کو پس نیم ساعته منتظرم..." },
-  // {
-  //   role: "luigi",
-  //   message:
-  //     "باور کن گویدو هر کاری از دستش بر بیاد انجام میده، فقط بهم اعتماد کن.",
-  // },
-  // { role: "user", message: "دروغ نگو" },
+  {
+    role: "luigi",
+    message:
+      "نگران نباش! گویدو اینجاست که کمکت کنه!\nزودتعمیر میشی و آماده حرکت میشی",
+  },
+  { role: "user", message: "کو پس نیم ساعته منتظرم..." },
+  {
+    role: "luigi",
+    message:
+      "باور کن گویدو هر کاری از دستش بر بیاد انجام میده، فقط بهم اعتماد کن.",
+  },
+  { role: "user", message: "دروغ نگو" },
   { role: "luigi", message: "دروغ چیه الاغ(اسب)، برو خان ۴ رو بخون" },
 ];
 
 export const Khan4 = () => {
   const [video, setVideo] = useState<
-    "azhdar" | "luiji" | "remembering" | "cant_remembering"
-  >("luiji");
+    "luiji" | "remembering" | "cant_remembering"
+  >("remembering");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const horseText = "نمیفهمم هنوزم چرا چیزی یادم نمیاد...";
 
@@ -57,23 +57,20 @@ export const Khan4 = () => {
   // Initialize input with last sent message (only on first load, not after sending)
   // Removed this useEffect as it was causing infinite loops
 
-  // useEffect(() => {
-  //   timerRef.current = setTimeout(() => {
-  //     setVideo("azhdar");
-  //     timerRef.current = setTimeout(() => {
-  //       setVideo("cant_remembering");
-  //       timerRef.current = setTimeout(() => {
-  //         setVideo("luiji");
-  //       }, 9000);
-  //     }, 7000);
-  //   }, 8000);
+  useEffect(() => {
+    timerRef.current = setTimeout(() => {
+      setVideo("cant_remembering");
+      timerRef.current = setTimeout(() => {
+        setVideo("luiji");
+      }, 9000);
+    }, 7000);
 
-  //   return () => {
-  //     if (timerRef.current) {
-  //       clearTimeout(timerRef.current);
-  //     }
-  //   };
-  // }, []);
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   const videoContent = () => {
     switch (video) {
@@ -81,16 +78,6 @@ export const Khan4 = () => {
         return (
           <video
             src="/rakhsh_app/horse_states/remembering_start.mp4"
-            autoPlay
-            loop
-            muted
-            className={styles.Video}
-          />
-        );
-      case "azhdar":
-        return (
-          <video
-            src="/rakhsh_app/horse_states/remembering_glitch.mp4"
             autoPlay
             loop
             muted

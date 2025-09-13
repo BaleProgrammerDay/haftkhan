@@ -13,7 +13,8 @@ interface PasswordInputProsp {
   template?: string; // Optional template string like "hello world" where spaces indicate word boundaries
   onChange: (password: string) => void;
   isDark?: boolean;
-  direction?: 'ltr' | 'rtl'; // Text direction for arrow key navigation
+  direction?: "ltr" | "rtl"; // Text direction for arrow key navigation
+  justEnglish?: boolean;
 }
 
 export interface PasswordInputRef {
@@ -30,28 +31,27 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
           charPositions: Array.from({ length: props.length }, (_, i) => i),
           spacePositions: [],
           totalChars: props.length,
-          template: ""
+          template: "",
         };
       }
-      
-      const chars = props.template.split('');
+
+      const chars = props.template.split("");
       const charPositions: number[] = [];
       const spacePositions: number[] = [];
-      
+
       chars.forEach((char, index) => {
-        if (char === ' ') {
+        if (char === " ") {
           spacePositions.push(index);
         } else {
           charPositions.push(index);
         }
       });
-      
-      
+
       return {
         charPositions,
         spacePositions,
         totalChars: charPositions.length,
-        template: props.template
+        template: props.template,
       };
     }, [props.template, props.length]);
 
@@ -70,21 +70,21 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
       clear: () => {
         const emptyPassword = new Array(templateInfo.totalChars).fill("");
         setPassword(emptyPassword);
-        
+
         // Clear with spaces preserved from template
         const clearedPassword = templateInfo.template
           ? templateInfo.template
-              .split('')
+              .split("")
               .map((char) => {
-                if (char === ' ') {
-                  return ' ';
+                if (char === " ") {
+                  return " ";
                 } else {
-                  return '';
+                  return "";
                 }
               })
-              .join('')
+              .join("")
           : "";
-        
+
         props.onChange(clearedPassword);
       },
     }));
@@ -92,25 +92,25 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
     const handleChange = (_password: string, index: number) => {
       const newPassword = [...password];
       newPassword[index] = _password;
-      
+
       // Reconstruct password with spaces from template
       const passwordWithSpaces = templateInfo.template
         ? templateInfo.template
-            .split('')
+            .split("")
             .map((char, i) => {
-              if (char === ' ') {
-                return ' ';
+              if (char === " ") {
+                return " ";
               } else {
                 const charIndex = templateInfo.charPositions.indexOf(i);
-                return charIndex !== -1 ? newPassword[charIndex] : '';
+                return charIndex !== -1 ? newPassword[charIndex] : "";
               }
             })
-            .join('')
-        : newPassword.join('');
-      
+            .join("")
+        : newPassword.join("");
+
       props.onChange(passwordWithSpaces);
       setPassword(newPassword);
-      
+
       // Auto-advance to next input if current input has a value and there's a next input
       if (_password && index < templateInfo.totalChars - 1) {
         // Use setTimeout to ensure the state update has been processed
@@ -137,7 +137,7 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
         }
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
-        if (props.direction === 'rtl') {
+        if (props.direction === "rtl") {
           // In RTL, left arrow goes to next input (visually right)
           if (index < templateInfo.totalChars - 1) {
             inputRefs.current[index + 1]?.focus();
@@ -150,7 +150,7 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
         }
       } else if (e.key === "ArrowRight") {
         e.preventDefault();
-        if (props.direction === 'rtl') {
+        if (props.direction === "rtl") {
           // In RTL, right arrow goes to previous input (visually left)
           if (index > 0) {
             inputRefs.current[index - 1]?.focus();
@@ -168,9 +168,13 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
     const renderInputs = () => {
       const elements: React.ReactNode[] = [];
       let charIndex = 0;
-      
-      for (let i = 0; i < (props.template?.length || templateInfo.totalChars); i++) {
-        if (props.template && props.template[i] === ' ') {
+
+      for (
+        let i = 0;
+        i < (props.template?.length || templateInfo.totalChars);
+        i++
+      ) {
+        if (props.template && props.template[i] === " ") {
           // Add visual space indicator
           elements.push(
             <div key={`space-${i}`} className={styles.SpaceIndicator}>
@@ -191,16 +195,19 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
               ref={(el) => {
                 inputRefs.current[currentCharIndex] = el;
               }}
+              justEnglish={props.justEnglish}
             />
           );
           charIndex++;
         }
       }
-      
+
       return elements;
     };
 
-    return <div className={styles.PasswordInputContainer}>{renderInputs()}</div>;
+    return (
+      <div className={styles.PasswordInputContainer}>{renderInputs()}</div>
+    );
   }
 );
 
@@ -210,6 +217,7 @@ interface SinglePasswordInputProps {
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   index: number;
   value: string;
+  justEnglish?: boolean;
 }
 
 const SinglePasswordInput = React.forwardRef<
@@ -220,10 +228,10 @@ const SinglePasswordInput = React.forwardRef<
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    
+
     // If we're composing (typing a multi-keystroke character), don't update yet
     if (isComposing) return;
-    
+
     // Allow the input to handle composition, but only take the last character
     if (value.length > 1) {
       // Take only the last character for multi-character inputs
@@ -238,7 +246,9 @@ const SinglePasswordInput = React.forwardRef<
     setIsComposing(true);
   };
 
-  const handleCompositionEnd = (e: React.CompositionEvent<HTMLInputElement>) => {
+  const handleCompositionEnd = (
+    e: React.CompositionEvent<HTMLInputElement>
+  ) => {
     setIsComposing(false);
     const value = e.currentTarget.value;
     // Take the last character after composition is complete
@@ -251,7 +261,7 @@ const SinglePasswordInput = React.forwardRef<
   return (
     <input
       ref={ref}
-      type="text"
+      type={props.justEnglish ? "password" : "text"}
       value={props.value ? "•" : ""}
       onChange={handleChange}
       onCompositionStart={handleCompositionStart}
@@ -262,6 +272,7 @@ const SinglePasswordInput = React.forwardRef<
       onKeyDown={props.onKeyDown}
       autoComplete="off"
       spellCheck={false}
+      maxLength={props.justEnglish ? 1 : undefined}
     />
   );
 });

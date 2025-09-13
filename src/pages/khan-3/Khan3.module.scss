@@ -1,7 +1,7 @@
 .Video {
   width: 480px;
   height: 480px;
-  object-fit: cover;
+  object-fit: scale-down;
 }
 
 .VideoContainer {
@@ -10,7 +10,7 @@
 
 .VideoText {
   position: absolute;
-  bottom: 50px;
+  bottom: 75px;
   left: 50%;
   transform: translateX(-50%);
   color: #fff;
@@ -44,5 +44,133 @@
   100% {
     opacity: 1;
   }
+}
+
+.activate {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+
+  .installButton {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+
+    text-align: cetner;
+
+    background-color: var(--color-primary-p-40);
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    background-color: var(--color-primary-p-40);
+    color: white;
+
+    &:hover {
+      background-color: var(--color-primary-p-50);
+    }
+  }
+}
+
+.ActivateContent {
+  display: flex;
+  justify-content: center;
+}
+
+.ActivateCodeSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 85%;
+}
+
+.tableContainer {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.tableRow {
+  display: flex;
+
+  &:not(:last-child) {
+    // border-bottom: 1px solid #ccc;
+  }
+}
+
+.tableCell {
+  flex: 1;
+  padding: 2px;
+  padding-block: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+
+  &:not(:last-child) {
+    // border-right: 1px solid #ccc;
+  }
+
+  &:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.05);
+  }
+
+  // Special styling for question marks will be handled in component
+}
+
+@keyframes cellPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.questionMark {
+  color: #ff6b35 !important;
+  font-weight: 600 !important;
 }
 

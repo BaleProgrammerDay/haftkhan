@@ -12,6 +12,8 @@ const getTemplate = (nameTeam: string) => {
     return "*** *** ***";
   } else if (nameTeam === "مهندسی نرم افزار") {
     return "*** ***";
+  } else if (nameTeam === "تست") {
+    return "که گفتت که با شیر کن کارزار";
   }
   return "";
 };

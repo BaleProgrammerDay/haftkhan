@@ -12,7 +12,7 @@ import { Khan4 } from "./pages/khan-4/Khan4";
 import { getTextDirection } from "./utils";
 
 function App() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(4);
 
   const { notificationText, setNotificationText } = useNotification();
 

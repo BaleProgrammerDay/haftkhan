@@ -2,8 +2,9 @@ import { useEffect, useState, useRef } from "react";
 import styles from "./Khan3.module.scss";
 import { Draggable } from "~/components/Draggable";
 import { Modal } from "~/components/Modal";
+import { AntivirusInstallModal } from "~/components/AntivirusInstallModal";
 import { PageProps } from "~/types";
-import { Page } from "~/components/ui";
+import { Page, PasswordInput } from "~/components/ui";
 import { PageContent } from "~/components/ui/Page/Page";
 import clsx from "clsx";
 import { detectCollision } from "~/utils/colision";
@@ -143,6 +144,86 @@ export const Khan3 = (props: PageProps) => {
     }
   };
 
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+
+  // Test mode - set to true to automatically start table cycling animation
+  const [isActivationModalOpen, setIsActivationModalOpen] = useState(false);
+
+  const handleAntiVirusClick = () => {
+    console.log("anti virus clicked");
+
+    setIsInstallModalOpen(true);
+
+    setOpenFolder(false);
+  };
+
+  const handleInstallComplete = () => {
+    setIsInstallModalOpen(false);
+    setIsActivationModalOpen(true);
+  };
+
+  const [password, setPassword] = useState("");
+  const [currentTableIndex, setCurrentTableIndex] = useState(0);
+
+  // 3 different tables to cycle through
+  const tableDataSets = [
+    // Table 1
+    [
+      ["1", "?"],
+      ["2", "4"],
+      ["4", "6"],
+      ["8", "12"],
+      ["10", "12"],
+      ["14", "16"],
+      ["16", "18"],
+      ["18", "20"],
+      ["22", "24"],
+    ],
+    // Table 2
+    [
+      ["A", "?"],
+      ["B", "D"],
+      ["C", "F"],
+      ["E", "H"],
+      ["G", "J"],
+      ["I", "L"],
+      ["K", "N"],
+      ["M", "P"],
+      ["O", "R"],
+    ],
+    // Table 3
+    [
+      ["α", "?"],
+      ["β", "δ"],
+      ["γ", "ζ"],
+      ["ε", "θ"],
+      ["η", "κ"],
+      ["ι", "μ"],
+      ["λ", "ξ"],
+      ["ν", "π"],
+      ["ο", "ρ"],
+    ],
+  ];
+
+  const currentTableData = tableDataSets[currentTableIndex];
+
+  // Cycle through tables every 3 seconds when activation modal is open
+  useEffect(() => {
+    if (isActivationModalOpen) {
+      const interval = setInterval(() => {
+        setCurrentTableIndex(
+          (prevIndex) => (prevIndex + 1) % tableDataSets.length
+        );
+      }, 5000); // 3 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [isActivationModalOpen, tableDataSets.length]);
+
+  const handleActivate = () => {
+    console.log("activate");
+  };
+
   return (
     <Page>
       <PageContent>
@@ -173,6 +254,7 @@ export const Khan3 = (props: PageProps) => {
           initialPosition={{ x: 20, y: 20 }}
           className={FolderWrapperStyles.Folder}
           onDoubleClick={
+            // handleFolderOpen
             animationPhase === "folder" ? handleFolderOpen : undefined
           }
           onPositionChange={handleFolderPositionChange}
@@ -206,15 +288,74 @@ export const Khan3 = (props: PageProps) => {
         <Draggable
           initialPosition={{ x: 20, y: 60 }}
           className={FolderWrapperStyles.Folder}
-          onDoubleClick={handleFolderOpen}
+          onDoubleClick={handleAntiVirusClick}
           doubleClickDelay={300}
         >
-          <img
-            src={antiVirus}
-            alt=""
-            className={FolderWrapperStyles.FolderImage}
-          />
+          <img src={antiVirus} alt="" onClick={handleAntiVirusClick} />
         </Draggable>
+      </Modal>
+
+      <AntivirusInstallModal
+        isOpen={isInstallModalOpen}
+        onClose={() => setIsInstallModalOpen(false)}
+        onInstallComplete={handleInstallComplete}
+      />
+
+      {/* //isActivationModalOpen */}
+      <Modal
+        isOpen={isActivationModalOpen}
+        onClose={() => setIsActivationModalOpen(false)}
+        title="Antivirus Activation"
+        modalContentClassName={styles.ActivateContent}
+      >
+        <div className={styles.activate}>
+          {/* You can add your activation code content here */}
+          <div>
+            <h3>Activation Required</h3>
+            <p>
+              Please enter your activation code to complete the antivirus setup.
+            </p>
+          </div>
+
+          <div className={styles.ActivateCodeSection}>
+            <div className={styles.table}>
+              {currentTableData.map((row, rowIndex) => (
+                <div
+                  key={`${currentTableIndex}-${rowIndex}`}
+                  className={styles.tableRow}
+                >
+                  {row.map((cell, cellIndex) => (
+                    <div
+                      key={cellIndex}
+                      className={clsx(
+                        styles.tableCell,
+                        cell === "?" && styles.questionMark
+                      )}
+                    >
+                      {cell}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+
+            <PasswordInput
+              length={6}
+              onChange={setPassword}
+              template="**** * *"
+              direction="ltr"
+              justEnglish
+            />
+          </div>
+
+          <button
+            onClick={handleActivate}
+            disabled={password.length !== 6}
+            className={styles.installButton}
+          >
+            Activate
+          </button>
+        </div>
       </Modal>
     </Page>
   );

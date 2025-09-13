@@ -1,0 +1,463 @@
+.antivirusInstallModal {
+  width: 800px !important;
+  height: 600px !important;
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 525px;
+    width: 100%;
+    // gap: 16px;
+    overflow: hidden;
+  }
+
+  .contentWrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .stepIndicator {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+
+    .step {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--color-neutrals-n-500);
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      transition: all 0.3s ease;
+      margin: 0 4px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &.active {
+        background-color: var(--color-primary-p-40);
+        color: white;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .stepContent {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--color-neutrals-n-600);
+      margin: 0 0 16px 0;
+      text-align: center;
+      flex-shrink: 0;
+    }
+  }
+
+  .termsContainer {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 16px;
+    height: auto;
+
+    .termsText {
+      h3 {
+        color: var(--color-primary-p-40);
+        font-size: 16px;
+        margin-bottom: 12px;
+      }
+
+      p {
+        color: var(--color-neutrals-n-500);
+        line-height: 1.5;
+        margin-bottom: 12px;
+        font-size: 14px;
+      }
+
+      ul {
+        color: var(--color-neutrals-n-500);
+        padding-left: 16px;
+        margin-bottom: 12px;
+        font-size: 14px;
+
+        li {
+          margin-bottom: 6px;
+          line-height: 1.4;
+        }
+      }
+
+      strong {
+        color: var(--color-neutrals-n-600);
+      }
+    }
+  }
+
+  .directorySelection {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+
+    p {
+      color: var(--color-neutrals-n-500);
+      font-size: 14px;
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    .directoryOptions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+
+        .directoryOption {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        box-sizing: border-box;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        input[type="radio"] {
+          width: 16px;
+          height: 16px;
+          accent-color: var(--color-primary-p-40);
+        }
+
+        span {
+          font-family: 'Courier New', monospace;
+          color: var(--color-neutrals-n-600);
+          font-weight: 600;
+          font-size: 14px;
+        }
+
+        small {
+          color: var(--color-neutrals-n-400);
+          font-size: 11px;
+          margin-left: auto;
+        }
+      }
+    }
+
+    .selectedPath {
+      background-color: rgba(var(--color-primary-p-40-rgb), 0.1);
+      padding: 12px 16px;
+      border-radius: 8px;
+      border-left: 4px solid var(--color-primary-p-40);
+      width: 100%;
+      box-sizing: border-box;
+
+      strong {
+        color: var(--color-neutrals-n-600);
+        font-family: 'Courier New', monospace;
+      }
+    }
+
+    .diskSpace {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      width: 100%;
+      box-sizing: border-box;
+
+      p {
+        margin: 0;
+        font-size: 14px;
+        color: var(--color-neutrals-n-400);
+      }
+    }
+  }
+
+  .installationContainer {
+    display: flex;
+    flex-direction: column;
+    // background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    // padding: 20px;
+    min-height: 200px;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 16px;
+  }
+
+  .readyToInstall {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+
+    .installationInfo {
+      width: 100%;
+
+      h3 {
+        color: var(--color-primary-p-40);
+        font-size: 18px;
+        margin-bottom: 12px;
+      }
+
+      p {
+        color: var(--color-neutrals-n-500);
+        margin-bottom: 20px;
+        font-size: 14px;
+
+        strong {
+          color: var(--color-neutrals-n-600);
+          font-family: 'Courier New', monospace;
+        }
+      }
+
+      .installSummary {
+        text-align: left;
+        background-color: rgba(255, 255, 255, 0.03);
+        border-radius: 8px;
+        padding: 16px;
+
+        h4 {
+          color: var(--color-primary-p-40);
+          font-size: 16px;
+          margin-bottom: 12px;
+        }
+
+        ul {
+          color: var(--color-neutrals-n-500);
+          font-size: 14px;
+          line-height: 1.6;
+          margin: 0;
+          padding-left: 16px;
+
+          li {
+            margin-bottom: 8px;
+            
+            &::marker {
+              color: var(--color-primary-p-40);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .progressContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+
+    .progressHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      h3 {
+        color: var(--color-primary-p-40);
+        font-size: 18px;
+        margin: 0;
+      }
+
+      .progressPercent {
+        color: var(--color-neutrals-n-600);
+        font-size: 24px;
+        font-weight: bold;
+      }
+    }
+
+    .progressBarContainer {
+      width: 100%;
+
+      .progressBar {
+        width: 100%;
+        height: 12px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        overflow: hidden;
+        position: relative;
+
+        .progressFill {
+          height: 100%;
+          background: linear-gradient(90deg, 
+            var(--color-primary-p-40) 0%, 
+            var(--color-primary-p-50) 50%, 
+            var(--color-primary-p-60) 100%);
+          border-radius: 6px;
+          transition: width 0.3s ease;
+          position: relative;
+
+          &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+              transparent 0%, 
+              rgba(255, 255, 255, 0.3) 50%, 
+              transparent 100%);
+            animation: shimmer 2s infinite;
+          }
+        }
+      }
+    }
+
+    .currentTask {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-neutrals-n-500);
+      font-size: 14px;
+      padding: 12px 16px;
+      background-color: rgba(255, 255, 255, 0.03);
+      border-radius: 6px;
+
+      .taskIcon {
+        font-size: 16px;
+        animation: pulse 1.5s infinite;
+      }
+    }
+
+    .virusKillCounter {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+
+      .killStats {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background-color: rgba(var(--color-primary-p-40-rgb), 0.1);
+        border-radius: 6px;
+        font-size: 13px;
+        color: var(--color-neutrals-n-500);
+
+        .killIcon {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .installingFacts {
+      background-color: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      padding: 16px;
+
+      h4 {
+        color: var(--color-primary-p-40);
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+
+      .factRotator {
+        p {
+          color: var(--color-neutrals-n-500);
+          font-size: 13px;
+          line-height: 1.5;
+          margin: 0;
+          animation: fadeIn 0.5s ease-in;
+        }
+      }
+    }
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+
+    button {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 100px;
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+    }
+
+    .backButton {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--color-neutrals-n-500);
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    .nextButton {
+      background-color: var(--color-primary-p-40);
+      color: white;
+
+      &:hover {
+        background-color: var(--color-primary-p-50);
+      }
+    }
+
+    .installButton {
+      background-color: var(--color-primary-p-40);
+      color: white;
+
+      &:hover {
+        background-color: var(--color-primary-p-50);
+      }
+    }
+  }
+}
