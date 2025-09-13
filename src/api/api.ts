@@ -149,5 +149,33 @@ export const API = {
       throw error;
     }
   },
+
+  khan6API: async (password: string): Promise<boolean> => {
+    try {
+      // This will make a request to the server to validate the password
+      const response = await fetch("/api/khan6/validate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          password: password,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Server should return { success: boolean } or { valid: boolean }
+      return data.success || data.valid || false;
+    } catch (error) {
+      console.error("Khan6 API error:", error);
+      // Return false on any error (password is invalid)
+      return false;
+    }
+  },
 };
 
