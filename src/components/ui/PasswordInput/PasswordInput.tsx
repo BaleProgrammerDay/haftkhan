@@ -70,14 +70,45 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
       clear: () => {
         const emptyPassword = new Array(templateInfo.totalChars).fill("");
         setPassword(emptyPassword);
-        props.onChange("");
+        
+        // Clear with spaces preserved from template
+        const clearedPassword = templateInfo.template
+          ? templateInfo.template
+              .split('')
+              .map((char) => {
+                if (char === ' ') {
+                  return ' ';
+                } else {
+                  return '';
+                }
+              })
+              .join('')
+          : "";
+        
+        props.onChange(clearedPassword);
       },
     }));
 
     const handleChange = (_password: string, index: number) => {
       const newPassword = [...password];
       newPassword[index] = _password;
-      props.onChange(newPassword.join(""));
+      
+      // Reconstruct password with spaces from template
+      const passwordWithSpaces = templateInfo.template
+        ? templateInfo.template
+            .split('')
+            .map((char, i) => {
+              if (char === ' ') {
+                return ' ';
+              } else {
+                const charIndex = templateInfo.charPositions.indexOf(i);
+                return charIndex !== -1 ? newPassword[charIndex] : '';
+              }
+            })
+            .join('')
+        : newPassword.join('');
+      
+      props.onChange(passwordWithSpaces);
       setPassword(newPassword);
       
       // Auto-advance to next input if current input has a value and there's a next input
@@ -220,8 +251,8 @@ const SinglePasswordInput = React.forwardRef<
   return (
     <input
       ref={ref}
-      type="password"
-      value={props.value}
+      type="text"
+      value={props.value ? "•" : ""}
       onChange={handleChange}
       onCompositionStart={handleCompositionStart}
       onCompositionEnd={handleCompositionEnd}
@@ -229,6 +260,8 @@ const SinglePasswordInput = React.forwardRef<
         [styles.Dark]: props.isDark,
       })}
       onKeyDown={props.onKeyDown}
+      autoComplete="off"
+      spellCheck={false}
     />
   );
 });

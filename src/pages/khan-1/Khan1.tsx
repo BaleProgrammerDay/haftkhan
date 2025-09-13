@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Khan1.module.scss";
 import { Input } from "~/components/ui/Input";
 import { Button } from "../../components/ui/Button";
@@ -7,7 +7,14 @@ import { useNotification } from "~/context/Notification";
 import { PasswordInput } from "~/components";
 import { API } from "~/api/api";
 
-const password = "تیم خفن هست";
+const getTemplate = (nameTeam: string) => {
+  if (nameTeam === "منابع انسانی") {
+    return "*** *** ***";
+  } else if (nameTeam === "مهندسی نرم افزار") {
+    return "*** ***";
+  }
+  return "";
+};
 
 export const Khan1 = (props: PageProps) => {
   const [inputs, setInputs] = useState({
@@ -31,7 +38,8 @@ export const Khan1 = (props: PageProps) => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const handleValidation = () => {
       if (inputs.password === "") {
         setNotificationText(
@@ -75,6 +83,8 @@ export const Khan1 = (props: PageProps) => {
     return () => clearInterval(interval);
   }, []);
 
+  const pattern = getTemplate(inputs.username);
+
   return (
     <div
       className={styles.Page}
@@ -89,7 +99,7 @@ export const Khan1 = (props: PageProps) => {
           width={480}
           height={480}
         />
-        <div className={styles.Inputs}>
+        <form className={styles.Inputs} onSubmit={handleSubmit}>
           <Input
             type="text"
             placeholder="تو؟"
@@ -104,16 +114,16 @@ export const Khan1 = (props: PageProps) => {
           <div className={styles.PasswordInput}>
             <PasswordInput
               length={8}
-              template={password}
+              template={pattern}
               direction="rtl"
               onChange={(password) => handleSecondInputChange(password)}
             />
           </div>
 
-          <Button variant="fill" size="large" onClick={handleSubmit}>
+          <Button variant="fill" size="large" type="submit">
             بیدار شو
           </Button>
-        </div>
+        </form>
       </div>
     </div>
   );
