@@ -9,13 +9,15 @@ import { Scratch } from "./Scratch";
 import { Wires, useWireConnections } from "./Wires";
 import { Folders } from "./Folder";
 
+const password = "1234";
+
 export const Khan2 = (_props: PageProps) => {
   const texts = [
     "یه چیزایی یادمه...اون...همون دیگه...",
     "درست یادم نمیاد...شاید حافظمو ...حافظمو...",
   ];
 
-  const [storyIsEnded, setStoryIsEnded] = useState(false);
+  const [storyIsEnded, setStoryIsEnded] = useState(true);
 
   // Wire connection logic
   const {
@@ -44,7 +46,8 @@ export const Khan2 = (_props: PageProps) => {
   return (
     <div className={styles.Page}>
       <div className={styles.Content}>
-        {/* Wire system */}
+        {/* Wire system - only show after horse dialogue ends */}
+
         <Wires
           connections={connections}
           onButtonClick={handleWireButtonClick}
@@ -61,14 +64,18 @@ export const Khan2 = (_props: PageProps) => {
           <TypingText
             text={texts}
             waitDelay={1000}
-            onComplete={() => setStoryIsEnded(true)}
+            onComplete={() => {
+              setStoryIsEnded(true);
+            }}
           />
         )}
       </div>
 
-      <Folders />
+      {/* Folders - only show after horse dialogue ends */}
+      {storyIsEnded && <Folders password={password} />}
 
-      <Scratch />
+      {/* Scratch - only show after horse dialogue ends */}
+      {storyIsEnded && <Scratch password={password} />}
     </div>
   );
 };

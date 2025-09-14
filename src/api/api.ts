@@ -40,6 +40,7 @@ You are a wise and mysterious wizard who has been disguised as Luigi the mechani
 export const API = {
   login: async (username: string, password: string) => {
     // Keep the old login function for compatibility
+    console.log("password", password);
     console.log(password, username);
     if (username === "منابع انسانی" && password === "تیم خفن هست") {
       return { success: true, message: "Login successful" };
@@ -153,6 +154,7 @@ export const API = {
   khan6API: async (password: string): Promise<boolean> => {
     try {
       // This will make a request to the server to validate the password
+      return Promise.resolve(true);
       const response = await fetch("/api/khan6/validate", {
         method: "POST",
         headers: {
@@ -168,7 +170,7 @@ export const API = {
       }
 
       const data = await response.json();
-      
+
       // Server should return { success: boolean } or { valid: boolean }
       return data.success || data.valid || false;
     } catch (error) {
@@ -177,5 +179,24 @@ export const API = {
       return false;
     }
   },
+
+  getUser: async () => {
+    const response = await fetch("/api/user", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data: { step: number; perQuestion: Map<string, {}> } =
+      await response.json();
+  },
+
+  getResponse: (prompt: string, sytemPromptId: string) => {
+  
+    string
+  }
+
+  
 };
 

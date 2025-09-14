@@ -18,6 +18,9 @@ export const Khan6 = (_props: PageProps) => {
   const [password, setPassword] = useState("");
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showCongratulations, setShowCongratulations] = useState(false);
+  const [startCongratulationsAnimation, setStartCongratulationsAnimation] = useState(false);
+  const [showFolder, setShowFolder] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const { setNotificationText } = useNotification();
 
@@ -66,6 +69,20 @@ export const Khan6 = (_props: PageProps) => {
     ));
   };
 
+  const renderCongratulationsText = (text: string) => {
+    return text.split("").map((char, index) => (
+      <span
+        key={index}
+        className={`${styles.CongratulationsLetter} ${startCongratulationsAnimation ? styles.disappearing : ""}`}
+        style={{
+          animationDelay: `${index * 0.1}s`, // Stagger the animation for each letter
+        }}
+      >
+        {char === " " ? "\u00A0" : char}
+      </span>
+    ));
+  };
+
   const handleSubmit = async () => {
     const cleanPassword = password.replace(/\s/g, ""); // Remove spaces
     if (cleanPassword.length === 4) {
@@ -75,10 +92,29 @@ export const Khan6 = (_props: PageProps) => {
         const isValid = await API.khan6API(cleanPassword);
         
         if (isValid) {
-          setNotificationText("رمز عبور صحیح است! 🎉");
+          // Hide the video and form, show congratulations text
+          setShowVideo(false);
+          setShowForm(false);
+          setShowCongratulations(true);
+          
           // Handle successful password validation
           console.log("Password is correct:", cleanPassword);
-          // You can add navigation or other success logic here
+          
+          // Start the character disappearing animation after 1 second
+          setTimeout(() => {
+            setStartCongratulationsAnimation(true);
+          }, 1000);
+          
+          // Hide congratulations and show folder after animation completes
+          setTimeout(() => {
+            setShowCongratulations(false);
+            setShowFolder(true);
+          }, 3000);
+          
+          // Navigate to step 6.5 after showing the folder
+          setTimeout(() => {
+            _props.setStep(6.5);
+          }, 5000);
         } else {
           setNotificationText("رمز عبور اشتباه است. دوباره تلاش کنید. ❌");
         }
@@ -142,6 +178,24 @@ export const Khan6 = (_props: PageProps) => {
                   {secondText}
                 </div>
               )}
+            </div>
+          )}
+
+          {showCongratulations && (
+            <div className={styles.CongratulationsContainer}>
+              <div className={styles.CongratulationsText}>
+                {renderCongratulationsText("تبریک میگم شما وارد سیستم اولاد شدید")}
+              </div>
+            </div>
+          )}
+
+          {showFolder && (
+            <div className={styles.FolderContainer}>
+              <img 
+                src="/src/assets/folder.png" 
+                alt="Folder" 
+                className={styles.FolderImage}
+              />
             </div>
           )}
 

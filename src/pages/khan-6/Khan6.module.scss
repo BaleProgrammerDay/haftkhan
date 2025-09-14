@@ -217,3 +217,97 @@
   }
 }
 
+.CongratulationsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--color-background);
+  z-index: 10;
+}
+
+.CongratulationsText {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #4CAF50;
+  text-align: center;
+  direction: rtl;
+  line-height: 1.2;
+  max-width: 90%;
+  margin: 0 auto;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.CongratulationsLetter {
+  display: inline-block;
+  color: #4CAF50;
+  transition: all 0.5s ease;
+  transform-origin: center center;
+}
+
+.CongratulationsLetter.disappearing {
+  animation: characterDisappear 0.8s ease forwards;
+}
+
+@keyframes characterDisappear {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2) translateY(-10px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+}
+
+@media (max-width: 768px) {
+  .CongratulationsText {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .CongratulationsText {
+    font-size: 2rem;
+  }
+}
+
+.FolderContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--color-background);
+  z-index: 10;
+}
+
+.FolderImage {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  animation: folderFadeIn 0.5s ease-out;
+}
+
+@keyframes folderFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+

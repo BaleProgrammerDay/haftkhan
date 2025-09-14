@@ -12,10 +12,6 @@
   right: -180px;
   z-index: 1;
   font-weight: 500;
-  img {
-    width: 200px;
-    height: 200px;
-  }
   rotate: -5deg;
 
   background-color: var(--color-neutrals-n-00);
@@ -26,19 +22,255 @@
   padding: 10px;
 }
 
-.ScratchMe {
+.ContentContainer {
+  position: relative;
+  width: 240px; // Frame width including padding
+  height: 240px; // Frame height including padding
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.PasswordArea {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 2px solid #8b4513;
+  z-index: 1;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+
+  &.Revealed {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+    animation: passwordReveal 0.8s ease-out forwards;
+  }
+
+  &::before {
+    content: "🔑 ";
+    margin-right: 4px;
+  }
+}
+
+// Image layer that covers the password
+.ImageLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: opacity 0.8s ease-out;
+
+  // Remove transitions for draggable image
+  &.DraggableImage {
+    transition: none;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 4px;
+    transition: opacity 0.8s ease-out;
+  }
+
+  // Remove transitions for draggable image
+  &.DraggableImage img {
+    transition: none;
+  }
+
+  // Add a scratching away effect
+  &.Scratching {
+    animation: scratchReveal 0.8s ease-out forwards;
+
+    img {
+      filter: brightness(1.2) contrast(1.1);
+    }
+  }
+
+  // Draggable image styles
+  &.DraggableImage {
+    cursor: move;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    z-index: 15; // Lower than frame z-index (20)
+
+    &:hover {
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    &:active {
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    img {
+      filter: brightness(1.1) contrast(1.05);
+    }
+  }
+
+  // Image falling animation
+  &.ImageFalling {
+    animation: imageFall 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    pointer-events: none;
+    z-index: 5; // Lower than frame when falling
+  }
+}
+
+.DragHint {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 10;
+  animation: pulse 2s infinite;
+}
+
+.ImageMovable {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.ScratchOverlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
+  align-items: center;
+  z-index: 2; // Higher than image to stay on top
+  border-radius: 4px;
+  pointer-events: auto; // Ensure it's clickable
+  background: linear-gradient(
+    135deg,
+    rgba(128, 128, 128, 0.8) 0%,
+    rgba(64, 64, 64, 0.9) 100%
+  );
+
+  &:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(140, 140, 140, 0.9) 0%,
+      rgba(80, 80, 80, 0.95) 100%
+    );
+  }
 }
 
 .ScratchLine {
   display: flex;
   width: 2px;
   height: 20px;
-  background-color: var(--color-fixed-neutrals-n-100);
+  background-color: rgba(200, 200, 200, 0.8);
+  box-shadow: 0 0 4px rgba(220, 220, 220, 0.9);
 
   &.Odd {
-    background-color: var(--color-fixed-neutrals-n-200);
+    background-color: rgba(180, 180, 180, 0.9);
+    box-shadow: 0 0 6px rgba(200, 200, 200, 1);
+  }
+}
+
+// Draggable Wooden Frame Piece (broken off from top frame)
+.DraggableFramePiece {
+  width: 200px; // Match the ContentContainer width
+  height: 30px; // Match the TopFrame height
+  background: linear-gradient(
+    135deg,
+    #8b4513 0%,
+    #a0522d 15%,
+    #cd853f 30%,
+    #deb887 45%,
+    #d2b48c 60%,
+    #a0522d 75%,
+    #8b4513 100%
+  );
+  border: 2px solid #654321;
+  border-radius: 8px 8px 0 0; // Match TopFrame border-radius
+  position: relative;
+  transition: opacity 0.3s ease-out;
+  box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);
+
+  // Wood grain texture - match frame parts
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      rgba(139, 69, 19, 0.1) 1px,
+      rgba(139, 69, 19, 0.2) 2px,
+      transparent 3px,
+      transparent 6px
+    );
+    opacity: 0.6;
+    border-radius: 6px 6px 0 0;
+  }
+
+  // Wood grain lines - vertical for frame pieces
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      rgba(101, 67, 33, 0.1) 5px,
+      rgba(101, 67, 33, 0.2) 7px,
+      transparent 10px,
+      transparent 20px
+    );
+    opacity: 0.4;
+    border-radius: 6px 6px 0 0;
+  }
+
+  &.FramePieceExploded {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &.PieceNearPassword {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    border: 2px solid #ffd700;
+    animation: pieceGlow 1s ease-in-out infinite alternate;
   }
 }
 
@@ -73,7 +305,12 @@
   left: -50px;
   width: 100px;
   height: 100px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.8), rgba(255, 200, 200, 0.4), transparent);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 200, 200, 0.4),
+    transparent
+  );
   border-radius: 50%;
   animation: flash 0.3s ease-out forwards;
 }
@@ -89,6 +326,70 @@
   }
   100% {
     transform: scale(2);
+    opacity: 0;
+  }
+}
+
+// Frame piece fragments - pieces of the broken wooden frame piece
+.FramePieceFragment {
+  position: absolute;
+  width: 15px;
+  height: 6px;
+  background: linear-gradient(135deg, #8b4513 0%, #a0522d 50%, #654321 100%);
+  border-radius: 2px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border: 1px solid #654321;
+  animation: frameFragmentFall 2.5s ease-out forwards;
+  animation-delay: calc(var(--fragment-index) * 0.05s);
+  z-index: 10;
+}
+
+@keyframes frameFragmentFall {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  10% {
+    transform: translate(
+        calc(-50% + cos(var(--fragment-index) * 60deg) * 8px),
+        calc(-50% + sin(var(--fragment-index) * 60deg) * 8px)
+      )
+      rotate(calc(var(--fragment-index) * 15deg)) scale(1.1);
+    opacity: 1;
+  }
+  25% {
+    transform: translate(
+        calc(-50% + cos(var(--fragment-index) * 60deg) * 25px),
+        calc(-50% + sin(var(--fragment-index) * 60deg) * 25px + 15px)
+      )
+      rotate(calc(var(--fragment-index) * 45deg + 90deg)) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(
+        calc(-50% + cos(var(--fragment-index) * 60deg) * 40px),
+        calc(-50% + sin(var(--fragment-index) * 60deg) * 40px + 60px)
+      )
+      rotate(calc(var(--fragment-index) * 90deg + 180deg)) scale(0.9);
+    opacity: 0.9;
+  }
+  75% {
+    transform: translate(
+        calc(-50% + cos(var(--fragment-index) * 60deg) * 55px),
+        calc(-50% + sin(var(--fragment-index) * 60deg) * 55px + 120px)
+      )
+      rotate(calc(var(--fragment-index) * 135deg + 270deg)) scale(0.7);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(
+        calc(-50% + cos(var(--fragment-index) * 60deg) * 70px),
+        calc(-50% + sin(var(--fragment-index) * 60deg) * 70px + 200px)
+      )
+      rotate(calc(var(--fragment-index) * 180deg + 360deg)) scale(0.3);
     opacity: 0;
   }
 }
@@ -117,37 +418,42 @@
   }
   10% {
     transform: translate(
-      calc(-50% + cos(var(--fragment-index) * 60deg) * 10px),
-      calc(-50% + sin(var(--fragment-index) * 60deg) * 10px)
-    ) rotate(calc(var(--fragment-index) * 15deg)) scale(1.1);
+        calc(-50% + cos(var(--fragment-index) * 60deg) * 10px),
+        calc(-50% + sin(var(--fragment-index) * 60deg) * 10px)
+      )
+      rotate(calc(var(--fragment-index) * 15deg)) scale(1.1);
     opacity: 1;
   }
   25% {
     transform: translate(
-      calc(-50% + cos(var(--fragment-index) * 60deg) * 30px),
-      calc(-50% + sin(var(--fragment-index) * 60deg) * 30px + 20px)
-    ) rotate(calc(var(--fragment-index) * 45deg + 90deg)) scale(1);
+        calc(-50% + cos(var(--fragment-index) * 60deg) * 30px),
+        calc(-50% + sin(var(--fragment-index) * 60deg) * 30px + 20px)
+      )
+      rotate(calc(var(--fragment-index) * 45deg + 90deg)) scale(1);
     opacity: 1;
   }
   50% {
     transform: translate(
-      calc(-50% + cos(var(--fragment-index) * 60deg) * 50px),
-      calc(-50% + sin(var(--fragment-index) * 60deg) * 50px + 80px)
-    ) rotate(calc(var(--fragment-index) * 90deg + 180deg)) scale(0.9);
+        calc(-50% + cos(var(--fragment-index) * 60deg) * 50px),
+        calc(-50% + sin(var(--fragment-index) * 60deg) * 50px + 80px)
+      )
+      rotate(calc(var(--fragment-index) * 90deg + 180deg)) scale(0.9);
     opacity: 0.9;
   }
   75% {
     transform: translate(
-      calc(-50% + cos(var(--fragment-index) * 60deg) * 70px),
-      calc(-50% + sin(var(--fragment-index) * 60deg) * 70px + 150px)
-    ) rotate(calc(var(--fragment-index) * 135deg + 270deg)) scale(0.7);
+        calc(-50% + cos(var(--fragment-index) * 60deg) * 70px),
+        calc(-50% + sin(var(--fragment-index) * 60deg) * 70px + 150px)
+      )
+      rotate(calc(var(--fragment-index) * 135deg + 270deg)) scale(0.7);
     opacity: 0.6;
   }
   100% {
     transform: translate(
-      calc(-50% + cos(var(--fragment-index) * 60deg) * 90px),
-      calc(-50% + sin(var(--fragment-index) * 60deg) * 90px + 250px)
-    ) rotate(calc(var(--fragment-index) * 180deg + 360deg)) scale(0.3);
+        calc(-50% + cos(var(--fragment-index) * 60deg) * 90px),
+        calc(-50% + sin(var(--fragment-index) * 60deg) * 90px + 250px)
+      )
+      rotate(calc(var(--fragment-index) * 180deg + 360deg)) scale(0.3);
     opacity: 0;
   }
 }
@@ -173,23 +479,26 @@
   }
   30% {
     transform: translate(
-      calc(-50% + cos(var(--particle-index) * 45deg) * 30px),
-      calc(-50% + sin(var(--particle-index) * 45deg) * 30px + 50px)
-    ) scale(0.8);
+        calc(-50% + cos(var(--particle-index) * 45deg) * 30px),
+        calc(-50% + sin(var(--particle-index) * 45deg) * 30px + 50px)
+      )
+      scale(0.8);
     opacity: 0.8;
   }
   70% {
     transform: translate(
-      calc(-50% + cos(var(--particle-index) * 45deg) * 50px),
-      calc(-50% + sin(var(--particle-index) * 45deg) * 50px + 150px)
-    ) scale(0.5);
+        calc(-50% + cos(var(--particle-index) * 45deg) * 50px),
+        calc(-50% + sin(var(--particle-index) * 45deg) * 50px + 150px)
+      )
+      scale(0.5);
     opacity: 0.4;
   }
   100% {
     transform: translate(
-      calc(-50% + cos(var(--particle-index) * 45deg) * 70px),
-      calc(-50% + sin(var(--particle-index) * 45deg) * 70px + 250px)
-    ) scale(0.2);
+        calc(-50% + cos(var(--particle-index) * 45deg) * 70px),
+        calc(-50% + sin(var(--particle-index) * 45deg) * 70px + 250px)
+      )
+      scale(0.2);
     opacity: 0;
   }
 }
@@ -267,3 +576,445 @@
     transform: rotate(45deg) scale(1);
   }
 }
+
+// Animation for scratching away the image to reveal password
+@keyframes scratchReveal {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1) contrast(1);
+  }
+  20% {
+    opacity: 0.9;
+    transform: scale(1.02);
+    filter: brightness(1.1) contrast(1.05);
+  }
+  40% {
+    opacity: 0.7;
+    transform: scale(1.05) rotate(1deg);
+    filter: brightness(1.2) contrast(1.1);
+  }
+  60% {
+    opacity: 0.5;
+    transform: scale(1.03) rotate(-0.5deg);
+    filter: brightness(1.3) contrast(1.15);
+  }
+  80% {
+    opacity: 0.2;
+    transform: scale(0.98) rotate(0.5deg);
+    filter: brightness(1.4) contrast(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+    filter: brightness(1.5) contrast(1.25);
+    pointer-events: none;
+  }
+}
+
+// Animation for password reveal when image is moved
+@keyframes passwordReveal {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+    filter: blur(4px);
+  }
+  30% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.05);
+    filter: blur(2px);
+  }
+  60% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1.1);
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(0px);
+  }
+}
+
+// Wooden Frame Styles
+.WoodenFrame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.FramePart {
+  position: absolute;
+  background: linear-gradient(
+    135deg,
+    #8b4513 0%,
+    #a0522d 15%,
+    #cd853f 30%,
+    #deb887 45%,
+    #d2b48c 60%,
+    #a0522d 75%,
+    #8b4513 100%
+  );
+  border: 2px solid #654321;
+  box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);
+
+  // Wood grain texture simulation
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      rgba(139, 69, 19, 0.1) 1px,
+      rgba(139, 69, 19, 0.2) 2px,
+      transparent 3px,
+      transparent 6px
+    );
+    opacity: 0.6;
+  }
+
+  // Wood grain lines
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      rgba(101, 67, 33, 0.1) 5px,
+      rgba(101, 67, 33, 0.2) 7px,
+      transparent 10px,
+      transparent 20px
+    );
+    opacity: 0.4;
+  }
+}
+
+.TopFrame {
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  height: 30px;
+  border-radius: 8px 8px 0 0;
+
+  &.ClickableFrame {
+    cursor: pointer;
+    pointer-events: auto;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.4),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.3), 0 6px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    &:active {
+      transform: translateY(-1px);
+      box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    // Add a subtle indication that it's clickable
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover::after {
+      opacity: 1;
+    }
+  }
+
+  &.BrokenFrame {
+    opacity: 0.3;
+    background: linear-gradient(
+      135deg,
+      #654321 0%,
+      #8b4513 25%,
+      #654321 50%,
+      #5a3a1a 75%,
+      #654321 100%
+    );
+    border: 2px dashed #654321;
+
+    // Add broken effect
+    &::before {
+      opacity: 0.3;
+    }
+
+    // Add crack lines
+    &::after {
+      content: "";
+      position: absolute;
+      top: 30%;
+      left: 20%;
+      width: 60%;
+      height: 40%;
+      background: linear-gradient(
+          45deg,
+          transparent 40%,
+          #333 41%,
+          #333 43%,
+          transparent 44%
+        ),
+        linear-gradient(
+          -45deg,
+          transparent 55%,
+          #333 56%,
+          #333 58%,
+          transparent 59%
+        );
+      opacity: 0.7;
+    }
+  }
+
+  &.DisabledFrame {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.6;
+
+    // Remove hover effects
+    &:hover {
+      transform: none;
+      box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.3),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    // Remove clickable indicator
+    &::after {
+      display: none;
+    }
+  }
+}
+
+// Glow animation for piece near password
+@keyframes pieceGlow {
+  0% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    transform: scale(1);
+  }
+  100% {
+    box-shadow: 0 0 30px rgba(255, 215, 0, 1);
+    transform: scale(1.05);
+  }
+}
+
+.LeftFrame {
+  top: -20px;
+  left: -20px;
+  bottom: -20px;
+  width: 30px;
+  border-radius: 0;
+}
+
+.RightFrame {
+  top: -20px;
+  right: -20px;
+  bottom: -20px;
+  width: 30px;
+  border-radius: 0;
+}
+
+.BottomFrame {
+  bottom: -20px;
+  left: -20px;
+  right: -20px;
+  height: 30px;
+  border-radius: 0 0 8px 8px;
+  pointer-events: auto;
+
+  &.Clickable {
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.4),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.3), 0 6px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0px);
+      box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.2),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  &.Falling {
+    animation: bottomFrameFall 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+      forwards;
+    pointer-events: none;
+  }
+
+  &.Draggable {
+    cursor: move;
+    opacity: 0.9;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// Frame destruction animation
+.WoodenFrame {
+  &.Destroying {
+    .FramePart {
+      animation: frameDestruction 0.8s ease-out forwards;
+    }
+
+    .BottomFrame {
+      animation: bottomFrameDestruction 0.8s ease-out forwards;
+      animation-delay: 0.1s;
+    }
+  }
+}
+
+@keyframes frameDestruction {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  30% {
+    opacity: 0.8;
+    transform: scale(1.05) rotate(2deg);
+  }
+  60% {
+    opacity: 0.6;
+    transform: scale(0.9) rotate(-1deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.7) rotate(5deg);
+    pointer-events: none;
+  }
+}
+
+@keyframes bottomFrameDestruction {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  20% {
+    opacity: 0.9;
+    transform: scale(1.1) rotate(-2deg);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.8) rotate(3deg);
+  }
+  80% {
+    opacity: 0.3;
+    transform: scale(0.5) rotate(-5deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.2) rotate(10deg);
+    pointer-events: none;
+  }
+}
+
+.ImageMovable {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10; // Lower than frame z-index (20)
+}
+
+// Bottom frame falling animation - positioned above image
+@keyframes bottomFrameFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  10% {
+    transform: translateY(3vh) rotate(1deg);
+    opacity: 1;
+  }
+  25% {
+    transform: translateY(10vh) rotate(2deg);
+    opacity: 0.95;
+  }
+  40% {
+    transform: translateY(20vh) rotate(4deg);
+    opacity: 0.9;
+  }
+  60% {
+    transform: translateY(35vh) rotate(6deg);
+    opacity: 0.8;
+  }
+  80% {
+    transform: translateY(50vh) rotate(10deg);
+    opacity: 0.7;
+  }
+  90% {
+    transform: translateY(60vh) rotate(12deg);
+    opacity: 0.7;
+  }
+  95% {
+    transform: translateY(85vh) rotate(15deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(85vh) rotate(18deg);
+    opacity: 0.7;
+  }
+}
+
+// Image falling animation - bottom edge touches bottom of screen
+@keyframes imageFall {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  10% {
+    transform: translateY(5vh) rotate(1deg) scale(1.02);
+    opacity: 1;
+  }
+  25% {
+    transform: translateY(15vh) rotate(3deg) scale(1.05);
+    opacity: 0.95;
+  }
+  40% {
+    transform: translateY(30vh) rotate(5deg) scale(1.08);
+    opacity: 0.9;
+  }
+  60% {
+    transform: translateY(50vh) rotate(8deg) scale(1.1);
+    opacity: 0.85;
+  }
+  // 80% {
+  //   transform: translateY(70vh) rotate(12deg) scale(1.05);
+  //   opacity: 0.8;
+  // }
+  90% {
+    transform: calc(100vh - 100% - 150px) rotate(15deg) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(calc(100vh - 100% - 20px)) rotate(20deg) scale(0.9);
+    opacity: 0.8;
+  }
+}
+

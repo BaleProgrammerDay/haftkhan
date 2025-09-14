@@ -13,6 +13,14 @@ interface ScratchState {
   isColliding: boolean;
   collisionStartTime: number | null;
   isPinExploded: boolean;
+  isFrameDestroyed: boolean;
+  isBottomFrameFalling: boolean;
+  isImageFalling: boolean;
+  isTopFrameBroken: boolean;
+  isDraggablePieceCreated: boolean;
+  isPieceNearPassword: boolean;
+  isPieceExploded: boolean;
+  isPasswordRevealed: boolean;
 }
 
 const initialState: ScratchState = {
@@ -23,14 +31,27 @@ const initialState: ScratchState = {
   isColliding: false,
   collisionStartTime: null,
   isPinExploded: false,
+  isFrameDestroyed: false,
+  isBottomFrameFalling: false,
+  isImageFalling: false,
+  isTopFrameBroken: false,
+  isDraggablePieceCreated: false,
+  isPieceNearPassword: false,
+  isPieceExploded: false,
+  isPasswordRevealed: false,
 };
 
-export const Scratch = () => {
+export const Scratch = (props: { password: string }) => {
   const [state, setState] = useState<ScratchState>(initialState);
   const pinRef = useRef<HTMLDivElement>(null);
   const scratchRef = useRef<HTMLDivElement>(null);
+  const contentContainerRef = useRef<HTMLDivElement>(null);
+  const topFrameRef = useRef<HTMLDivElement>(null);
+  const draggablePieceRef = useRef<HTMLDivElement>(null);
+  const passwordAreaRef = useRef<HTMLDivElement>(null);
+  const [framePosition, setFramePosition] = useState({ x: 0, y: 0 });
 
-  const password = "1234";
+  const password = props.password;
   const scraches = new Array(40).fill(0);
 
   const handleMoveOnNpc = () => {
@@ -52,9 +73,53 @@ export const Scratch = () => {
     }));
   };
 
+
+
+  const handleTopFrameClick = () => {
+    // Always allow breaking (not dependent on image falling)
+    if (state.isTopFrameBroken) {
+      return;
+    }
+    
+    if (topFrameRef.current) {
+      const rect = topFrameRef.current.getBoundingClientRect();
+      setFramePosition({ x: rect.left, y: rect.top });
+    }
+    
+    setState((prev) => ({
+      ...prev,
+      isDraggablePieceCreated: true,
+      isTopFrameBroken: true,
+    }));
+  };
+
+  const handleBottomFrameClick = () => {
+    if (state.isBottomFrameFalling || state.isImageFalling) {
+      return;
+    }
+    
+    // Start bottom frame falling animation
+    setState((prev) => ({
+      ...prev,
+      isBottomFrameFalling: true,
+    }));
+    
+    // After 500ms, start image falling animation
+    setTimeout(() => {
+      setState((prev) => ({
+        ...prev,
+        isImageFalling: true,
+      }));
+    }, 500);
+  };
+
+  // Collision detection for pin and scratch overlay
   useEffect(() => {
     const id = setInterval(() => {
-      if (!pinRef.current || !scratchRef.current) return;
+      if (!pinRef.current || !scratchRef.current) {
+        return;
+      }
+
       const collision = detectCollision(
         pinRef.current.getBoundingClientRect(),
         scratchRef.current.getBoundingClientRect()
@@ -62,14 +127,12 @@ export const Scratch = () => {
 
       setState((prev) => {
         if (collision && !prev.isColliding) {
-          // Collision started
           return {
             ...prev,
             isColliding: true,
             collisionStartTime: Date.now(),
           };
         } else if (!collision && prev.isColliding) {
-          // Collision ended
           return {
             ...prev,
             isColliding: false,
@@ -77,19 +140,23 @@ export const Scratch = () => {
             scratchProgress: 0,
           };
         } else if (collision && prev.isColliding && prev.collisionStartTime) {
-          // Update progress during collision
           const elapsed = Date.now() - prev.collisionStartTime;
-          const progress = Math.min((elapsed / 3000) * 100, 100); // 3 seconds = 100%
+          const progress = Math.min((elapsed / 3000) * 100, 100);
 
-          // Trigger scratch animation after 3 seconds
           if (elapsed >= 3000 && !prev.isScratched) {
-            // Trigger pin explosion after a short delay
             setTimeout(() => {
               setState((currentState) => ({
                 ...currentState,
                 isPinExploded: true,
               }));
             }, 500);
+
+            setTimeout(() => {
+              setState((currentState) => ({
+                ...currentState,
+                isFrameDestroyed: true,
+              }));
+            }, 1000);
 
             return { ...prev, scratchProgress: progress, isScratched: true };
           }
@@ -98,10 +165,71 @@ export const Scratch = () => {
         }
         return prev;
       });
-    }, 1); // Update every millisecond
+    }, 100);
 
-    return () => clearInterval(id);
+    return () => {
+      clearInterval(id);
+    };
   }, []);
+
+  // Collision detection for draggable piece and scratch overlay
+  useEffect(() => {
+    if (!state.isDraggablePieceCreated || state.isPieceExploded) {
+      return;
+    }
+
+    const id = setInterval(() => {
+      if (!draggablePieceRef.current || !scratchRef.current) {
+        return;
+      }
+
+      const collision = detectCollision(
+        draggablePieceRef.current.getBoundingClientRect(),
+        scratchRef.current.getBoundingClientRect()
+      );
+
+      setState((prev) => {
+        // Only allow collision detection after image has fallen
+        if (!prev.isImageFalling) {
+          return prev;
+        }
+        
+        if (collision && !prev.isPieceNearPassword) {
+          return {
+            ...prev,
+            isPieceNearPassword: true,
+            collisionStartTime: Date.now(),
+          };
+        } else if (!collision && prev.isPieceNearPassword) {
+          return {
+            ...prev,
+            isPieceNearPassword: false,
+            collisionStartTime: null,
+          };
+        } else if (collision && prev.isPieceNearPassword && prev.collisionStartTime) {
+          const elapsed = Date.now() - prev.collisionStartTime;
+          const progress = Math.min((elapsed / 3000) * 100, 100);
+          
+          if (elapsed >= 3000 && !prev.isPieceExploded) {
+            // Explode the piece and reveal password
+            setState((currentState) => ({
+              ...currentState,
+              isPieceExploded: true,
+              isPasswordRevealed: true,
+            }));
+          }
+          
+          return { ...prev, scratchProgress: progress };
+        }
+        return prev;
+      });
+    }, 100);
+
+    return () => {
+      clearInterval(id);
+    };
+  }, [state.isDraggablePieceCreated, state.isPieceExploded, state.isImageFalling]);
+
 
   return (
     <>
@@ -112,10 +240,97 @@ export const Scratch = () => {
         style={{ transform: `translateX(${state.npcTranslateX}px)` }}
         onClick={handleClickNPC}
       >
-        <img src={npc} draggable={false} />
+        {/* Container for Image and Password with Wooden Frame */}
+        <div ref={contentContainerRef} className={styles.ContentContainer}>
+          {/* Password Area - revealed when piece explodes */}
+          <div
+            ref={passwordAreaRef}
+            className={clsx(styles.PasswordArea, {
+              [styles.Revealed]: state.isPasswordRevealed,
+            })}
+          >
+            {password}
+          </div>
+
+          {/* Image layer */}
+          {!state.isScratched ? (
+            <div
+              className={clsx(styles.ImageLayer, {
+                [styles.Scratching]: state.scratchProgress >= 100,
+                [styles.ImageFalling]: state.isImageFalling,
+              })}
+            >
+              <img src={npc} draggable={false} />
+            </div>
+          ) : null}
+
+          {/* Scratch overlay - fixed in center, independent of image */}
+          {!state.isPasswordRevealed && (
+            <div
+              className={styles.ScratchOverlay}
+              onClick={handleClickNPC}
+              ref={scratchRef}
+            >
+              {scraches.map((_, index) => (
+                <div
+                  className={clsx(styles.ScratchLine, {
+                    [styles.Odd]: index % 2 === 1,
+                  })}
+                  key={index}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Wooden Frame around the entire container */}
+          {!state.isFrameDestroyed && (
+            <div
+              className={clsx(styles.WoodenFrame, {
+                [styles.Destroying]:
+                  state.isScratched && !state.isFrameDestroyed,
+              })}
+            >
+              {/* Top Frame Part - Always clickable */}
+              {!state.isTopFrameBroken ? (
+                <div
+                  ref={topFrameRef}
+                  className={clsx(
+                    styles.FramePart,
+                    styles.TopFrame,
+                    styles.ClickableFrame
+                  )}
+                  onClick={handleTopFrameClick}
+                />
+              ) : (
+                <div
+                  className={clsx(
+                    styles.FramePart,
+                    styles.TopFrame,
+                    styles.BrokenFrame
+                  )}
+                />
+              )}
+
+              {/* Left Frame Part */}
+              <div className={clsx(styles.FramePart, styles.LeftFrame)} />
+
+              {/* Right Frame Part */}
+              <div className={clsx(styles.FramePart, styles.RightFrame)} />
+
+              {/* Bottom Frame Part - Clickable to trigger falling animation */}
+              <div 
+                className={clsx(styles.FramePart, styles.BottomFrame, styles.ClickableFrame, {
+                  [styles.Falling]: state.isBottomFrameFalling,
+                })}
+                onClick={handleBottomFrameClick}
+              />
+            </div>
+          )}
+
+        </div>
 
         {/* Progress indicator */}
-        {state.isColliding && state.scratchProgress > 0 && (
+        {((state.isColliding && state.scratchProgress > 0) || (state.isPieceNearPassword && state.scratchProgress > 0)) && (
           <div className={styles.ProgressContainer}>
             <div className={styles.ProgressBar}>
               <div
@@ -130,44 +345,28 @@ export const Scratch = () => {
             </div>
           </div>
         )}
-
-        {state.isScratched ? (
-          password
-        ) : (
-          <div
-            className={styles.ScratchMe}
-            onClick={handleClickNPC}
-            ref={scratchRef}
-          >
-            {scraches.map((_, index) => (
-              <div
-                className={clsx(styles.ScratchLine, {
-                  [styles.Odd]: index % 2 === 1,
-                })}
-                key={index}
-              />
-            ))}
-          </div>
-        )}
       </div>
 
-      <Draggable initialPosition={{ x: 20, y: 20 }}>
-        <div
-          className={clsx(styles.Pin, {
-            [styles.PinExploded]: state.isPinExploded,
-          })}
-          ref={pinRef}
-        >
-          {state.isPinExploded && (
+      {/* Draggable Wooden Frame Piece - broken off from top frame */}
+      {state.isDraggablePieceCreated && (
+        <Draggable initialPosition={framePosition}>
+          <div
+            ref={draggablePieceRef}
+            className={clsx(styles.DraggableFramePiece, {
+              [styles.FramePieceExploded]: state.isPieceExploded,
+              [styles.PieceNearPassword]: state.isPieceNearPassword,
+            })}
+          >
+          {state.isPieceExploded && (
             <div className={styles.ExplosionEffect}>
               {/* Flash effect */}
               <div className={styles.ExplosionFlash} />
 
-              {/* Pin fragments */}
+              {/* Frame piece fragments */}
               {Array.from({ length: 6 }, (_, index) => (
                 <div
                   key={index}
-                  className={styles.PinFragment}
+                  className={styles.FramePieceFragment}
                   style={
                     {
                       "--fragment-index": index,
@@ -192,8 +391,10 @@ export const Scratch = () => {
               ))}
             </div>
           )}
-        </div>
-      </Draggable>
+          </div>
+        </Draggable>
+      )}
+
     </>
   );
 };

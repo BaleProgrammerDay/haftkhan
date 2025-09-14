@@ -12,6 +12,7 @@ import { Khan4 } from "./pages/khan-4/Khan4";
 import { getTextDirection } from "./utils";
 import { Khan5 } from "./pages/khan-5/Khan5";
 import { Khan6 } from "./pages/khan-6/Khan6";
+import { Khan6o5 } from "./pages/khan-6.5/khan6o5";
 
 function App() {
   const [step, setStep] = useState(1);
@@ -50,6 +51,7 @@ function App() {
           {step === 4 && <Khan4 setStep={setStep} />}
           {step === 5 && <Khan5 setStep={setStep} />}
           {step === 6 && <Khan6 setStep={setStep} />}
+          {step === 6.5 && <Khan6o5 setStep={setStep} />}
           {step === 7 && <Messanger />}
         </div>
         {notificationText && (
