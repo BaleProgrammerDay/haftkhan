@@ -37,10 +37,13 @@ export const Khan6 = (_props: PageProps) => {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showCongratulations, setShowCongratulations] = useState(false);
-  const [startCongratulationsAnimation, setStartCongratulationsAnimation] = useState(false);
+  const [startCongratulationsAnimation, setStartCongratulationsAnimation] =
+    useState(false);
   const [showFolder, setShowFolder] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const { setNotificationText } = useNotification();
+
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const firstText = "لطفا توجه کنید";
   const secondText = "برای تجربه بهتر از هدفون یا اسپیکر استفاده کنید...";
@@ -91,7 +94,9 @@ export const Khan6 = (_props: PageProps) => {
     return text.split("").map((char, index) => (
       <span
         key={index}
-        className={`${styles.CongratulationsLetter} ${startCongratulationsAnimation ? styles.disappearing : ""}`}
+        className={`${styles.CongratulationsLetter} ${
+          startCongratulationsAnimation ? styles.disappearing : ""
+        }`}
         style={{
           animationDelay: `${index * 0.1}s`, // Stagger the animation for each letter
         }}
@@ -105,30 +110,30 @@ export const Khan6 = (_props: PageProps) => {
     const cleanPassword = password.replace(/\s/g, ""); // Remove spaces
     if (cleanPassword.length === 4) {
       setIsLoading(true);
-      
+
       try {
         const isValid = await API.khan6API(cleanPassword);
-        
+
         if (isValid) {
           // Hide the video and form, show congratulations text
           setShowVideo(false);
           setShowForm(false);
           setShowCongratulations(true);
-          
+
           // Handle successful password validation
           console.log("Password is correct:", cleanPassword);
-          
+
           // Start the character disappearing animation after 1 second
           setTimeout(() => {
             setStartCongratulationsAnimation(true);
           }, 1000);
-          
+
           // Hide congratulations and show folder after animation completes
           setTimeout(() => {
             setShowCongratulations(false);
             setShowFolder(true);
           }, 3000);
-          
+
           // Navigate to step 6.5 after showing the folder
           setTimeout(() => {
             _props.setStep(6.5);
@@ -151,8 +156,10 @@ export const Khan6 = (_props: PageProps) => {
     if (audioRef.current) {
       if (isAudioPlaying) {
         audioRef.current.pause();
+        videoRef.current?.pause();
       } else {
         audioRef.current.play();
+        videoRef.current?.play();
       }
       setIsAudioPlaying(!isAudioPlaying);
     }
@@ -164,13 +171,14 @@ export const Khan6 = (_props: PageProps) => {
     if (audio) {
       const handleAudioEnd = () => {
         setIsAudioPlaying(false);
+        videoRef.current?.pause();
       };
 
-      audio.addEventListener('ended', handleAudioEnd);
+      audio.addEventListener("ended", handleAudioEnd);
 
       // Cleanup event listener
       return () => {
-        audio.removeEventListener('ended', handleAudioEnd);
+        audio.removeEventListener("ended", handleAudioEnd);
       };
     }
   }, [showForm]); // Re-run when form shows (when audio element is created)
@@ -202,16 +210,18 @@ export const Khan6 = (_props: PageProps) => {
           {showCongratulations && (
             <div className={styles.CongratulationsContainer}>
               <div className={styles.CongratulationsText}>
-                {renderCongratulationsText("تبریک میگم شما وارد سیستم اولاد شدید")}
+                {renderCongratulationsText(
+                  "تبریک میگم شما وارد سیستم اولاد شدید"
+                )}
               </div>
             </div>
           )}
 
           {showFolder && (
             <div className={styles.FolderContainer}>
-              <img 
-                src="/src/assets/folder.png" 
-                alt="Folder" 
+              <img
+                src="/src/assets/folder.png"
+                alt="Folder"
                 className={styles.FolderImage}
               />
             </div>
@@ -222,9 +232,9 @@ export const Khan6 = (_props: PageProps) => {
               {showVideo && (
                 <div className={styles.VideoContainer}>
                   <video
+                    ref={videoRef}
                     className={styles.Video}
                     muted
-                    autoPlay
                     loop
                   >
                     <source
@@ -237,10 +247,7 @@ export const Khan6 = (_props: PageProps) => {
 
               {showForm && (
                 <div className={styles.FormContainer}>
-                  <audio
-                    ref={audioRef}
-                    preload="auto"
-                  >
+                  <audio ref={audioRef} preload="auto">
                     <source src="/src/pages/khan-6/olad.wav" type="audio/wav" />
                   </audio>
                   <button
