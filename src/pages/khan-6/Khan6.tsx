@@ -157,6 +157,9 @@ export const Khan6 = (_props: PageProps) => {
       if (isAudioPlaying) {
         audioRef.current.pause();
         videoRef.current?.pause();
+        if (videoRef.current) {
+          videoRef.current.currentTime = 0;
+        }
       } else {
         audioRef.current.play();
         videoRef.current?.play();
@@ -172,6 +175,9 @@ export const Khan6 = (_props: PageProps) => {
       const handleAudioEnd = () => {
         setIsAudioPlaying(false);
         videoRef.current?.pause();
+        if (videoRef.current) {
+          videoRef.current.currentTime = 0;
+        }
       };
 
       audio.addEventListener("ended", handleAudioEnd);
@@ -231,12 +237,7 @@ export const Khan6 = (_props: PageProps) => {
             <div className={styles.VideoAndFormContainer}>
               {showVideo && (
                 <div className={styles.VideoContainer}>
-                  <video
-                    ref={videoRef}
-                    className={styles.Video}
-                    muted
-                    loop
-                  >
+                  <video ref={videoRef} className={styles.Video} muted loop>
                     <source
                       src={"/rakhsh_app/horse_states/voice.mp4"}
                       type="video/mp4"

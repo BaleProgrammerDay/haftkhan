@@ -5,7 +5,7 @@
 
   position: fixed;
 
-  bottom: -20px;
+  bottom: -40px;
 }
 
 .Video {
@@ -82,6 +82,8 @@
     inset 0 0 20px rgba(0, 212, 255, 0.1);
   position: relative;
   animation: portalGlow 2s ease-in-out infinite alternate;
+  direction: rtl;
+  text-align: right;
 }
 
 @keyframes portalGlow {
@@ -116,9 +118,7 @@
 
 .CloseButton {
   background: transparent;
-  border: 2px solid #ff4757;
   color: #ff4757;
-  border-radius: 50%;
   width: 35px;
   height: 35px;
   cursor: pointer;
@@ -127,12 +127,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  
-  &:hover {
-    background: #ff4757;
-    color: white;
-    transform: scale(1.1);
-  }
+
 }
 
 .PortalContent {
@@ -168,6 +163,8 @@
   color: #00d4ff;
   font-size: 16px;
   transition: all 0.3s ease;
+  direction: rtl;
+  text-align: right;
   
   &:focus {
     outline: none;
@@ -178,6 +175,8 @@
   
   &::placeholder {
     color: rgba(0, 212, 255, 0.5);
+    direction: rtl;
+    text-align: right;
   }
 }
 

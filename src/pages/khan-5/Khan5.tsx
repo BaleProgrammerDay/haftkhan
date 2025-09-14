@@ -26,13 +26,12 @@ export const Khan5 = (_props: PageProps) => {
   const [showPortal, setShowPortal] = useState(false);
   const [portalX, setPortalX] = useState("");
   const [portalY, setPortalY] = useState("");
+  const [mapNumber, setMapNumber] = useState("");
   const [videoState, setVideoState] = useState<
     "running" | "portal_start" | "portal_continue"
   >("running");
   const [showTypedText, setShowTypedText] = useState(false);
   const [showEnterButton, setShowEnterButton] = useState(false);
-
-  const [storyIsEnded, setStoryIsEnded] = useState(false);
 
   const handleTeleport = async () => {
     try {
@@ -96,6 +95,7 @@ export const Khan5 = (_props: PageProps) => {
       percentageY <= 37
     ) {
       setShowPortal(true);
+      setShowEnterButton(false);
     }
   };
 
@@ -158,7 +158,7 @@ export const Khan5 = (_props: PageProps) => {
           <div className={styles.PortalOverlay}>
             <div className={styles.Portal}>
               <div className={styles.PortalHeader}>
-                <h2 className={styles.PortalTitle}>🌌 Portal Coordinates</h2>
+                <h2 className={styles.PortalTitle}> مختصات جا به جایی</h2>
                 <button
                   className={styles.CloseButton}
                   onClick={() => setShowPortal(false)}
@@ -171,27 +171,40 @@ export const Khan5 = (_props: PageProps) => {
                 <div className={styles.CoordinateDisplay}>
                   <div className={styles.CoordinateItem}>
                     <label className={styles.CoordinateLabel}>
-                      X Position:
+                      شماره نقشه:
+                    </label>
+                    <input
+                      type="number"
+                      value={mapNumber}
+                      onChange={(e) => setMapNumber(e.target.value)}
+                      className={styles.CoordinateInput}
+                      placeholder="شماره نقشه را وارد کنید"
+                    />
+                  </div>
+
+                  <div className={styles.CoordinateItem}>
+                    <label className={styles.CoordinateLabel}>
+                      طول جغرافیایی:
                     </label>
                     <input
                       type="number"
                       value={portalX}
                       onChange={(e) => setPortalX(e.target.value)}
                       className={styles.CoordinateInput}
-                      placeholder="Enter X coordinate"
+                      placeholder="طول جغرافیایی را وارد کنید"
                     />
                   </div>
 
                   <div className={styles.CoordinateItem}>
                     <label className={styles.CoordinateLabel}>
-                      Y Position:
+                      عرض جغرافیایی:
                     </label>
                     <input
                       type="number"
                       value={portalY}
                       onChange={(e) => setPortalY(e.target.value)}
                       className={styles.CoordinateInput}
-                      placeholder="Enter Y coordinate"
+                      placeholder="عرض جغرافیایی را وارد کنید"
                     />
                   </div>
                 </div>
@@ -201,13 +214,13 @@ export const Khan5 = (_props: PageProps) => {
                     className={styles.PortalButton}
                     onClick={handleTeleport}
                   >
-                    🚀 Teleport
+                    طی‌الارض
                   </button>
                   <button
                     className={styles.PortalButton}
                     onClick={() => setShowPortal(false)}
                   >
-                    ❌ Cancel
+                    انصراف
                   </button>
                 </div>
               </div>
