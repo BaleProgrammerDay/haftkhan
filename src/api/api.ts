@@ -50,7 +50,7 @@ export const API = {
   },
 
   getLuigiResponse: async (
-    userMessage: string,
+    _userMessage: string,
     openAIMessages: OpenAIMessage[]
   ) => {
     try {
@@ -188,15 +188,30 @@ export const API = {
       },
     });
 
-    const data: { step: number; perQuestion: Map<string, {}> } =
-      await response.json();
+    await response.json();
   },
 
-  getResponse: (prompt: string, sytemPromptId: string) => {
-  
-    string
-  }
+  getResponse: (_prompt: string, _sytemPromptId: string) => {
+    // TODO: Implement this function
+    return Promise.resolve("Response");
+  },
 
-  
+  // API function for wire completion check
+  checkWireCompletion: async (
+    connections: Array<{ from: number; to: number }>
+  ): Promise<{ success: boolean; message?: string }> => {
+    // For now, simulate wrong connections for testing
+    // In real implementation, this would check against correct wire pattern
+    const isCorrect = Math.random() > 0.5; // 50% chance of being correct for testing
+    
+    if (isCorrect) {
+      return { success: true };
+    } else {
+      return { 
+        success: false, 
+        message: "سیم کشی اشتباه انجام شد\n۲ شانس دیگر بیشتر برام نمونده" 
+      };
+    }
+  },
 };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Khan2.module.scss";
 
 import { PageProps } from "~/types";
@@ -11,13 +11,13 @@ import { Folders } from "./Folder";
 
 const password = "1234";
 
-export const Khan2 = (_props: PageProps) => {
+export const Khan2 = (props: PageProps) => {
   const texts = [
     "یه چیزایی یادمه...اون...همون دیگه...",
     "درست یادم نمیاد...شاید حافظمو ...حافظمو...",
   ];
 
-  const [storyIsEnded, setStoryIsEnded] = useState(true);
+  const [storyIsEnded, setStoryIsEnded] = useState(false);
 
   // Wire connection logic
   const {
@@ -26,6 +26,11 @@ export const Khan2 = (_props: PageProps) => {
     isButtonConnected,
     isButtonActive,
     isButtonConnectable,
+    isCompleted,
+    isChecking,
+    isError,
+    errorMessage,
+    remainingChances,
   } = useWireConnections();
 
   // Wire button colors - paired for left and right sides
@@ -43,6 +48,18 @@ export const Khan2 = (_props: PageProps) => {
     return wireButtonColors[colorIndex] || "#FF6B6B";
   };
 
+  // Handle step transition when wires are completed
+  useEffect(() => {
+    if (isCompleted) {
+      const timer = setTimeout(() => {
+        console.log("Wires completed! Moving to step 3...");
+        props.setStep(3);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isCompleted, props]);
+
   return (
     <div className={styles.Page}>
       <div className={styles.Content}>
@@ -57,6 +74,32 @@ export const Khan2 = (_props: PageProps) => {
           getButtonColor={getButtonColor}
           storyIsEnded={storyIsEnded}
         />
+
+        {/* Wire completion status */}
+        {storyIsEnded && (
+          <div className={styles.WireStatus}>
+            {isChecking && (
+              <div className={styles.StatusMessage}>
+                در حال بررسی اتصالات...
+              </div>
+            )}
+            {isCompleted && (
+              <div className={styles.SuccessMessage}>
+                ✅ همه سیم‌ها به درستی متصل شدند!
+              </div>
+            )}
+            {isError && (
+              <div className={styles.ErrorMessage}>
+                {errorMessage}
+                {remainingChances > 0 && (
+                  <div className={styles.ChancesRemaining}>
+                    شانس دیگر برام باقی مانده {remainingChances}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {storyIsEnded ? (
           <Slider items={texts} startIndex={texts.length - 1} />

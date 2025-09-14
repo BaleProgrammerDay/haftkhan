@@ -21,6 +21,10 @@
   max-width: 720px;
 }
 
+.Video {
+  object-fit: scale-down;
+}
+
 .Inputs {
   display: flex;
   flex-direction: column;

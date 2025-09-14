@@ -100,6 +100,7 @@ export const Khan1 = (props: PageProps) => {
       <div className={styles.Content}>
         <video
           src="/rakhsh_app/horse_states/asleep.mp4"
+          className={styles.Video}
           autoPlay
           loop
           muted
