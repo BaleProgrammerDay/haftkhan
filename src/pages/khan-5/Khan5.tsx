@@ -7,6 +7,19 @@ import { PageContent } from "~/components/ui/Page/Page";
 
 import folderIcon from "~/assets/folder.png";
 
+//todo dialogs
+//آخیش! بالاخره یادم اومد!
+//من یه سرنخی از ورودی قلعۀارژنگ به دست آورده بودم... از اونجا می‌تونیم به دیو سپید دسترسی پیدا کنیم.
+//فقط کافیه مختصات رو از روی نقشه پیدا کنی و بهم بگی.
+
+//وقتی روی برنامه اشتباهی زد این تست نمایش داده بشه:
+//الان وقت این کارارو نداریم!
+
+//برای مختصات سه عدد میخوایم. شماره نقشه. x و y. مختصات میتونه منفی هم باشه چون نقطه وسط ۰ و ۰ ئه
+
+//بعد که مختصات رو درست وارد کرد:
+// دکمه ای با نام "ورود به قلعۀ ارژنگ" نمایش داده میشود.
+
 export const Khan5 = (_props: PageProps) => {
   const [showGuido, setShowGuido] = useState(true);
   const [openableFolderIndex] = useState(15); // Folder 15 can be opened

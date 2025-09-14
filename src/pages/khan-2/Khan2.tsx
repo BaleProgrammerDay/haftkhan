@@ -13,8 +13,11 @@ const password = "1234";
 
 export const Khan2 = (props: PageProps) => {
   const texts = [
-    "یه چیزایی یادمه...اون...همون دیگه...",
-    "درست یادم نمیاد...شاید حافظمو ...حافظمو...",
+    "من کجام؟ اینجا کجاست؟",
+    "داشتم... با شیر می‌جنگیدم؟",
+    "درست یادم نمیاد... آره فکر کنم...",
+    "اون مرد... اون مرد کی بود؟",
+    "نکنه... حافظه‌مو از دست دادم؟",
   ];
 
   const [storyIsEnded, setStoryIsEnded] = useState(false);
@@ -122,4 +125,3 @@ export const Khan2 = (props: PageProps) => {
     </div>
   );
 };
-

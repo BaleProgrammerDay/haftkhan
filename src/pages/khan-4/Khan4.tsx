@@ -15,7 +15,11 @@ const initialConversation = [
   {
     role: "luigi",
     message:
-      "نگران نباش! گویدو اینجاست که کمکت کنه!\nزودتعمیر میشی و آماده حرکت میشی",
+      "سلام! می‌بینم که به مشکل برخوردی. گویدو، تعمیرکار حافظه، در خدمت شماست.",
+  },
+  {
+    role: "luigi",
+    message: "!\nزود تعمیر میشی و همه چی یادت میاد و آمادۀ حرکت میشی",
   },
   { role: "user", message: "کو پس نیم ساعته منتظرم..." },
   {
@@ -23,8 +27,8 @@ const initialConversation = [
     message:
       "باور کن گویدو هر کاری از دستش بر بیاد انجام میده، فقط بهم اعتماد کن.",
   },
-  { role: "user", message: "دروغ نگو" },
-  { role: "luigi", message: "دروغ چیه الاغ(اسب)، برو خان ۴ رو بخون" },
+  { role: "user", message: "دروغ که تو کارت نیست؟" },
+  { role: "luigi", message: "دروغ چیه الاغ (اسب)، برو خان ۴ رو بخون" },
 ];
 
 export const Khan4 = ({ setStep }: PageProps) => {
@@ -37,7 +41,8 @@ export const Khan4 = ({ setStep }: PageProps) => {
     | "transforming"
   >("remembering");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const horseText = "نمیفهمم هنوزم چرا چیزی یادم نمیاد...";
+  const horseText =
+    "نمیفهمم مگه آنتی ویروس رو نصب نکردیم؟ پس چرا هنوزم چیزی یادم نمیاد!!";
 
   const [currentDialogIndex, setCurrentDialogIndex] = useState(0);
   const [showInitialConversation, setShowInitialConversation] = useState(true);
@@ -347,4 +352,3 @@ export const Khan4 = ({ setStep }: PageProps) => {
     </Page>
   );
 };
-

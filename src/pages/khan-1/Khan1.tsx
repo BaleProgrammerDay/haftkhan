@@ -110,7 +110,7 @@ export const Khan1 = (props: PageProps) => {
         <form className={styles.Inputs} onSubmit={handleSubmit}>
           <Input
             type="text"
-            placeholder="تو؟"
+            placeholder="شما؟"
             size="large"
             variant="outlined"
             fullWidth={false}
@@ -136,4 +136,3 @@ export const Khan1 = (props: PageProps) => {
     </div>
   );
 };
-

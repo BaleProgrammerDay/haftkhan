@@ -8,6 +8,24 @@ import { API } from "~/api/api";
 import { useNotification } from "~/context/Notification";
 import styles from "./Khan6.module.scss";
 
+//todo
+//در یک صفحه سیاه یک سری دیالوگ قبل از چیز های دیگه نمایش داده شود:
+
+//چه قدر اینجا متروکه‌ست...
+//حضور هیچ جنبنده‌ای رو حس نمی‌کنم
+//ولی انگار یه جنازه اونجاست!
+//بذار بریم سمتش...
+//عه این که ارژنگه
+//رو میز کارش مرده...
+//بذار ببینم سیستمش باز میشه؟
+//اه رمز می‌خواد!
+//بذار بگردم ببینم چیز دیگه‌ای هم پیدا میشه؟
+//انگار داشته یه چیزی ضبط می‌کرده...
+//بیا ببینیم چیزیم ذخیره شده؟؟
+
+//بعد از وارد کردن رمز:
+//سیستمش باز شد! نگاه کن اکانت بله‌ش بالاست.
+
 export const Khan6 = (_props: PageProps) => {
   const [showFirstText, setShowFirstText] = useState(true);
   const [startAnimation, setStartAnimation] = useState(false);

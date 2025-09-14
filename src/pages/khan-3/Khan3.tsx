@@ -245,6 +245,7 @@ export const Khan3 = (props: PageProps) => {
               />
             </video>
           )}
+          {/* todo: اول بنویسه حافظه متصل شد بعد در حال یادآوری بیاد */}
           <p className={styles.VideoText}>در حال یادآوری...</p>
         </div>
       </PageContent>
@@ -360,4 +361,3 @@ export const Khan3 = (props: PageProps) => {
     </Page>
   );
 };
-
