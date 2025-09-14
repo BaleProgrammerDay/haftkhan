@@ -8,6 +8,7 @@ import barghMan from "~/assets/bargh_man.png";
 import { Draggable } from "~/components/Draggable";
 import { Modal } from "~/components/Modal";
 import { PasswordInput, PasswordInputRef } from "~/components/ui";
+import { Folder } from "~/components";
 
 // Folders component that handles all folder-related logic including modal
 
@@ -46,14 +47,13 @@ export const Folders = (props: { password: string }) => {
 
   return (
     <>
-      <Draggable
+      <Folder
         initialPosition={{ x: 120, y: 20 }}
         className={styles.Folder}
         onDoubleClick={handleSeriFolderOpen}
-      >
-        <img src={folder} className={styles.FolderImage} />
-        <p>سری</p>
-      </Draggable>
+        title="سری"
+        folderImage={folder}
+      />
 
       <Modal
         isOpen={openSeriFolder}
@@ -78,7 +78,11 @@ export const Folders = (props: { password: string }) => {
         modalContentClassName={styles.ImagesContainer}
       >
         <div className={styles.ImagesGrid}>
-          <img src={tajammolian} alt="Tajammolian" className={styles.SecretImage} />
+          <img
+            src={tajammolian}
+            alt="Tajammolian"
+            className={styles.SecretImage}
+          />
           <img src={barghMan} alt="Bargh Man" className={styles.SecretImage} />
         </div>
       </Modal>

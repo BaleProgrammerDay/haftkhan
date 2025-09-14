@@ -5,7 +5,7 @@ import { Modal } from "../Modal";
 import clsx from "clsx";
 
 interface FolderProps {
-  children: ReactNode;
+  children?: ReactNode;
   title?: string;
   initialPosition?: { x: number; y: number };
   className?: string;
