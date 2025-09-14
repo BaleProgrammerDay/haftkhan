@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Khan1 } from "./pages/khan-1/Khan1";
 
 import { Khan2 } from "./pages/khan-2/Khan2";
@@ -14,7 +14,25 @@ import { Khan5 } from "./pages/khan-5/Khan5";
 import { Khan6 } from "./pages/khan-6/Khan6";
 
 function App() {
-  const [step, setStep] = useState(6);
+  const [step, setStep] = useState(1);
+
+  // Global cheat code: set step with number keys 1-7
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      ) {
+        return; // Ignore if typing in input/textarea
+      }
+      const key = e.key;
+      if (key >= "1" && key <= "7") {
+        setStep(Number(key));
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const { notificationText, setNotificationText } = useNotification();
 
