@@ -13,11 +13,15 @@ import { powerOutage } from "../game/scenarios/powerOutage";
 function Messanger() {
   // References to the PhaserGame component (game and scene are exposed)
   const phaserRef = useRef<IRefPhaserGame | null>(null);
-  
+
   const dispatch = useDispatch();
-  const chats = useSelector((state: RootState) => state.chat.list)
-  const selectedChatIndex = useSelector((state: RootState) => state.chat.current)
-  const selectedChat = useSelector((state: RootState) => state.chat.list[selectedChatIndex])
+  const chats = useSelector((state: RootState) => state.chat.list);
+  const selectedChatIndex = useSelector(
+    (state: RootState) => state.chat.current
+  );
+  const selectedChat = useSelector(
+    (state: RootState) => state.chat.list[selectedChatIndex]
+  );
 
   useEffect(() => {
     // Initialize theme from localStorage
@@ -25,9 +29,8 @@ function Messanger() {
     document.documentElement.setAttribute("data-theme", savedTheme);
   }, []);
 
-
   const handleSelectChat = (id: Chats) => {
-    console.log("!@!", id)
+    console.log("!@!", id);
     dispatch(setCurrentChat(id));
     setTimeout(() => {
       //@ts-ignore
@@ -47,6 +50,7 @@ function Messanger() {
         className="w-full max-w-[1400px] h-full overflow-hidden flex"
         style={{
           backgroundColor: "var(--color-neutrals-surface)",
+          fontFamily: "sorena",
         }}
       >
         {/* Theme Toggle */}
