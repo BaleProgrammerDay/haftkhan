@@ -1,3 +1,9 @@
+import {
+  SubmitAnswerRequest,
+  SubmitAnswerResponse,
+  UserResponse,
+} from "./types";
+
 // API configuration
 const OPENAI_API_KEY = "aa-Kjck4mY1yilINKUwlmzl8uB0qbyqpWOZWigPMvJEPuhSgbAJ";
 
@@ -37,16 +43,60 @@ You are a wise and mysterious wizard who has been disguised as Luigi the mechani
 جادوگر: «راه تو هنوز ادامه دارد، هفت‌خان رستم هنوز تمام نشده است.»  
 `;
 
+const POST_REQUEST = async (url: string, body: any) => {
+  return await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+};
+
+const GET_REQUEST = async (url: string) => {
+  return await fetch(url, {
+    method: "GET",
+  });
+};
+
 export const API = {
+  getUser: async (): Promise<UserResponse | null> => {
+    const request = await GET_REQUEST("/api/user");
+
+    const data = await request.json();
+
+    if (data.username) {
+      return data as UserResponse;
+    } else {
+      return null;
+    }
+  },
   login: async (username: string, password: string) => {
-    // Keep the old login function for compatibility
-    console.log("password", password);
-    console.log(password, username);
-    if (username === "منابع انسانی" && password === "تیم خفن هست") {
+    const request = await POST_REQUEST("/api/login", { username, password });
+
+    const data = await request.json();
+
+    if (data.ok) {
       return { success: true, message: "Login successful" };
     } else {
       return { success: false, message: "Login failed" };
     }
+  },
+
+  submitAnswer: async (requestData: SubmitAnswerRequest) => {
+    const request = await POST_REQUEST("/api/submit_answer", requestData);
+
+    const data = await request.json();
+
+    return data as SubmitAnswerResponse;
+  },
+
+  prompt: async (prompt: string) => {
+    const request = await POST_REQUEST("/api/prompt", { prompt });
+
+    const data = await request.json();
+
+    return data;
   },
 
   getLuigiResponse: async (
@@ -148,69 +198,6 @@ export const API = {
     } catch (error) {
       console.error("API error:", error);
       throw error;
-    }
-  },
-
-  khan6API: async (password: string): Promise<boolean> => {
-    try {
-      // This will make a request to the server to validate the password
-      return Promise.resolve(true);
-      const response = await fetch("/api/khan6/validate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          password: password,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      // Server should return { success: boolean } or { valid: boolean }
-      return data.success || data.valid || false;
-    } catch (error) {
-      console.error("Khan6 API error:", error);
-      // Return false on any error (password is invalid)
-      return false;
-    }
-  },
-
-  getUser: async () => {
-    const response = await fetch("/api/user", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    await response.json();
-  },
-
-  getResponse: (_prompt: string, _sytemPromptId: string) => {
-    // TODO: Implement this function
-    return Promise.resolve("Response");
-  },
-
-  // API function for wire completion check
-  checkWireCompletion: async (
-    connections: Array<{ from: number; to: number }>
-  ): Promise<{ success: boolean; message?: string }> => {
-    // For now, simulate wrong connections for testing
-    // In real implementation, this would check against correct wire pattern
-    const isCorrect = Math.random() > 0.5; // 50% chance of being correct for testing
-    
-    if (isCorrect) {
-      return { success: true };
-    } else {
-      return { 
-        success: false, 
-        message: "سیم کشی اشتباه انجام شد\n۲ شانس دیگر بیشتر برام نمونده" 
-      };
     }
   },
 };

@@ -8,10 +8,26 @@ import { Slider } from "~/components/Slider/Slider";
 import { Scratch } from "./Scratch";
 import { Wires, useWireConnections } from "./Wires";
 import { Folders } from "./Folder";
+import { userActions, usernameSelector } from "~/store/user/slice";
+import { useDispatch, useSelector } from "react-redux";
 
-const password = "1234";
+const getPassword = (username: string) => {
+  if (username === "منابع انسانی") {
+    return "1234";
+  } else if (username === "مهندسی نرم افزار") {
+    return "5678";
+  } else if (username === "تست") {
+    return "91011";
+  } else {
+    return "";
+  }
+};
 
-export const Khan2 = (props: PageProps) => {
+export const Khan2 = (_props: PageProps) => {
+  const dispatch = useDispatch();
+  const username = useSelector(usernameSelector);
+  const password = getPassword(username || "");
+
   const texts = [
     "من کجام؟ اینجا کجاست؟",
     "داشتم... با شیر می‌جنگیدم؟",
@@ -56,12 +72,12 @@ export const Khan2 = (props: PageProps) => {
     if (isCompleted) {
       const timer = setTimeout(() => {
         console.log("Wires completed! Moving to step 3...");
-        props.setStep(3);
+        dispatch(userActions.setLastSolvedQuestion(3));
       }, 3000);
 
       return () => clearTimeout(timer);
     }
-  }, [isCompleted, props]);
+  }, [isCompleted]);
 
   return (
     <div className={styles.Page}>
@@ -125,3 +141,4 @@ export const Khan2 = (props: PageProps) => {
     </div>
   );
 };
+

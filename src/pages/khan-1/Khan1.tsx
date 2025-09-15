@@ -6,6 +6,8 @@ import { PageProps } from "~/types";
 import { useNotification } from "~/context/Notification";
 import { PasswordInput } from "~/components";
 import { API } from "~/api/api";
+import { userActions } from "~/store/user/slice";
+import { useDispatch } from "react-redux";
 
 const getTemplate = (nameTeam: string) => {
   if (nameTeam === "منابع انسانی") {
@@ -18,11 +20,13 @@ const getTemplate = (nameTeam: string) => {
   return "";
 };
 
-export const Khan1 = (props: PageProps) => {
+export const Khan1 = (_props: PageProps) => {
   const [inputs, setInputs] = useState({
     username: "",
     password: "",
   });
+
+  const dispatch = useDispatch();
 
   const { setNotificationText } = useNotification();
 
@@ -42,7 +46,6 @@ export const Khan1 = (props: PageProps) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("!@!", inputs.password);
     const handleValidation = () => {
       if (inputs.password === "") {
         setNotificationText(
@@ -56,7 +59,7 @@ export const Khan1 = (props: PageProps) => {
     handleValidation();
 
     if (inputs.password === "77777هفت") {
-      props.setStep(7);
+      dispatch(userActions.setLastSolvedQuestion(1));
     }
 
     if (inputs.username === "" || inputs.password === "") {
@@ -67,7 +70,13 @@ export const Khan1 = (props: PageProps) => {
       const response = await API.login(inputs.username, inputs.password);
 
       if (response.success) {
-        props.setStep(2);
+        dispatch(userActions.setLastSolvedQuestion(1));
+        await API.submitAnswer({
+          question_id: 1,
+          answer: inputs.password,
+        });
+
+        dispatch(userActions.setLastSolvedQuestion(2));
       } else {
         setNotificationText(`مجوز ورود داده نشد.\n با تشکر حراست سداد...`);
       }
@@ -76,27 +85,10 @@ export const Khan1 = (props: PageProps) => {
     handleLogin();
   };
 
-  const [blurBg, setBlurBg] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBlurBg((prev) => {
-        if (prev + 1 >= 10) {
-          return 0;
-        }
-        return prev + 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   const pattern = getTemplate(inputs.username);
 
   return (
-    <div
-      className={styles.Page}
-      style={{ filter: blurBg > 0 ? `${blurBg}px` : "none" }}
-    >
+    <div className={styles.Page}>
       <div className={styles.Content}>
         <video
           src="/rakhsh_app/horse_states/asleep.mp4"
@@ -121,7 +113,7 @@ export const Khan1 = (props: PageProps) => {
 
           <div className={styles.PasswordInput}>
             <PasswordInput
-              length={8}
+              length={9}
               template={pattern}
               direction="rtl"
               onChange={(password) => handleSecondInputChange(password)}
@@ -136,3 +128,4 @@ export const Khan1 = (props: PageProps) => {
     </div>
   );
 };
+

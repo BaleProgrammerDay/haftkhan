@@ -1,4 +1,2 @@
-export interface PageProps {
-    setStep: (step: number) => void;
-}
+export interface PageProps {}
 

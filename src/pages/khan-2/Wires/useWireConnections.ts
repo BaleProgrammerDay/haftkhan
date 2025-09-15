@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { API } from "~/api/api";
+import { perQuestionSelector, userActions } from "~/store/user/slice";
 
 interface Connection {
   from: number;
   to: number;
 }
+
+// todo: handle timeour when there is no remaining chances
+// todo: handle add attempt history to user
 
 export const useWireConnections = () => {
   const [activeWire, setActiveWire] = useState<number | null>(null);
@@ -13,7 +18,15 @@ export const useWireConnections = () => {
   const [isChecking, setIsChecking] = useState(false);
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [remainingChances, setRemainingChances] = useState(3);
+
+  const attemptHistory =
+    useSelector(perQuestionSelector)?.[2]?.attempt_history.length ?? 0;
+
+  const [remainingChances, setRemainingChances] = useState(
+    3 - attemptHistory > 0 ? 3 - attemptHistory : 0
+  );
+
+  const dispatch = useDispatch();
 
   // Handle wire button click
   const handleWireButtonClick = (buttonId: number) => {
@@ -74,7 +87,9 @@ export const useWireConnections = () => {
   // Check if a wire button can be connected to (when there's an active wire)
   const isButtonConnectable = (buttonId: number) => {
     return (
-      activeWire !== null && activeWire !== buttonId && !isButtonConnected(buttonId)
+      activeWire !== null &&
+      activeWire !== buttonId &&
+      !isButtonConnected(buttonId)
     );
   };
 
@@ -84,24 +99,36 @@ export const useWireConnections = () => {
       // Check if all 4 wires are connected (8 buttons total, 4 connections)
       if (connections.length === 4 && !isCompleted && !isChecking && !isError) {
         setIsChecking(true);
-        console.log("All wires connected! Checking with API...");
-        
+
+        const cleanConnections = connections.map((conn) => {
+          if (conn.from > conn.to) {
+            return { from: conn.to, to: conn.from };
+          }
+          return conn;
+        });
+
         try {
-          const result = await API.checkWireCompletion(connections);
-          console.log("Wire completion result:", result);
-          
-          if (result.success) {
+          const result = await API.submitAnswer({
+            question_id: 2,
+            answer: cleanConnections
+              .map((conn) => `${conn.from}-${conn.to}`)
+              .join(","),
+          });
+
+          if (result.ok) {
             setIsCompleted(true);
             setIsError(false);
-            console.log("Wire completion successful!");
+            dispatch(userActions.setLastSolvedQuestion(2));
           } else {
             // Wrong connections
             setIsError(true);
-            setErrorMessage(result.message || "سیم کشی اشتباه انجام شد");
-            setRemainingChances(prev => Math.max(0, prev - 1));
-            console.log("Wire completion failed:", result.message);
-            
-            // Reset connections after 3 seconds to allow retry
+            setErrorMessage(
+              `سیم کشی رو اشتباه انجام دادی...\n` +
+                (remainingChances > 0
+                  ? `${remainingChances} شانس دیگر برام باقی مانده`
+                  : "")
+            );
+            setRemainingChances((prev) => prev - 1);
             setTimeout(() => {
               setConnections([]);
               setIsError(false);
@@ -135,3 +162,4 @@ export const useWireConnections = () => {
     remainingChances,
   };
 };
+
