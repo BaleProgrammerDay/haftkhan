@@ -24,8 +24,20 @@ export interface ConversationState {
     | "conversation-flow";
 }
 
+const checkForWizardPhrase = (message: string) => {
+  if (message === "Trigger1") return true;
+
+  return false;
+};
+
+const checkForWizardAttackPhrase = (message: string) => {
+  if (message === "Trigger2") return true;
+
+  return false;
+};
+
 export const useConversation = (
-  initialLuigiMessage: string, 
+  initialLuigiMessage: string,
   onLuigiMessageAdded?: () => void,
   onWizardRevealed?: () => void,
   onWizardDestroyed?: () => void
@@ -68,8 +80,8 @@ export const useConversation = (
       if (message.role === "luigi" && onLuigiMessageAdded) {
         onLuigiMessageAdded();
       }
-      
-      // Call callback if it's a wizard message  
+
+      // Call callback if it's a wizard message
       if (message.role === "wizard" && onLuigiMessageAdded) {
         onLuigiMessageAdded(); // Reuse the same callback for simplicity
       }
@@ -87,7 +99,11 @@ export const useConversation = (
   }, []);
 
   const setTypingState = useCallback(
-    (isLuigiTyping: boolean, isUserTyping: boolean, isWizardTyping?: boolean) => {
+    (
+      isLuigiTyping: boolean,
+      isUserTyping: boolean,
+      isWizardTyping?: boolean
+    ) => {
       setState((prev) => ({
         ...prev,
         isLuigiTyping,
@@ -108,16 +124,6 @@ export const useConversation = (
     []
   );
 
-  const checkForWizardPhrase = useCallback((message: string) => {
-    const wizardPhrase = "یا ایزد منان";
-    return message.includes(wizardPhrase);
-  }, []);
-
-  const checkForWizardAttackPhrase = useCallback((message: string) => {
-    const attackPhrase = "میانش به خنجر به دو نیم کرد";
-    return message.includes(attackPhrase);
-  }, []);
-
   const revealWizard = useCallback(() => {
     setState((prev) => ({
       ...prev,
@@ -126,37 +132,42 @@ export const useConversation = (
       isLuigiTyping: false,
       isWizardTyping: true,
     }));
-    
+
     // Add wizard transformation message
     setTimeout(() => {
       addMessage({
         role: "wizard",
-        message: "اه چه قدر طول کشید! پیش خودت فکر نکردی که گویدو چه ربطی به هفت خان داره؟ محاله بذارم به حافظت دست پیدا کنی!",
+        message:
+          "اه چه قدر طول کشید! پیش خودت فکر نکردی که گویدو چه ربطی به هفت خان داره؟ محاله بذارم به حافظت دست پیدا کنی!",
       });
     }, 1000);
-    
+
     if (onWizardRevealed) {
       onWizardRevealed();
     }
   }, [addMessage, onWizardRevealed]);
 
   const destroyWizard = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      conversationPhase: "conversation-flow",
-      isWizardTyping: false,
-      isLuigiTyping: false,
-    }));
-    
-    // Add wizard destruction message
+    // Add wizard destruction message first
     addMessage({
       role: "wizard",
       message: "آه! نه! ... (جادوگر با درد فرو می‌ریزد و ناپدید می‌شود)",
     });
-    
-    if (onWizardDestroyed) {
-      onWizardDestroyed();
-    }
+
+    // Then update state to ensure wizard typing is active
+    setState((prev) => ({
+      ...prev,
+      conversationPhase: "conversation-flow",
+      isWizardTyping: true,
+      isLuigiTyping: false,
+    }));
+
+    // Delay the wizard destruction callback to allow message to be displayed
+    setTimeout(() => {
+      if (onWizardDestroyed) {
+        onWizardDestroyed();
+      }
+    }, 3000); // Give 3 seconds for the message to be displayed
   }, [addMessage, onWizardDestroyed]);
 
   const sendUserMessage = useCallback(async () => {
@@ -168,45 +179,49 @@ export const useConversation = (
 
     const userMessage = currentState.currentUserInput.trim();
 
-    // Check if this message reveals the wizard
-    if (!currentState.isWizardRevealed && checkForWizardPhrase(userMessage)) {
-      // Add user message
-      addMessage({
-        role: "user",
-        message: userMessage,
-      });
-      
-      // Clear input
-      setState((prevState) => ({
-        ...prevState,
-        currentUserInput: "",
-        isUserTyping: false,
-      }));
-      
-      // Trigger wizard reveal
-      revealWizard();
-      return;
-    }
+    const checkForWizzard = (res: string) => {
+      if (!currentState.isWizardRevealed && checkForWizardPhrase(res)) {
+        // Add user message
+        addMessage({
+          role: "user",
+          message: "",
+        });
+
+        // Clear input
+        setState((prevState) => ({
+          ...prevState,
+          currentUserInput: "",
+          isUserTyping: false,
+        }));
+
+        // Trigger wizard reveal
+        revealWizard();
+        return;
+      }
+    };
 
     // Check if this message attacks the wizard
-    if (currentState.isWizardRevealed && checkForWizardAttackPhrase(userMessage)) {
-      // Add user message
-      addMessage({
-        role: "user",
-        message: userMessage,
-      });
-      
-      // Clear input
-      setState((prevState) => ({
-        ...prevState,
-        currentUserInput: "",
-        isUserTyping: false,
-      }));
-      
-      // Trigger wizard destruction
-      destroyWizard();
-      return;
-    }
+    const checkForWizardAttack = (res: string) => {
+      if (currentState.isWizardRevealed && checkForWizardAttackPhrase(res)) {
+        // Add user message
+        addMessage({
+          role: "user",
+          message: userMessage,
+        });
+
+        // Clear input
+        setState((prevState) => ({
+          ...prevState,
+          currentUserInput: "",
+          isUserTyping: false,
+        }));
+
+        // Trigger wizard destruction
+        destroyWizard();
+        return true; // Return true to indicate wizard was destroyed
+      }
+      return false;
+    };
 
     // Add user message
     addMessage({
@@ -230,36 +245,42 @@ export const useConversation = (
     // Continue with API call after state update
     try {
       // Only send the last message to the model as requested
-      const openAIMessages = [
-        {
-          role: "user" as const,
-          content: userMessage,
-        },
-      ];
 
       const isWizardMode = stateRef.current.isWizardRevealed;
-      
-      // Get appropriate response based on current mode
-      const response = isWizardMode 
-        ? await API.getWizardResponse(userMessage, openAIMessages)
-        : await API.getLuigiResponse(userMessage, openAIMessages);
 
-      console.log("response", response);
-      // Add appropriate character's response
-      addMessage({
-        role: isWizardMode ? "wizard" : "luigi",
-        message:
-          response.message || response.text || "Sorry, I could not respond.",
+      // Get appropriate response based on current mode
+      const response = await API.prompt({
+        user_prompt: userMessage,
+        system_prompt_id: isWizardMode ? 2 : 1,
       });
+
+      checkForWizzard(response?.result);
+      const wizardDestroyed = checkForWizardAttack(response?.result);
+
+      // Only add character response if wizard wasn't destroyed
+      if (!wizardDestroyed) {
+        // Add appropriate character's response
+        addMessage({
+          role: isWizardMode ? "wizard" : "luigi",
+          message:
+            response?.result || "ببخشید مثل اینکه بهم نگفتن الان باید چی بگم",
+        });
+      }
     } catch (error) {
       console.error("Failed to get character response:", error);
-      
-      const isWizardMode = stateRef.current.isWizardRevealed;
-      // Add fallback message
-      addMessage({
-        role: isWizardMode ? "wizard" : "luigi",
-        message: "Sorry, I had trouble responding. Please try again.",
-      });
+
+      // Only add fallback message if wizard wasn't destroyed
+      if (
+        !stateRef.current.isWizardRevealed ||
+        !checkForWizardAttackPhrase(userMessage)
+      ) {
+        const isWizardMode = stateRef.current.isWizardRevealed;
+        // Add fallback message
+        addMessage({
+          role: isWizardMode ? "wizard" : "luigi",
+          message: "به نظر میرسه به مشکل خوردیم.",
+        });
+      }
     }
   }, [addMessage]);
 
@@ -269,14 +290,14 @@ export const useConversation = (
       .pop();
     return lastLuigiMessage?.message || "";
   }, [state.messages]);
-  
+
   const getCurrentWizardMessage = useCallback(() => {
     const lastWizardMessage = state.messages
       .filter((msg) => msg.role === "wizard")
       .pop();
     return lastWizardMessage?.message || "";
   }, [state.messages]);
-  
+
   const getCurrentCharacterMessage = useCallback(() => {
     if (state.isWizardRevealed) {
       return getCurrentWizardMessage();
@@ -297,14 +318,14 @@ export const useConversation = (
       isLuigiTyping: false,
     }));
   }, []);
-  
+
   const finishWizardTyping = useCallback(() => {
     setState((prev) => ({
       ...prev,
       isWizardTyping: false,
     }));
   }, []);
-  
+
   const finishCharacterTyping = useCallback(() => {
     setState((prev) => ({
       ...prev,

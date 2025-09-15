@@ -18,6 +18,7 @@ import {
   isLoadingSelector,
 } from "./store/user/slice";
 
+// handle error bundary
 function App() {
   const lastSolvedQuestion = useSelector(lastSolvedQuestionSelector);
   const isLoading = useSelector(isLoadingSelector);

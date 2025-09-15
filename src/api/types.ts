@@ -28,10 +28,26 @@ interface SubmitAnswerResponse {
   description: string;
 }
 
+interface PromptRequest {
+  user_prompt: string;
+  system_prompt_id: number;
+}
+
+interface PromptResponse {
+  result: string;
+}
+interface PromptErrorResponse {
+  ok: boolean;
+  description: string;
+}
+
 export type {
   AttemptHistory,
   UserResponse,
   SubmitAnswerRequest,
   SubmitAnswerResponse,
+  PromptRequest,
+  PromptResponse,
+  PromptErrorResponse,
 };
 

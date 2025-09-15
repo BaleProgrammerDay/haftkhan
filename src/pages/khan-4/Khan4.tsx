@@ -9,7 +9,9 @@ import styles from "./Khan4.module.scss";
 import { TypedText } from "~/components/TypingText/TypingText";
 
 import { Send } from "./Send";
-import { PageProps } from "~/types";
+import { API } from "~/api/api";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions, userSelector } from "~/store/user/slice";
 
 const initialConversation = [
   {
@@ -31,7 +33,22 @@ const initialConversation = [
   { role: "luigi", message: "دروغ چیه الاغ (اسب)، برو خان ۴ رو بخون" },
 ];
 
-export const Khan4 = ({ setStep }: PageProps) => {
+// todo: add random id for each team
+
+const getRandomId = (username: string) => {
+  switch (username) {
+    case "team1":
+      return "team1";
+    case "team2":
+      return "team2";
+    case "team3":
+      return "team3";
+    default:
+      return "team1";
+  }
+};
+
+export const Khan4 = () => {
   const [video, setVideo] = useState<
     | "luiji"
     | "remembering"
@@ -50,6 +67,8 @@ export const Khan4 = ({ setStep }: PageProps) => {
   const [isCharacterTypingComplete, setIsCharacterTypingComplete] =
     useState(false);
 
+  const dispatch = useDispatch();
+  const user = useSelector(userSelector);
   // Character limit configuration
   const CHARACTER_LIMIT = 128;
 
@@ -66,10 +85,17 @@ export const Khan4 = ({ setStep }: PageProps) => {
   // Handle wizard destruction when attacked
   const handleWizardDestruction = () => {
     setVideo("wizard_break");
-    // After wizard destruction animation, move to step 6
     setTimeout(() => {
-      setStep(6);
-    }, 5000); // Give time for wizard_break video to play
+      const goNext = async () => {
+        await API.submitAnswer({
+          question_id: 4,
+          answer: getRandomId(user.username || ""),
+        });
+
+        dispatch(userActions.setLastSolvedQuestion(4));
+      };
+      goNext();
+    }, 8000);
   };
 
   // Use the conversation hook (start with empty message since we handle initial conversation)
@@ -352,3 +378,4 @@ export const Khan4 = ({ setStep }: PageProps) => {
     </Page>
   );
 };
+
