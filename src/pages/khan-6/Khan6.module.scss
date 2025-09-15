@@ -1,3 +1,88 @@
+.ComicContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background);
+  z-index: 30;
+}
+
+.ComicImageWrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  width: fit-content;
+  height: fit-content;
+}
+
+.ComicImage {
+  max-width: 90vw;
+  max-height: 80vh;
+  display: block;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  transition: box-shadow 0.2s;
+}
+
+.ComicButton {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin: 18px;
+  padding: 4px 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  background: var(--color-primary-p-50, #1976d2);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s, transform 0.2s;
+  z-index: 2;
+}
+.ComicButton:hover {
+  background: var(--color-primary-p-60, #1565c0);
+  transform: scale(1.05);
+}
+.ComicButton:active {
+  background: var(--color-primary-p-40, #2196f3);
+  transform: scale(0.98);
+}
+
+// Fade in/out for comic
+.FadeIn {
+  animation: fadeInComic 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.FadeOut {
+  animation: fadeOutComic 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes fadeInComic {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes fadeOutComic {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
 .Container {
   display: flex;
   flex-direction: column;
@@ -233,7 +318,7 @@
 .CongratulationsText {
   font-size: 4rem;
   font-weight: bold;
-  color: #4CAF50;
+  color: #4caf50;
   text-align: center;
   direction: rtl;
   line-height: 1.2;
@@ -244,7 +329,7 @@
 
 .CongratulationsLetter {
   display: inline-block;
-  color: #4CAF50;
+  color: #4caf50;
   transition: all 0.5s ease;
   transform-origin: center center;
 }
@@ -310,4 +395,3 @@
     transform: scale(1);
   }
 }
-

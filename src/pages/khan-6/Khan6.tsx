@@ -7,26 +7,15 @@ import { PageProps } from "~/types";
 import { API } from "~/api/api";
 import { useNotification } from "~/context/Notification";
 import styles from "./Khan6.module.scss";
-
-//todo
-//در یک صفحه سیاه یک سری دیالوگ قبل از چیز های دیگه نمایش داده شود:
-
-//چه قدر اینجا متروکه‌ست...
-//حضور هیچ جنبنده‌ای رو حس نمی‌کنم
-//ولی انگار یه جنازه اونجاست!
-//بذار بریم سمتش...
-//عه این که ارژنگه
-//رو میز کارش مرده...
-//بذار ببینم سیستمش باز میشه؟
-//اه رمز می‌خواد!
-//بذار بگردم ببینم چیز دیگه‌ای هم پیدا میشه؟
-//انگار داشته یه چیزی ضبط می‌کرده...
-//بیا ببینیم چیزیم ذخیره شده؟؟
+import comic from "./comic.jpg";
 
 //بعد از وارد کردن رمز:
 //سیستمش باز شد! نگاه کن اکانت بله‌ش بالاست.
 
 export const Khan6 = (_props: PageProps) => {
+  // Initial comic state
+  const [showComic, setShowComic] = useState(true);
+  const [comicFade, setComicFade] = useState<"in" | "out">("in");
   const [showFirstText, setShowFirstText] = useState(true);
   const [startAnimation, setStartAnimation] = useState(false);
   const [showSecondText, setShowSecondText] = useState(false);
@@ -49,6 +38,7 @@ export const Khan6 = (_props: PageProps) => {
   const secondText = "برای تجربه بهتر از هدفون یا اسپیکر استفاده کنید...";
 
   useEffect(() => {
+    if (showComic) return; // Don't start animation until comic is dismissed
     // Start the first text animation sequence after 3 seconds
     const firstTimer = setTimeout(() => {
       setStartAnimation(true);
@@ -73,7 +63,7 @@ export const Khan6 = (_props: PageProps) => {
     }, 4000);
 
     return () => clearTimeout(firstTimer);
-  }, []);
+  }, [showComic]);
 
   const renderAnimatedText = (text: string) => {
     return text.split("").map((char, index) => (
@@ -193,100 +183,127 @@ export const Khan6 = (_props: PageProps) => {
     <Page>
       <PageContent>
         <div className={styles.Container}>
-          {(showFirstText || showSecondText) && (
-            <div className={styles.TextContainer}>
-              {showFirstText && (
-                <div className={styles.FirstText}>
-                  {renderAnimatedText(firstText)}
-                </div>
-              )}
-
-              {showSecondText && (
-                <div
-                  className={`${styles.SecondText} ${
-                    startSecondAnimation ? styles.waveOut : ""
-                  }`}
+          {showComic ? (
+            <div className={styles.ComicContainer}>
+              <div
+                className={
+                  styles.ComicImageWrapper +
+                  " " +
+                  (comicFade === "in" ? styles.FadeIn : styles.FadeOut)
+                }
+              >
+                <img src={comic} alt="Comic" className={styles.ComicImage} />
+                <button
+                  className={styles.ComicButton}
+                  onClick={() => {
+                    setComicFade("out");
+                    setTimeout(() => setShowComic(false), 500);
+                  }}
                 >
-                  {secondText}
-                </div>
-              )}
-            </div>
-          )}
-
-          {showCongratulations && (
-            <div className={styles.CongratulationsContainer}>
-              <div className={styles.CongratulationsText}>
-                {renderCongratulationsText(
-                  "تبریک میگم شما وارد سیستم اولاد شدید"
-                )}
+                  بریم
+                </button>
               </div>
             </div>
-          )}
+          ) : (
+            <>
+              {(showFirstText || showSecondText) && (
+                <div className={styles.TextContainer}>
+                  {showFirstText && (
+                    <div className={styles.FirstText}>
+                      {renderAnimatedText(firstText)}
+                    </div>
+                  )}
 
-          {showFolder && (
-            <div className={styles.FolderContainer}>
-              <img
-                src="/src/assets/folder.png"
-                alt="Folder"
-                className={styles.FolderImage}
-              />
-            </div>
-          )}
-
-          {(showVideo || showForm) && (
-            <div className={styles.VideoAndFormContainer}>
-              {showVideo && (
-                <div className={styles.VideoContainer}>
-                  <video ref={videoRef} className={styles.Video} muted loop>
-                    <source
-                      src={"/rakhsh_app/horse_states/voice.mp4"}
-                      type="video/mp4"
-                    />
-                  </video>
+                  {showSecondText && (
+                    <div
+                      className={`${styles.SecondText} ${
+                        startSecondAnimation ? styles.waveOut : ""
+                      }`}
+                    >
+                      {secondText}
+                    </div>
+                  )}
                 </div>
               )}
 
-              {showForm && (
-                <div className={styles.FormContainer}>
-                  <audio ref={audioRef} preload="auto">
-                    <source src="/src/pages/khan-6/olad.wav" type="audio/wav" />
-                  </audio>
-                  <button
-                    className={styles.PlayPauseButton}
-                    onClick={toggleAudioPlayback}
-                  >
-                    <img
-                      src={
-                        isAudioPlaying
-                          ? "/rakhsh_app/icons/pause.jpg"
-                          : "/rakhsh_app/icons/play.jpg"
-                      }
-                      alt={isAudioPlaying ? "Pause" : "Play"}
-                      className={styles.PlayPauseIcon}
-                    />
-                  </button>
-                  <div className={styles.HashtagText}>
-                    #people#notification#gunshot#clap
+              {showCongratulations && (
+                <div className={styles.CongratulationsContainer}>
+                  <div className={styles.CongratulationsText}>
+                    {renderCongratulationsText(
+                      "تبریک میگم شما وارد سیستم اولاد شدید"
+                    )}
                   </div>
-                  <PasswordInput
-                    length={4}
-                    onChange={setPassword}
-                    direction="ltr"
-                  />
-                  <Button
-                    onClick={handleSubmit}
-                    disabled={isLoading}
-                    className={styles.SubmitButton}
-                  >
-                    {isLoading ? "در حال بررسی..." : "ورود"}
-                  </Button>
                 </div>
               )}
-            </div>
+
+              {showFolder && (
+                <div className={styles.FolderContainer}>
+                  <img
+                    src="/src/assets/folder.png"
+                    alt="Folder"
+                    className={styles.FolderImage}
+                  />
+                </div>
+              )}
+
+              {(showVideo || showForm) && (
+                <div className={styles.VideoAndFormContainer}>
+                  {showVideo && (
+                    <div className={styles.VideoContainer}>
+                      <video ref={videoRef} className={styles.Video} muted loop>
+                        <source
+                          src={"/rakhsh_app/horse_states/voice.mp4"}
+                          type="video/mp4"
+                        />
+                      </video>
+                    </div>
+                  )}
+
+                  {showForm && (
+                    <div className={styles.FormContainer}>
+                      <audio ref={audioRef} preload="auto">
+                        <source
+                          src="/src/pages/khan-6/olad.wav"
+                          type="audio/wav"
+                        />
+                      </audio>
+                      <button
+                        className={styles.PlayPauseButton}
+                        onClick={toggleAudioPlayback}
+                      >
+                        <img
+                          src={
+                            isAudioPlaying
+                              ? "/rakhsh_app/icons/pause.jpg"
+                              : "/rakhsh_app/icons/play.jpg"
+                          }
+                          alt={isAudioPlaying ? "Pause" : "Play"}
+                          className={styles.PlayPauseIcon}
+                        />
+                      </button>
+                      <div className={styles.HashtagText}>
+                        #people#notification#gunshot#clap
+                      </div>
+                      <PasswordInput
+                        length={4}
+                        onChange={setPassword}
+                        direction="ltr"
+                      />
+                      <Button
+                        onClick={handleSubmit}
+                        disabled={isLoading}
+                        className={styles.SubmitButton}
+                      >
+                        {isLoading ? "در حال بررسی..." : "ورود"}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
           )}
         </div>
       </PageContent>
     </Page>
   );
 };
-
