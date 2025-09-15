@@ -15,6 +15,8 @@ import folder from "~/assets/folder.png";
 
 import FolderWrapperStyles from "~/pages/khan-2/Folder/Folder.module.scss";
 
+// todo: add api
+
 export const Khan3 = (props: PageProps) => {
   const [showModal, setShowModal] = useState(false);
   const [showAzhdar, setShowAzhdar] = useState(false);
@@ -164,44 +166,45 @@ export const Khan3 = (props: PageProps) => {
 
   const [password, setPassword] = useState("");
   const [currentTableIndex, setCurrentTableIndex] = useState(0);
+  const [isTableAnimating, setIsTableAnimating] = useState(false);
 
   // 3 different tables to cycle through
   const tableDataSets = [
     // Table 1
     [
-      ["1", "?"],
-      ["2", "4"],
-      ["4", "6"],
-      ["8", "12"],
-      ["10", "12"],
-      ["14", "16"],
-      ["16", "18"],
-      ["18", "20"],
-      ["22", "24"],
+      ["0921", "0211"],
+      ["0722", "0412"],
+      ["0923", "0113"],
+      ["1124", "0414"],
+      ["?", "0415"],
+      ["0725", "0516"],
+      ["1027", "0317"],
+      ["0928", "0518"],
+      ["1229", "0119"],
     ],
     // Table 2
     [
-      ["A", "?"],
-      ["B", "D"],
-      ["C", "F"],
-      ["E", "H"],
-      ["G", "J"],
-      ["I", "L"],
-      ["K", "N"],
-      ["M", "P"],
-      ["O", "R"],
+      ["1", "7"],
+      ["3", "11"],
+      ["2", "8"],
+      ["4", "8"],
+      ["1", "9"],
+      ["?", "6"],
+      ["1", "11"],
+      ["0", "12"],
+      ["0", "10"],
     ],
     // Table 3
     [
-      ["α", "?"],
-      ["β", "δ"],
-      ["γ", "ζ"],
-      ["ε", "θ"],
-      ["η", "κ"],
-      ["ι", "μ"],
-      ["λ", "ξ"],
-      ["ν", "π"],
-      ["ο", "ρ"],
+      ["4", "5"],
+      ["5", "3"],
+      ["5", "4"],
+      ["4", "6"],
+      ["6", "?"],
+      ["4", "4"],
+      ["5", "4"],
+      ["5", "5"],
+      ["6", "5"],
     ],
   ];
 
@@ -361,3 +364,4 @@ export const Khan3 = (props: PageProps) => {
     </Page>
   );
 };
+

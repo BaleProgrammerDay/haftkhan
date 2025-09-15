@@ -8,6 +8,8 @@ interface AntivirusInstallModalProps {
   onInstallComplete: () => void;
 }
 
+// todo: change some text
+
 export const AntivirusInstallModal: React.FC<AntivirusInstallModalProps> = ({
   isOpen,
   onClose,

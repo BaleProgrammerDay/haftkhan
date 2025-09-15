@@ -118,7 +118,7 @@
   flex-direction: column;
   border-radius: 8px;
   overflow: hidden;
-  background-color: #fff;
+  background-color: #1b1b1b;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
 }
@@ -140,16 +140,12 @@
   justify-content: center;
   font-size: 16px;
   font-weight: 500;
-  background-color: #f9f9f9;
   transition: all 0.3s ease;
 
-  &:not(:last-child) {
-    // border-right: 1px solid #ccc;
-  }
-
   &:hover {
-    background-color: #f0f0f0;
+    background-color: #333;
     transform: scale(1.05);
+    font-size: 17px;
   }
 
   // Special styling for question marks will be handled in component
