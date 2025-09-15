@@ -12,6 +12,9 @@ import comic from "./comic.jpg";
 //بعد از وارد کردن رمز:
 //سیستمش باز شد! نگاه کن اکانت بله‌ش بالاست.
 
+// todo: add api
+// todo: add dialogs
+
 export const Khan6 = (_props: PageProps) => {
   // Initial comic state
   const [showComic, setShowComic] = useState(true);
@@ -102,7 +105,8 @@ export const Khan6 = (_props: PageProps) => {
       setIsLoading(true);
 
       try {
-        const isValid = await API.khan6API(cleanPassword);
+        // const isValid = await API.khan6API(cleanPassword);
+        const isValid = true;
 
         if (isValid) {
           // Hide the video and form, show congratulations text
@@ -126,7 +130,7 @@ export const Khan6 = (_props: PageProps) => {
 
           // Navigate to step 6.5 after showing the folder
           setTimeout(() => {
-            _props.setStep(6.5);
+            // _props.setStep(6.5);
           }, 5000);
         } else {
           setNotificationText("رمز عبور اشتباه است. دوباره تلاش کنید. ❌");
@@ -307,3 +311,4 @@ export const Khan6 = (_props: PageProps) => {
     </Page>
   );
 };
+
