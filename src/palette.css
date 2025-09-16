@@ -352,7 +352,6 @@
 
 /* Dark Theme */
 [data-theme="dark"] {
-  /* Override light theme colors with dark theme colors */
   --color-neutrals-n-00: var(--color-fixed-neutrals-background);
   --color-neutrals-n-10: var(--color-fixed-neutrals-n-10);
   --color-neutrals-n-20: var(--color-fixed-neutrals-n-20);
