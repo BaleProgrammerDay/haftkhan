@@ -2,8 +2,9 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
-// Production config always uses production URL
-const targetUrl = "http://37.32.26.173:8080";
+const isDev = false;
+
+const targetUrl = isDev ? "http://localhost:8080" : "http://37.32.26.173:8080";
 
 const phasermsg = () => {
   return {
