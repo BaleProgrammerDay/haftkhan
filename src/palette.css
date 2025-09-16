@@ -243,9 +243,6 @@
   --background-chat: var(--color-neutrals-on-primary);
   --color-bubble-seen-in-dark-bg: rgb(4, 204, 131);
 
-  /*
-  todo: remove 'call' labeled colors every where!!
-  */
   --color-call-background: #151617;
   --color-call-chips-background: rgba(26, 27, 28, 60%);
   --color-call-gride-background: #232426;
