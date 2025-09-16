@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { Khan1 } from "./pages/khan-1/Khan1";
 
 import { Khan2 } from "./pages/khan-2/Khan2";
@@ -17,6 +17,7 @@ import {
   userActions,
   isLoadingSelector,
 } from "./store/user/slice";
+import { Khan6o5 } from "./pages/khan-6.5/khan6o5";
 
 // handle error bundary
 function App() {
@@ -90,7 +91,7 @@ function App() {
         {lastSolvedQuestion === 3 && <Khan4 />}
         {lastSolvedQuestion === 4 && <Khan5 />}
         {lastSolvedQuestion === 5 && <Khan6 />}
-        {/* {lastSolvedQuestion === 6 && <Khan6o5 setStep={setStep} />} */}
+        {lastSolvedQuestion === 6.5 && <Khan6o5 />}
         {lastSolvedQuestion === 6 && <Messanger />}
       </div>
       {notificationText && (

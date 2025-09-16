@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 
 // Production config always uses production URL
-const targetUrl = "https://noway.ir";
+const targetUrl = "http://37.32.26.173:8080";
 
 const phasermsg = () => {
   return {

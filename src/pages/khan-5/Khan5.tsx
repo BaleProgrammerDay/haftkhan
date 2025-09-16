@@ -6,6 +6,10 @@ import { TypingText } from "~/components/TypingText";
 import { useState } from "react";
 
 import desktop from "./desktop.png";
+import { API } from "~/api/api";
+import { useDispatch } from "react-redux";
+import { userActions } from "~/store/user/slice";
+import { useNotification } from "~/context/Notification";
 
 const texts = ["بالاخره پس از ۵ خان رسیدیم", "رسیدیم به دروازه"];
 
@@ -36,47 +40,33 @@ export const Khan5 = (_props: PageProps) => {
   const [showTypedText, setShowTypedText] = useState(false);
   const [showEnterButton, setShowEnterButton] = useState(false);
 
+  const dispatch = useDispatch();
+
+  const { setNotificationText } = useNotification();
+
   const handleTeleport = async () => {
-    try {
-      // Simulate teleport request - replace with actual API call
-      // const response = await fetch("/api/teleport", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     x: Number(portalX),
-      //     y: Number(portalY),
-      //   }),
-      // });
+    const callAPI = async () => {
+      const data = await API.submitAnswer({
+        question_id: 5,
+        answer: portalX + "," + portalY + "," + mapNumber,
+      });
 
-      // const response = JSON.stringify({
-      //   success: true,
-      // });
-
-      // const result = await response.json();
-
-      const result = true;
-
-      if (result) {
-        // Close portal and start video sequence
+      if (data.ok) {
         setShowPortal(false);
         setVideoState("portal_start");
         setShowTypedText(true);
 
-        // After 3 seconds, change to portal_continue and show enter button
         setTimeout(() => {
           setVideoState("portal_continue");
           setShowTypedText(false);
           setShowEnterButton(true);
         }, 7500);
       } else {
-        alert("Teleport failed. Please try again.");
+        setNotificationText("مختصات اشتباه است");
       }
-    } catch (error) {
-      console.error("Teleport error:", error);
-      alert("Teleport failed. Please try again.");
-    }
+    };
+
+    callAPI();
   };
 
   const handleClick = (e: React.MouseEvent<HTMLImageElement>) => {
@@ -91,11 +81,13 @@ export const Khan5 = (_props: PageProps) => {
     const percentageX = (relativeX / rect.width) * 100;
     const percentageY = (relativeY / rect.height) * 100;
 
+    console.log(percentageX, percentageY);
+
     if (
-      percentageX >= 76 &&
-      percentageX <= 78 &&
-      percentageY > 34.5 &&
-      percentageY <= 37
+      percentageX >= 18.8 &&
+      percentageX <= 21 &&
+      percentageY > 73.28 &&
+      percentageY <= 76.64
     ) {
       setShowPortal(true);
       setShowEnterButton(false);
@@ -103,7 +95,7 @@ export const Khan5 = (_props: PageProps) => {
   };
 
   const handleEnter = () => {
-    // _props.setStep(6);
+    dispatch(userActions.setLastSolvedQuestion(5));
   };
 
   return (
