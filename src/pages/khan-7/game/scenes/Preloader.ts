@@ -67,6 +67,7 @@ export class Preloader extends Scene {
     this.load.image("tower", "general/tower.png");
     this.load.image("tower_straight", "general/tower_straight.png");
     this.load.audio("recharge", "sounds/recharge.wav");
+    this.load.image("bruce", "characters/bruce.png");
     // this.load.image('keyboard-keys', '/keyboard-keys.png');
   }
 

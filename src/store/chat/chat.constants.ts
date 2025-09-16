@@ -103,4 +103,24 @@ export const initialChats: { [key: Chats | string]: Chat } = {
       maxLength: 1,
     },
   },
+  [Chats.Bruce]: {
+    id: Chats.Bruce,
+    name: "بروس بنر",
+    avatar: "/assets/avatars/bruce.png",
+    unreadCount: 1,
+    state: ChatState.ACTIVE,
+    messages: [
+      {
+        id: "1",
+        text: "سلام.",
+        sender: "other",
+        time: new Date().getTime(),
+        ltr: true,
+      },
+    ],
+    input: {
+      placeholder: "از موس استفاده کن!",
+      disabled: true,
+    },
+  },
 };
