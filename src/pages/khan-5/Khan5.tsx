@@ -107,6 +107,7 @@ export const Khan5 = (_props: PageProps) => {
               src={desktop}
               className={styles.Desktop}
               onClick={handleClick}
+              draggable={false}
             />
             <video
               key={videoState}

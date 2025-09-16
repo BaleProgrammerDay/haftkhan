@@ -13,20 +13,24 @@ const POST_REQUEST = async (url: string, body: any) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Accept: "application/json",
     },
     body: JSON.stringify(body),
   });
 };
 
 const GET_REQUEST = async (url: string) => {
-  return await fetch(url, {
+  return await fetch(API_BASE_URL + url, {
     method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
   });
 };
 
 export const API = {
   getUser: async (): Promise<UserResponse | null> => {
-    const request = await GET_REQUEST("/api/user");
+    const request = await GET_REQUEST("/user");
 
     const data = await request.json();
 
@@ -37,7 +41,7 @@ export const API = {
     }
   },
   login: async (username: string, password: string) => {
-    const request = await POST_REQUEST("/api/login", { username, password });
+    const request = await POST_REQUEST("/login", { username, password });
 
     const data = await request.json();
 
@@ -48,7 +52,7 @@ export const API = {
     }
   },
   submitAnswer: async (requestData: SubmitAnswerRequest) => {
-    const request = await POST_REQUEST("/api/submit_answer", requestData);
+    const request = await POST_REQUEST("/submit_answer", requestData);
 
     const data = await request.json();
 
@@ -56,7 +60,7 @@ export const API = {
   },
   prompt: async (prompt: PromptRequest) => {
     try {
-      const request = await POST_REQUEST("/api/prompt", prompt);
+      const request = await POST_REQUEST("/prompt", prompt);
 
       const data: PromptResponse | PromptErrorResponse = await request.json();
 
