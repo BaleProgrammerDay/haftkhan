@@ -8,6 +8,8 @@ import { API } from "~/api/api";
 import { useNotification } from "~/context/Notification";
 import styles from "./Khan6.module.scss";
 import comic from "./comic.jpg";
+import { userActions } from "~/store/user/slice";
+import { useDispatch } from "react-redux";
 
 //بعد از وارد کردن رمز:
 //سیستمش باز شد! نگاه کن اکانت بله‌ش بالاست.
@@ -39,6 +41,8 @@ export const Khan6 = (_props: PageProps) => {
 
   const firstText = "لطفا توجه کنید";
   const secondText = "برای تجربه بهتر از هدفون یا اسپیکر استفاده کنید...";
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (showComic) return; // Don't start animation until comic is dismissed
@@ -101,49 +105,22 @@ export const Khan6 = (_props: PageProps) => {
 
   const handleSubmit = async () => {
     const cleanPassword = password.replace(/\s/g, ""); // Remove spaces
-    if (cleanPassword.length === 4) {
-      setIsLoading(true);
 
-      try {
-        // const isValid = await API.khan6API(cleanPassword);
-        const isValid = true;
+    const callAPI = async () => {
+      const data = await API.submitAnswer({
+        question_id: 6,
+        answer: cleanPassword,
+      });
 
-        if (isValid) {
-          // Hide the video and form, show congratulations text
-          setShowVideo(false);
-          setShowForm(false);
-          setShowCongratulations(true);
+      if (true) {
 
-          // Handle successful password validation
-          console.log("Password is correct:", cleanPassword);
-
-          // Start the character disappearing animation after 1 second
-          setTimeout(() => {
-            setStartCongratulationsAnimation(true);
-          }, 1000);
-
-          // Hide congratulations and show folder after animation completes
-          setTimeout(() => {
-            setShowCongratulations(false);
-            setShowFolder(true);
-          }, 3000);
-
-          // Navigate to step 6.5 after showing the folder
-          setTimeout(() => {
-            // _props.setStep(6.5);
-          }, 5000);
-        } else {
-          setNotificationText("رمز عبور اشتباه است. دوباره تلاش کنید. ❌");
-        }
-      } catch (error) {
-        console.error("Error validating password:", error);
-        setNotificationText("خطا در اتصال به سرور. لطفاً دوباره تلاش کنید. ⚠️");
-      } finally {
-        setIsLoading(false);
+        dispatch(userActions.setLastSolvedQuestion(6.5));
+      } else {
+        setNotificationText("رمز عبور اشتباه است. دوباره تلاش کنید. ❌");
       }
-    } else {
-      setNotificationText("لطفاً رمز عبور 4 رقمی وارد کنید.");
-    }
+    };
+
+    callAPI();
   };
 
   const toggleAudioPlayback = () => {
