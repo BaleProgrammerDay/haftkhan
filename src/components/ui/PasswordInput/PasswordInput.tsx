@@ -15,6 +15,7 @@ interface PasswordInputProsp {
   isDark?: boolean;
   direction?: "ltr" | "rtl"; // Text direction for arrow key navigation
   justEnglish?: boolean;
+  ignoreSpaces?: boolean;
 }
 
 export interface PasswordInputRef {
@@ -29,7 +30,7 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
       if (!props.template) {
         return {
           charPositions: Array.from({ length: props.length }, (_, i) => i),
-          spacePositions: [],
+          spacePositions: props.ignoreSpaces ? [] : [],
           totalChars: props.length,
           template: "",
         };
@@ -37,7 +38,7 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
 
       const chars = props.template.split("");
       const charPositions: number[] = [];
-      const spacePositions: number[] = [];
+      const spacePositions: number[] = props.ignoreSpaces ? [] : [];
 
       chars.forEach((char, index) => {
         if (char === " ") {
@@ -49,11 +50,11 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
 
       return {
         charPositions,
-        spacePositions,
+        spacePositions: props.ignoreSpaces ? [] : spacePositions,
         totalChars: charPositions.length,
         template: props.template,
       };
-    }, [props.template, props.length]);
+    }, [props.template, props.length, props.ignoreSpaces]);
 
     const [password, setPassword] = useState<string[]>(() =>
       new Array(templateInfo.totalChars).fill("")
@@ -68,11 +69,15 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
         }
       },
       clear: () => {
-        const emptyPassword = new Array(templateInfo.totalChars).fill("");
+        const emptyPassword = props.ignoreSpaces
+          ? new Array(templateInfo.totalChars).fill("")
+          : new Array(templateInfo.totalChars).fill("");
         setPassword(emptyPassword);
 
         // Clear with spaces preserved from template
-        const clearedPassword = templateInfo.template
+        const clearedPassword = props.ignoreSpaces
+          ? ""
+          : templateInfo.template
           ? templateInfo.template
               .split("")
               .map((char) => {
@@ -94,7 +99,9 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
       newPassword[index] = _password;
 
       // Reconstruct password with spaces from template
-      const passwordWithSpaces = templateInfo.template
+      const passwordWithSpaces = props.ignoreSpaces
+        ? newPassword.join("")
+        : templateInfo.template
         ? templateInfo.template
             .split("")
             .map((char, i) => {
@@ -130,7 +137,7 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
           const newPassword = [...password];
           newPassword[index] = "";
           setPassword(newPassword);
-          props.onChange(newPassword.join(""));
+          props.onChange(props.ignoreSpaces ? "" : newPassword.join(""));
         } else if (index > 0) {
           // Only move to previous input if current is empty
           inputRefs.current[index - 1]?.focus();
@@ -171,7 +178,7 @@ export const PasswordInput = forwardRef<PasswordInputRef, PasswordInputProsp>(
 
       for (
         let i = 0;
-        i < (props.template?.length || templateInfo.totalChars);
+        i < (props.template?.length || templateInfo.totalChars + (props.ignoreSpaces ? 0 : templateInfo.spacePositions.length));
         i++
       ) {
         if (props.template && props.template[i] === " ") {

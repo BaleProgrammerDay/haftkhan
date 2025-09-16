@@ -3,3 +3,4 @@ export * from "./ConversationInput";
 export * from "./Folder";
 export * from "./Draggable";
 export * from "./TypingText";
+export * from "./BrainFixModal";

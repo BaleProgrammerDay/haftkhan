@@ -4,13 +4,20 @@ import styles from "./Khan2.module.scss";
 import { PageProps } from "~/types";
 import { TypingText } from "~/components/TypingText/TypingText";
 import { Slider } from "~/components/Slider/Slider";
+import { BrainFixModal } from "~/components/BrainFixModal";
 
 import { Scratch } from "./Scratch";
 import { Wires, useWireConnections } from "./Wires";
 import { Folders } from "./Folder";
-import { userActions, usernameSelector } from "~/store/user/slice";
+import {
+  perQuestionSelector,
+  userActions,
+  usernameSelector,
+} from "~/store/user/slice";
+import { API } from "~/api/api";
 import { useDispatch, useSelector } from "react-redux";
 
+// todo: add teams password
 const getPassword = (username: string) => {
   if (username === "منابع انسانی") {
     return "1234";
@@ -26,6 +33,11 @@ const getPassword = (username: string) => {
 export const Khan2 = (_props: PageProps) => {
   const dispatch = useDispatch();
   const username = useSelector(usernameSelector);
+  const timeoutAttemptHistory =
+    useSelector(perQuestionSelector)?.[-2]?.attempt_history?.length || 0;
+
+  console.log("@#@#", timeoutAttemptHistory);
+
   const password = getPassword(username || "");
 
   const texts = [
@@ -37,6 +49,10 @@ export const Khan2 = (_props: PageProps) => {
   ];
 
   const [storyIsEnded, setStoryIsEnded] = useState(false);
+  const [showBrainFixModal, setShowBrainFixModal] = useState(false);
+  const [timeoutTriggeredAt, setTimeoutTriggeredAt] = useState<
+    string | undefined
+  >();
 
   // Wire connection logic
   const {
@@ -50,6 +66,7 @@ export const Khan2 = (_props: PageProps) => {
     isError,
     errorMessage,
     remainingChances,
+    resetChances,
   } = useWireConnections();
 
   // Wire button colors - paired for left and right sides
@@ -67,6 +84,14 @@ export const Khan2 = (_props: PageProps) => {
     return wireButtonColors[colorIndex] || "#FF6B6B";
   };
 
+  // Check if user should see timeout modal on component mount
+  useEffect(() => {
+    if (timeoutAttemptHistory > 0 && timeoutAttemptHistory % 2 == 1) {
+      setShowBrainFixModal(true);
+      setTimeoutTriggeredAt(new Date().toISOString());
+    }
+  }, [timeoutAttemptHistory]);
+
   // Handle step transition when wires are completed
   useEffect(() => {
     if (isCompleted) {
@@ -78,6 +103,26 @@ export const Khan2 = (_props: PageProps) => {
       return () => clearTimeout(timer);
     }
   }, [isCompleted]);
+
+  // Show brain fix modal when remaining chances <= 0
+  useEffect(() => {
+    if (remainingChances <= 0 && isError) {
+      setShowBrainFixModal(true);
+      setTimeoutTriggeredAt(new Date().toISOString());
+    }
+  }, [remainingChances, isError]);
+
+  // Handle modal close - reset the wire connections and error state
+  const handleBrainFixModalClose = async () => {
+    setShowBrainFixModal(false);
+    // Submit answer to question -2 to mark that modal was shown and closed
+    await API.submitAnswer({
+      question_id: -2,
+      answer: "modal_completed",
+    });
+    // Reset the wire connections and error state when modal closes
+    resetChances();
+  };
 
   return (
     <div className={styles.Page}>
@@ -123,13 +168,16 @@ export const Khan2 = (_props: PageProps) => {
         {storyIsEnded ? (
           <Slider items={texts} startIndex={texts.length - 1} />
         ) : (
-          <TypingText
-            text={texts}
-            waitDelay={1000}
-            onComplete={() => {
-              setStoryIsEnded(true);
-            }}
-          />
+          <div className={styles.TypingTextContainer}>
+            <TypingText
+              className={styles.TypingText}
+              text={texts}
+              waitDelay={1000}
+              onComplete={() => {
+                setStoryIsEnded(true);
+              }}
+            />
+          </div>
         )}
       </div>
 
@@ -138,6 +186,14 @@ export const Khan2 = (_props: PageProps) => {
 
       {/* Scratch - only show after horse dialogue ends */}
       {storyIsEnded && <Scratch password={password} />}
+
+      {/* Brain Fix Modal - shows when remaining chances <= 0 */}
+      <BrainFixModal
+        isOpen={showBrainFixModal}
+        onClose={handleBrainFixModalClose}
+        timeoutTriggeredAt={timeoutTriggeredAt}
+        timeoutAttemptHistory={timeoutAttemptHistory}
+      />
     </div>
   );
 };

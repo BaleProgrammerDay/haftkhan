@@ -9,6 +9,8 @@ import { API } from "~/api/api";
 import { userActions } from "~/store/user/slice";
 import { useDispatch } from "react-redux";
 
+
+// todo: add teams template
 const getTemplate = (nameTeam: string) => {
   if (nameTeam === "منابع انسانی") {
     return "*** *** ***";

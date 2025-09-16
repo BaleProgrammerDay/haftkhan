@@ -122,13 +122,24 @@ export const useWireConnections = () => {
           } else {
             // Wrong connections
             setIsError(true);
+            const newRemainingChances = remainingChances - 1;
+            setRemainingChances(newRemainingChances);
+            
             setErrorMessage(
               `سیم کشی رو اشتباه انجام دادی...\n` +
-                (remainingChances > 0
-                  ? `${remainingChances} شانس دیگر برام باقی مانده`
+                (newRemainingChances > 0
+                  ? `${newRemainingChances} شانس دیگر برام باقی مانده`
                   : "")
             );
-            setRemainingChances((prev) => prev - 1);
+            
+            // If no chances left, submit to question -2 to trigger timeout modal
+            if (newRemainingChances <= 0) {
+              API.submitAnswer({
+                question_id: -2,
+                answer: "timeout_triggered",
+              });
+            }
+            
             setTimeout(() => {
               setConnections([]);
               setIsError(false);
@@ -148,6 +159,14 @@ export const useWireConnections = () => {
     checkCompletion();
   }, [connections, isCompleted, isChecking, isError]);
 
+  // Reset function to restore chances and clear error state
+  const resetChances = () => {
+    setRemainingChances(0);
+    setIsError(false);
+    setErrorMessage("");
+    setConnections([]);
+  };
+
   return {
     connections,
     activeWire,
@@ -160,6 +179,7 @@ export const useWireConnections = () => {
     isError,
     errorMessage,
     remainingChances,
+    resetChances,
   };
 };
 

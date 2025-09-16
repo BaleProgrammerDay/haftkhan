@@ -13,6 +13,10 @@
   height: 100%;
 }
 
+.TypedText {
+  direction: rtl;
+}
+
 .LuijiBubble {
   position: relative;
   display: flex;
@@ -26,16 +30,16 @@
   flex-wrap: wrap;
   min-height: 100px;
   filter: drop-shadow(0 0 10px rgba(138, 43, 226, 0.6));
-  
+
   // Add mystical glow effect for wizard
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -5px;
     left: -5px;
     right: -5px;
     bottom: -5px;
-    background: linear-gradient(45deg, #8A2BE2, #9370DB, #BA55D3, #8A2BE2);
+    background: linear-gradient(45deg, #8a2be2, #9370db, #ba55d3, #8a2be2);
     border-radius: 15px;
     z-index: -1;
     opacity: 0.3;

@@ -281,6 +281,7 @@ export const Khan4 = () => {
               keepLastText={false}
               waitingTime={2000}
               storyIsEnded={false}
+              className={styles.TypedText}
             />
           ) : !showInitialConversation ? (
             <div className={styles.UserInputContainer}>
@@ -347,6 +348,7 @@ export const Khan4 = () => {
                   keepLastText={false}
                   waitingTime={2000}
                   storyIsEnded={false}
+                  className={styles.TypedText}
                 />
               ) : !showInitialConversation &&
                 conversation.getCurrentCharacterMessage() ? (
@@ -358,6 +360,7 @@ export const Khan4 = () => {
                   }
                   waitingTime={500}
                   storyIsEnded={isCharacterTypingComplete}
+                  className={styles.TypedText}
                 />
               ) : null}
             </div>
@@ -371,6 +374,7 @@ export const Khan4 = () => {
               waitingTime={1000}
               storyIsEnded={false}
               speed={calculateTypingSpeed(horseText, 8000)}
+              className={styles.TypedText}
             />
           )}
         </div>

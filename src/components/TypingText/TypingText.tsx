@@ -13,6 +13,7 @@ interface TypingTextProps {
   waitDelay?: number; // Delay after text is fully typed before next text
   onComplete?: () => void;
   keepLastText?: boolean;
+  className?: string;
 }
 
 export const TypingText = (props: TypingTextProps) => {
@@ -41,6 +42,7 @@ export const TypingText = (props: TypingTextProps) => {
       waitingTime={waitDelay}
       storyIsEnded={isEnded}
       keepLastText={keepLastText}
+      className={props.className}
     />
   );
 };
@@ -52,6 +54,7 @@ export const TypedText = (props: {
   storyIsEnded: boolean;
   speed?: number; // 125 is default
   keepLastText?: boolean;
+  className?: string;
 }) => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
@@ -101,7 +104,10 @@ export const TypedText = (props: {
   }, []);
 
   return (
-    <div className={styles.TypedText} dir={getTextDirection(props.text)}>
+    <div
+      className={`${styles.TypedText} ${props.className}`}
+      dir={getTextDirection(props.text)}
+    >
       {props.text
         ? props.text.slice(
             0,
@@ -114,6 +120,7 @@ export const TypedText = (props: {
 
 interface ManualTypingTextProps extends TypingTextProps {
   goNext?: () => void; // Optional callback when advancing to next text
+  className?: string;
 }
 
 export interface ManualTypingTextRef {
@@ -176,6 +183,7 @@ export const ManualTypingText = forwardRef<
       waitingTime={props.waitDelay ?? 1000}
       storyIsEnded={isEnded}
       keepLastText={keepLastText}
+      className={props.className}
     />
   );
 });
