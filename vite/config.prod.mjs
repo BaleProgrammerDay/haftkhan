@@ -26,6 +26,10 @@ const phasermsg = () => {
 export default defineConfig({
   base: "./",
   plugins: [react(), phasermsg()],
+  define: {
+    'import.meta.env.DEV': false,
+    'import.meta.env.PROD': true,
+  },
   resolve: {
     alias: {
       "~": path.resolve(__dirname, "../src"),

@@ -6,9 +6,10 @@ import {
   PromptResponse,
   PromptErrorResponse,
 } from "./types";
+import { API_BASE_URL } from "../configs/api";
 
 const POST_REQUEST = async (url: string, body: any) => {
-  return await fetch(url, {
+  return await fetch(API_BASE_URL + url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -5,7 +5,7 @@ import path from "path";
 
 // Development config always uses localhost
 
-const isDev = false;
+const isDev = true;
 
 const targetUrl = isDev ? "http://localhost:8080" : "http://37.32.26.173:8080";
 
@@ -13,6 +13,10 @@ const targetUrl = isDev ? "http://localhost:8080" : "http://37.32.26.173:8080";
 export default defineConfig({
   base: "./",
   plugins: [react(), tailwindcss()],
+  define: {
+    'import.meta.env.DEV': true,
+    'import.meta.env.PROD': false,
+  },
   server: {
     port: 3000,
     proxy: {
