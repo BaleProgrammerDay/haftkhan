@@ -1,5 +1,6 @@
 export interface Message {
   id: string;
+  type: "text" | "image";
   text: string;
   sender: "me" | "other" | string;
   time: number;
@@ -15,6 +16,7 @@ export enum Chats {
   Pisano = "Pisano",
   Bruce = "Bruce",
   Parking = "Parking",
+  OtaghFekr = "OtaghFekr",
 }
 
 export enum ChatState {
@@ -22,6 +24,7 @@ export enum ChatState {
   ACTIVE = "آنلاین",
   OFFLINE = "آفلاین",
   TYPING = "در حال تایپ ...",
+  NONE = "",
 }
 
 export interface Chat {
@@ -31,6 +34,7 @@ export interface Chat {
   unreadCount: number;
   state: ChatState;
   messages: Message[];
+  sendFile?: boolean;
   input?: {
     placeholder?: string;
     maxLength?: number;

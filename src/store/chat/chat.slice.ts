@@ -37,9 +37,15 @@ const chatSlice = createSlice({
         id: Date.now().toString(),
       });
 
-      if (state.current !== chatId) {
+      if (state.current !== chatId && message.sender !== "me") {
         state.list[chatId].unreadCount += 1;
       }
+    },
+    toggleSendingFile(
+      state,
+      action: PayloadAction<{ chatId: Chats; active?: boolean }>
+    ) {
+      state.list[action.payload.chatId].sendFile = action.payload.active;
     },
     changeChatState(
       state,
@@ -54,6 +60,12 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setCurrentChat, deleteMessage, addMessage, changeChatState } =
-  chatSlice.actions;
+export const {
+  setCurrentChat,
+  deleteMessage,
+  addMessage,
+  changeChatState,
+  toggleSendingFile,
+} = chatSlice.actions;
 export const chatReducer = chatSlice.reducer;
+

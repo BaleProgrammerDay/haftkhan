@@ -79,7 +79,11 @@ export class TeamPlayer extends Scene {
       // Observe DOM for removal of #message-3 and remove platform
       const observer = new MutationObserver(() => {
         if (!document.getElementById("message-3")) {
-          if (this.transparentPlatform) {
+          if (
+            this.transparentPlatform &&
+            this.transparentPlatform.children &&
+            this.transparentPlatform.children.size > 0
+          ) {
             this.transparentPlatform.clear(true, true);
           }
           observer.disconnect();
@@ -164,3 +168,4 @@ export class TeamPlayer extends Scene {
     this.rostam.handleInput(this.cursors);
   }
 }
+

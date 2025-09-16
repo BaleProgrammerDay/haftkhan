@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "~/store/store";
 import { deleteMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../types/Chat";
+import ImageMessageBubble from "./ImageMessageBubble";
 
 interface MessageListProps {
   chatId: string;
@@ -46,17 +47,32 @@ function MessageList({ chatId, phaserRef }: MessageListProps) {
         <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
       </div>
       <div className="relative z-10 p-4 overflow-y-auto space-y-3">
-        {messages.map((message) => (
-          <MessageBubble
-            key={message.id}
-            message={message}
-            id={"message-" + message.id}
-            onDelete={handleDelete}
-          />
-        ))}
+        {messages.map((message) => {
+          switch (message.type) {
+            case "text":
+              return (
+                <MessageBubble
+                  key={message.id}
+                  message={message}
+                  id={"message-" + message.id}
+                  onDelete={handleDelete}
+                />
+              );
+            case "image":
+              return (
+                <ImageMessageBubble
+                  key={message.id}
+                  message={message}
+                  id={"message-" + message.id}
+                  onDelete={handleDelete}
+                />
+              );
+          }
+        })}
       </div>
     </div>
   );
 }
 
 export default MessageList;
+

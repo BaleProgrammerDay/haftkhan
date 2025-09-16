@@ -12,18 +12,21 @@ export const initialChats: { [key: Chats | string]: Chat } = {
         id: "1",
         text: "سلام",
         sender: "other",
+        type: "text",
         time: new Date(1755057140).getTime(),
       },
       {
         id: "2",
         text: "سلام",
         sender: "me",
+        type: "text",
         time: new Date(1755057140).getTime(),
       },
       {
         id: "3",
         text: "سه ویژگی بازیکن تیمی ایده آل رو داری؟",
         sender: "other",
+        type: "text",
         time: new Date(1755057140).getTime(),
         deletable: true,
       },
@@ -39,6 +42,7 @@ export const initialChats: { [key: Chats | string]: Chat } = {
       {
         id: "1",
         text: "سلام",
+        type: "text",
         sender: "other",
         time: new Date(12871310400).getTime(),
       },
@@ -54,6 +58,7 @@ export const initialChats: { [key: Chats | string]: Chat } = {
       {
         id: "1",
         text: "لطفا قبل رفتن برق رو خاموش  کنید",
+        type: "text",
         sender: "other",
         time: new Date().getTime(),
       },
@@ -77,6 +82,7 @@ export const initialChats: { [key: Chats | string]: Chat } = {
       {
         id: "1",
         text: "Ciao amico!",
+        type: "text",
         sender: "other",
         time: new Date().getTime(),
         ltr: true,
@@ -84,6 +90,7 @@ export const initialChats: { [key: Chats | string]: Chat } = {
       {
         id: "2",
         text: "La mia torre è storta...",
+        type: "text",
         sender: "other",
         time: new Date().getTime(),
         ltr: true,
@@ -91,6 +98,7 @@ export const initialChats: { [key: Chats | string]: Chat } = {
       {
         id: "3",
         text: "Puoi aiutarmi a raddrizzarla?",
+        type: "text",
         sender: "other",
         time: new Date().getTime(),
         ltr: true,
@@ -111,6 +119,7 @@ export const initialChats: { [key: Chats | string]: Chat } = {
       {
         id: "1",
         text: "سلام.",
+        type: "text",
         sender: "other",
         time: new Date().getTime(),
         ltr: true,
@@ -121,32 +130,59 @@ export const initialChats: { [key: Chats | string]: Chat } = {
       disabled: true,
     },
   },
+  [Chats.OtaghFekr]: {
+    id: Chats.OtaghFekr,
+    name: "اتاق فکر روز برنامه نویس",
+    avatar: "/assets/avatars/brain.png",
+    unreadCount: 0,
+    sendFile: true,
+    messages: [
+      {
+        id: "1",
+        text: "بچه ها حجم این عکسه خیلی زیاده، سایت نیاد پایین",
+        sender: "محمد",
+        type: "text",
+        time: new Date().getTime(),
+      },
+      {
+        id: "2",
+        text: "باید تست کنیم! ",
+        sender: "me",
+        type: "text",
+        time: new Date().getTime(),
+      },
+    ],
+    state: ChatState.NONE,
+  },
   [Chats.Parking]: {
     id: Chats.Parking,
     name: "گروه پارکینگ",
     avatar: "/assets/profiles/parking.png",
-    unreadCount: 3,
+    unreadCount: 0,
     messages: [
       {
         id: "1",
         text: "پارکینگ جا هست؟",
         sender: "me",
+        type: "text",
         time: new Date().getTime(),
       },
       {
         id: "2",
         text: "یکی خالیه",
         sender: "کاربر 1",
+        type: "text",
         time: new Date().getTime(),
       },
       {
         id: "3",
         text: "فقط یکی ؟ من تا یک دقیقه دیگه اونجام!",
         sender: "me",
+        type: "text",
         time: new Date().getTime(),
       },
     ],
-    state: ChatState.IDLE,
+    state: ChatState.NONE,
   },
 };
 
