@@ -3,7 +3,6 @@ import styles from "./Scratch.module.scss";
 import clsx from "clsx";
 import { Draggable } from "~/components/Draggable";
 import { detectCollision } from "~/utils";
-import npc from "./npc.jpg";
 
 interface ScratchState {
   npcTranslateX: number;
@@ -260,7 +259,7 @@ export const Scratch = (props: { password: string }) => {
                 [styles.ImageFalling]: state.isImageFalling,
               })}
             >
-              <img src={npc} draggable={false} />
+              <img src={"./npc/y.gif"} draggable={false} />
             </div>
           ) : null}
 
