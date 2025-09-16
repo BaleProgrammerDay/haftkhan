@@ -60,6 +60,7 @@ function MessageBubble({ message, id, onDelete }: MessageBubbleProps) {
           fontStyle: message.ltr ? "italic" : "normal",
         }}
       >
+        {message.sender === "other" || isMe ? null : <p>{message.sender}</p>}
         <p className="text-sm leading-relaxed">{message.text}</p>
         <p
           className="text-xs mt-1"
@@ -107,3 +108,4 @@ function MessageBubble({ message, id, onDelete }: MessageBubbleProps) {
 }
 
 export default MessageBubble;
+

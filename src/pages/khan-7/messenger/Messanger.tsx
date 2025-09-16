@@ -16,6 +16,7 @@ function Messanger() {
 
   const dispatch = useDispatch();
   const chats = useSelector((state: RootState) => state.chat.list);
+  const currentScene = useSelector((state: RootState) => state.chat.current);
   const selectedChatIndex = useSelector(
     (state: RootState) => state.chat.current
   );
@@ -34,6 +35,7 @@ function Messanger() {
     dispatch(setCurrentChat(id));
     setTimeout(() => {
       //@ts-ignore
+      if (currentScene === id) return;
       phaserRef.current?.scene?.changeScene(id);
     }, 100);
   };
@@ -73,3 +75,4 @@ function Messanger() {
 }
 
 export default Messanger;
+

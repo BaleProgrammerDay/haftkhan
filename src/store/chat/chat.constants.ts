@@ -1,6 +1,4 @@
 import { Chat, Chats, ChatState } from "~/pages/khan-7/messenger/types/Chat";
-import barghMan from "../../assets/bargh_man.png";
-import tajammolian from "../../assets/tajammolian.png";
 
 export const initialChats: { [key: Chats | string]: Chat } = {
   [Chats.TeamPlayer]: {
@@ -123,4 +121,32 @@ export const initialChats: { [key: Chats | string]: Chat } = {
       disabled: true,
     },
   },
+  [Chats.Parking]: {
+    id: Chats.Parking,
+    name: "گروه پارکینگ",
+    avatar: "/assets/profiles/parking.png",
+    unreadCount: 3,
+    messages: [
+      {
+        id: "1",
+        text: "پارکینگ جا هست؟",
+        sender: "me",
+        time: new Date().getTime(),
+      },
+      {
+        id: "2",
+        text: "یکی خالیه",
+        sender: "کاربر 1",
+        time: new Date().getTime(),
+      },
+      {
+        id: "3",
+        text: "فقط یکی ؟ من تا یک دقیقه دیگه اونجام!",
+        sender: "me",
+        time: new Date().getTime(),
+      },
+    ],
+    state: ChatState.IDLE,
+  },
 };
+

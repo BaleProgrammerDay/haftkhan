@@ -61,6 +61,38 @@ export class Preloader extends Scene {
       frameWidth: 32,
       frameHeight: 22,
     });
+    this.load.image("door", "door.png");
+    this.load.image("box", "box.png");
+    this.load.image("rostam", "rostam_idle.png");
+    this.load.spritesheet("rostam_walk", "rostam_walk.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+    this.load.spritesheet("rostam_vehicle", "rostam/rostam_vehicle.png", {
+      frameWidth: 330,
+      frameHeight: 160,
+    });
+    this.load.spritesheet("rostam_idle", "rostam_idle.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+    this.load.spritesheet("rostam_jump", "rostam_jump.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+    this.load.image("rakhsh", "rakhsh_idle.png");
+    this.load.spritesheet("rakhsh_idle", "rakhsh_idle.png", {
+      frameWidth: 80,
+      frameHeight: 64,
+    });
+    this.load.spritesheet("rakhsh_walk", "rakhsh_walk.png", {
+      frameWidth: 80,
+      frameHeight: 64,
+    });
+    this.load.spritesheet("lightning_particle", "particles/lightning.png", {
+      frameWidth: 32,
+      frameHeight: 22,
+    });
 
     this.load.image("items/wrench", "items/wrench.png");
     this.load.image("power_gen", "general/power_gen.png");
@@ -69,6 +101,16 @@ export class Preloader extends Scene {
     this.load.audio("recharge", "sounds/recharge.wav");
     this.load.image("bruce", "characters/bruce.png");
     // this.load.image('keyboard-keys', '/keyboard-keys.png');
+
+    // Parking scene assets
+    this.load.image("airplane", "items/airplane.png");
+    this.load.image("cone", "items/traffic/cone.png");
+    this.load.image("traffic_light", "items/traffic/traffic_light.png");
+    this.load.image("barrier", "items/traffic/barrier.png");
+
+    // Audio
+    this.load.audio("recharge", "sounds/recharge.wav");
+    this.load.audio("engine", "sounds/engine.mp3");
   }
 
   create() {
@@ -78,3 +120,4 @@ export class Preloader extends Scene {
     this.scene.start(Chats.TeamPlayer);
   }
 }
+

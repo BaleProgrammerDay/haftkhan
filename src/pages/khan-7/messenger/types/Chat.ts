@@ -1,7 +1,7 @@
 export interface Message {
   id: string;
   text: string;
-  sender: "me" | "other";
+  sender: "me" | "other" | string;
   time: number;
   ltr?: boolean;
   deletable?: boolean;
@@ -14,6 +14,7 @@ export enum Chats {
   Tajamolian = "Tajamolian",
   Pisano = "Pisano",
   Bruce = "Bruce",
+  Parking = "Parking",
 }
 
 export enum ChatState {
@@ -40,3 +41,4 @@ export interface Chat {
 export type ChatsList = {
   [key: string]: Chat;
 };
+
