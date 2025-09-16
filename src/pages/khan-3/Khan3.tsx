@@ -14,6 +14,10 @@ import folderIce from "~/assets/frozen_folder.png";
 import folder from "~/assets/folder.png";
 
 import FolderWrapperStyles from "~/pages/khan-2/Folder/Folder.module.scss";
+import { API } from "~/api/api";
+import { useDispatch } from "react-redux";
+import { userActions } from "~/store/user/slice";
+import { useNotification } from "~/context/Notification";
 
 // todo: add api
 
@@ -29,6 +33,10 @@ export const Khan3 = (props: PageProps) => {
 
   // Collision timer ref
   const collisionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const dispatch = useDispatch();
+
+  const { setNotificationText } = useNotification();
 
   useEffect(() => {
     setTimeout(() => {
@@ -224,7 +232,25 @@ export const Khan3 = (props: PageProps) => {
   }, [isActivationModalOpen, tableDataSets.length]);
 
   const handleActivate = () => {
-    console.log("activate");
+    const callAPI = async () => {
+      const data = await API.submitAnswer({
+        question_id: 3,
+        answer: password,
+      });
+
+        dispatch(userActions.setLastSolvedQuestion(3));
+        if (data.ok) {
+        dispatch(userActions.setLastSolvedQuestion(3));
+      } else {
+        setNotificationText("رمز عبور اشتباه است. دوباره تلاش کنید. ❌");
+      }
+    };
+
+    callAPI();
+  };
+
+  const handleChangePassword = (password: string) => {
+    setPassword(password);
   };
 
   return (
@@ -345,10 +371,11 @@ export const Khan3 = (props: PageProps) => {
 
             <PasswordInput
               length={6}
-              onChange={setPassword}
+              onChange={handleChangePassword}
               template="**** * *"
               direction="ltr"
               justEnglish
+              ignoreSpaces
             />
           </div>
 
