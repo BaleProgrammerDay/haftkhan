@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Smile } from "lucide-react";
 import Send from "./icons/Send";
+import { useSelector } from "react-redux";
+import { RootState } from "~/store/store";
+import { initialChats } from "~/store/chat/chat.constants";
+import { EventBus } from "../../game/EventBus";
 
 function MessageInput() {
   const [message, setMessage] = useState("");
 
   const handleSend = () => {
     if (message.trim()) {
-      // Here you would handle sending the message
-      console.log("Sending message:", message);
+      EventBus.emit("new-message", message);
       setMessage("");
     }
   };
@@ -19,6 +22,11 @@ function MessageInput() {
       handleSend();
     }
   };
+
+  const currentChat = useSelector((state: RootState) => state.chat.current);
+  useEffect(() => {
+    setMessage("");
+  }, [currentChat]);
 
   return (
     <div
@@ -47,7 +55,11 @@ function MessageInput() {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="پیام خود را بنویسید..."
+            placeholder={
+              initialChats[currentChat].input?.placeholder ??
+              "پیام خود را بنویسید..."
+            }
+            maxLength={initialChats[currentChat].input?.maxLength}
             className="w-full p-3 resize-none focus:outline-none max-h-32 min-h-[44px]"
             style={{
               color: "var(--color-neutrals-on-app-bar)",
@@ -72,4 +84,3 @@ function MessageInput() {
 }
 
 export default MessageInput;
-

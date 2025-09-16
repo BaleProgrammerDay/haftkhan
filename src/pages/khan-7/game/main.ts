@@ -4,6 +4,7 @@ import { Preloader } from "./scenes/Preloader";
 import { TeamPlayer } from "./scenes/TeamPlayer";
 import { RakhshChat } from "./scenes/RakhshChat";
 import { Barghman } from "./scenes/Barghman";
+import { Pisano } from "./scenes/Pisano";
 
 //  Find out more information about the Game Config at:
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
@@ -18,7 +19,7 @@ const config: Phaser.Types.Core.GameConfig = {
     default: "arcade",
     arcade: {
       gravity: { y: 1500, x: 0 },
-      //   debug: true,
+      // debug: true,
     },
   },
   input: {
@@ -28,7 +29,7 @@ const config: Phaser.Types.Core.GameConfig = {
     mode: Scale.RESIZE,
     autoCenter: Scale.CENTER_BOTH,
   },
-  scene: [Boot, Preloader, TeamPlayer, RakhshChat, Barghman],
+  scene: [Boot, Preloader, TeamPlayer, RakhshChat, Barghman, Pisano],
 };
 
 const StartGame = (parent: string) => {
