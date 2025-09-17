@@ -185,6 +185,7 @@ export class Parking extends Scene {
         message: {
           sender: "me",
           text: "سلام، 8",
+          type: "text",
         },
       })
     );
@@ -233,4 +234,3 @@ export class Parking extends Scene {
     this.interactionHelper.update();
   }
 }
-
