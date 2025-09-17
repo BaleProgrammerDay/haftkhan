@@ -18,6 +18,7 @@ function MessageInput() {
   const dispatch = useDispatch();
 
   const handleSend = () => {
+    if (isDisabled) return;
     if (message.trim()) {
       EventBus.emit("new-message", message);
       setMessage("");
@@ -25,6 +26,7 @@ function MessageInput() {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (isDisabled) return;
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -32,15 +34,18 @@ function MessageInput() {
   };
 
   const currentChat = useSelector((state: RootState) => state.chat.current);
+  const isDisabled = initialChats[currentChat].input?.disabled;
   useEffect(() => {
     setMessage("");
   }, [currentChat]);
 
   const handleFile = () => {
+    if (isDisabled) return;
     fileInputRef.current?.click();
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isDisabled) return;
     const file = e.target.files?.[0];
     if (file && file.type === "image/png") {
       // Create a FileReader to read the image as data URL
@@ -87,6 +92,8 @@ function MessageInput() {
         borderTopColor: "var(--color-neutrals-n-30)",
         borderTopWidth: "1px",
         borderTopStyle: "solid",
+        opacity: isDisabled ? 0.6 : 1,
+        pointerEvents: isDisabled ? "none" : undefined,
       }}
     >
       {/* Hidden file input for image selection */}
@@ -96,6 +103,7 @@ function MessageInput() {
         accept=".png,image/png"
         onChange={handleImageSelect}
         style={{ display: "none" }}
+        disabled={isDisabled}
       />
 
       <div className="flex items-center gap-2">
@@ -103,10 +111,10 @@ function MessageInput() {
           onClick={handleSend}
           className="p-3 rounded-full transition-all duration-200 shadow-md hover:shadow-lg"
           style={{
-            opacity: message.trim() ? 1 : 0.5,
-            cursor: message.trim() ? "pointer" : "not-allowed",
+            opacity: message.trim() && !isDisabled ? 1 : 0.5,
+            cursor: message.trim() && !isDisabled ? "pointer" : "not-allowed",
           }}
-          disabled={!message.trim()}
+          disabled={!message.trim() || isDisabled}
         >
           <Send width={32} height={32} />
         </button>
@@ -126,6 +134,7 @@ function MessageInput() {
               color: "var(--color-neutrals-on-app-bar)",
             }}
             rows={1}
+            disabled={isDisabled}
           />
           <div className="absolute left-3 bottom-3 flex items-center justify-center">
             <button
@@ -133,6 +142,7 @@ function MessageInput() {
               style={{
                 color: "var(--color-neutrals-n-200)",
               }}
+              disabled={isDisabled}
             >
               <Smile className="w-5 h-5" />
             </button>
@@ -143,6 +153,7 @@ function MessageInput() {
                   color: "var(--color-neutrals-n-200)",
                 }}
                 onClick={handleFile}
+                disabled={isDisabled}
               >
                 <PlusCircle className="w-5 h-5" />
               </button>
@@ -155,4 +166,3 @@ function MessageInput() {
 }
 
 export default MessageInput;
-

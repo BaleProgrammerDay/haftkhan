@@ -98,10 +98,16 @@ function ChatItem({ chat, isSelected, onClick }: ChatItemProps) {
                 </div>
               ) : (
                 <p
-                  className="text-sm truncate"
-                  style={{ color: "var(--color-neutrals-n-300)" }}
+                  className="text-sm truncate max-w-[140px]"
+                  style={{
+                    color: "var(--color-neutrals-n-300)",
+                    direction: "rtl",
+                  }}
+                  title={lastMessage.text}
                 >
-                  {lastMessage.text}
+                  {lastMessage.text.length > 40
+                    ? lastMessage.text.slice(0, 40) + "..."
+                    : lastMessage.text}
                 </p>
               )}
             </div>
@@ -123,4 +129,3 @@ function ChatItem({ chat, isSelected, onClick }: ChatItemProps) {
 }
 
 export default ChatItem;
-
