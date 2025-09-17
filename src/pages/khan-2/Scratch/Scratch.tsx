@@ -4,6 +4,20 @@ import clsx from "clsx";
 import { Draggable } from "~/components/Draggable";
 import { detectCollision } from "~/utils";
 
+import hesamGif from "./assets/h.gif";
+import aliGif from "./assets/a.gif";
+import amirhosein from "./assets/am.gif";
+import yashar from "./assets/y.gif";
+import tavakoli from "./assets/t.gif";
+import { usernameSelector } from "~/store/user/slice";
+import { useSelector } from "react-redux";
+
+import teaImage from "./assets/tea.jpg";
+import packetImage from "./assets/packet.jpg";
+import scrissorsImage from "./assets/scrissors.jpg";
+import calenderImage from "./assets/calender.jpg";
+import sangImage from "./assets/sang.jpg";
+
 interface ScratchState {
   npcTranslateX: number;
   isScratched: boolean;
@@ -40,6 +54,109 @@ const initialState: ScratchState = {
   isPasswordRevealed: false,
 };
 
+const ourUsernames = [
+  "مامور 001",
+  "قهرمان",
+  "اکسلنت‌ها",
+  "بازگشت اصلان",
+  "سه کله پو",
+  "هیمالیا",
+  "وهوش",
+  "موقت: اینت",
+  "چای کرک",
+  "FourSure",
+  "حسین کبیر",
+  "پشتیبانی",
+  "شواهد",
+  "رادمردان عرصه ک",
+  "New Folder",
+  "فرضی1",
+  "فرضی",
+  "فرضی2",
+];
+
+const getImage = (username: string) => {
+  switch (username) {
+    case "مامور 001":
+      return packetImage;
+    case "قهرمان":
+      return teaImage;
+    case "اکسلنت‌ها":
+      return teaImage;
+    case "بازگشت اصلان":
+      return teaImage;
+    case "سه کله پو":
+      return packetImage;
+    case "هیمالیا":
+      return teaImage;
+    case "وهوش":
+      return sangImage;
+    case "موقت: اینت":
+      return packetImage;
+    case "چای کرک":
+      return teaImage;
+    case "FourSure":
+      return calenderImage;
+    case "حسین کبیر":
+      return sangImage;
+    case "پشتیبانی":
+      return packetImage;
+    case "شواهد":
+      return sangImage;
+    case "رادمردان عرصه ک":
+      return calenderImage;
+    case "New Folder":
+      return calenderImage;
+    case "سنگر":
+      return calenderImage;
+    case "فرضی":
+      return calenderImage;
+    case "فرضی2":
+      return tavakoli;
+  }
+};
+
+const getGif = (username: string) => {
+  switch (username) {
+    case "مامور 001":
+      return hesamGif;
+    case "قهرمان":
+      return yashar;
+    case "اکسلنت‌ها":
+      return hesamGif;
+    case "بازگشت اصلان":
+      return tavakoli;
+    case "سه کله پو":
+      return aliGif;
+    case "هیمالیا":
+      return amirhosein;
+    case "وهوش":
+      return aliGif;
+    case "موقت: اینت":
+      return yashar;
+    case "چای کرک":
+      return aliGif;
+    case "FourSure":
+      return tavakoli;
+    case "حسین کبیر":
+      return amirhosein;
+    case "پشتیبانی":
+      return tavakoli;
+    case "شواهد":
+      return aliGif;
+    case "رادمردان عرصه ک":
+      return yashar;
+    case "New Folder":
+      return hesamGif;
+    case "سنگر":
+      return tavakoli;
+    case "فرضی":
+      return tavakoli;
+    case "فرضی2":
+      return tavakoli;
+  }
+};
+
 export const Scratch = (props: { password: string }) => {
   const [state, setState] = useState<ScratchState>(initialState);
   const pinRef = useRef<HTMLDivElement>(null);
@@ -50,6 +167,7 @@ export const Scratch = (props: { password: string }) => {
   const passwordAreaRef = useRef<HTMLDivElement>(null);
   const [framePosition, setFramePosition] = useState({ x: 0, y: 0 });
 
+  const username = useSelector(usernameSelector);
   const password = props.password;
   const scraches = new Array(40).fill(0);
 
@@ -72,19 +190,17 @@ export const Scratch = (props: { password: string }) => {
     }));
   };
 
-
-
   const handleTopFrameClick = () => {
     // Always allow breaking (not dependent on image falling)
     if (state.isTopFrameBroken) {
       return;
     }
-    
+
     if (topFrameRef.current) {
       const rect = topFrameRef.current.getBoundingClientRect();
       setFramePosition({ x: rect.left, y: rect.top });
     }
-    
+
     setState((prev) => ({
       ...prev,
       isDraggablePieceCreated: true,
@@ -96,13 +212,13 @@ export const Scratch = (props: { password: string }) => {
     if (state.isBottomFrameFalling || state.isImageFalling) {
       return;
     }
-    
+
     // Start bottom frame falling animation
     setState((prev) => ({
       ...prev,
       isBottomFrameFalling: true,
     }));
-    
+
     // After 500ms, start image falling animation
     setTimeout(() => {
       setState((prev) => ({
@@ -192,7 +308,7 @@ export const Scratch = (props: { password: string }) => {
         if (!prev.isImageFalling) {
           return prev;
         }
-        
+
         if (collision && !prev.isPieceNearPassword) {
           return {
             ...prev,
@@ -205,10 +321,14 @@ export const Scratch = (props: { password: string }) => {
             isPieceNearPassword: false,
             collisionStartTime: null,
           };
-        } else if (collision && prev.isPieceNearPassword && prev.collisionStartTime) {
+        } else if (
+          collision &&
+          prev.isPieceNearPassword &&
+          prev.collisionStartTime
+        ) {
           const elapsed = Date.now() - prev.collisionStartTime;
           const progress = Math.min((elapsed / 3000) * 100, 100);
-          
+
           if (elapsed >= 3000 && !prev.isPieceExploded) {
             // Explode the piece and reveal password
             setState((currentState) => ({
@@ -217,7 +337,7 @@ export const Scratch = (props: { password: string }) => {
               isPasswordRevealed: true,
             }));
           }
-          
+
           return { ...prev, scratchProgress: progress };
         }
         return prev;
@@ -227,8 +347,11 @@ export const Scratch = (props: { password: string }) => {
     return () => {
       clearInterval(id);
     };
-  }, [state.isDraggablePieceCreated, state.isPieceExploded, state.isImageFalling]);
-
+  }, [
+    state.isDraggablePieceCreated,
+    state.isPieceExploded,
+    state.isImageFalling,
+  ]);
 
   return (
     <>
@@ -259,7 +382,7 @@ export const Scratch = (props: { password: string }) => {
                 [styles.ImageFalling]: state.isImageFalling,
               })}
             >
-              <img src={"./npc/y.gif"} draggable={false} />
+              <img src={getGif(username)} draggable={false} />
             </div>
           ) : null}
 
@@ -317,19 +440,24 @@ export const Scratch = (props: { password: string }) => {
               <div className={clsx(styles.FramePart, styles.RightFrame)} />
 
               {/* Bottom Frame Part - Clickable to trigger falling animation */}
-              <div 
-                className={clsx(styles.FramePart, styles.BottomFrame, styles.ClickableFrame, {
-                  [styles.Falling]: state.isBottomFrameFalling,
-                })}
+              <div
+                className={clsx(
+                  styles.FramePart,
+                  styles.BottomFrame,
+                  styles.ClickableFrame,
+                  {
+                    [styles.Falling]: state.isBottomFrameFalling,
+                  }
+                )}
                 onClick={handleBottomFrameClick}
               />
             </div>
           )}
-
         </div>
 
         {/* Progress indicator */}
-        {((state.isColliding && state.scratchProgress > 0) || (state.isPieceNearPassword && state.scratchProgress > 0)) && (
+        {((state.isColliding && state.scratchProgress > 0) ||
+          (state.isPieceNearPassword && state.scratchProgress > 0)) && (
           <div className={styles.ProgressContainer}>
             <div className={styles.ProgressBar}>
               <div
@@ -356,44 +484,43 @@ export const Scratch = (props: { password: string }) => {
               [styles.PieceNearPassword]: state.isPieceNearPassword,
             })}
           >
-          {state.isPieceExploded && (
-            <div className={styles.ExplosionEffect}>
-              {/* Flash effect */}
-              <div className={styles.ExplosionFlash} />
+            {state.isPieceExploded && (
+              <div className={styles.ExplosionEffect}>
+                {/* Flash effect */}
+                <div className={styles.ExplosionFlash} />
 
-              {/* Frame piece fragments */}
-              {Array.from({ length: 6 }, (_, index) => (
-                <div
-                  key={index}
-                  className={styles.FramePieceFragment}
-                  style={
-                    {
-                      "--fragment-index": index,
-                      "--total-fragments": 6,
-                    } as React.CSSProperties
-                  }
-                />
-              ))}
+                {/* Frame piece fragments */}
+                {Array.from({ length: 6 }, (_, index) => (
+                  <div
+                    key={index}
+                    className={styles.FramePieceFragment}
+                    style={
+                      {
+                        "--fragment-index": index,
+                        "--total-fragments": 6,
+                      } as React.CSSProperties
+                    }
+                  />
+                ))}
 
-              {/* Debris particles */}
-              {Array.from({ length: 8 }, (_, index) => (
-                <div
-                  key={`debris-${index}`}
-                  className={styles.DebrisParticle}
-                  style={
-                    {
-                      "--particle-index": index,
-                      "--total-particles": 8,
-                    } as React.CSSProperties
-                  }
-                />
-              ))}
-            </div>
-          )}
+                {/* Debris particles */}
+                {Array.from({ length: 8 }, (_, index) => (
+                  <div
+                    key={`debris-${index}`}
+                    className={styles.DebrisParticle}
+                    style={
+                      {
+                        "--particle-index": index,
+                        "--total-particles": 8,
+                      } as React.CSSProperties
+                    }
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </Draggable>
       )}
-
     </>
   );
 };

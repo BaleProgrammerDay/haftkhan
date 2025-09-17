@@ -9,7 +9,6 @@ import { API } from "~/api/api";
 import { userActions } from "~/store/user/slice";
 import { useDispatch } from "react-redux";
 
-
 // todo: add teams template
 const getTemplate = (nameTeam: string) => {
   if (nameTeam === "منابع انسانی") {
@@ -72,6 +71,8 @@ export const Khan1 = (_props: PageProps) => {
       const response = await API.login(inputs.username, inputs.password);
 
       if (response.success) {
+        localStorage.setItem("token", response.message);
+
         dispatch(userActions.setLastSolvedQuestion(1));
         await API.submitAnswer({
           question_id: 1,

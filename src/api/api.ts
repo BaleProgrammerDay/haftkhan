@@ -15,6 +15,7 @@ const POST_REQUEST = async (url: string, body: any) => {
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      "quiz-token": localStorage.getItem("token") || "",
     },
     body: JSON.stringify(body),
   });
@@ -25,6 +26,7 @@ const GET_REQUEST = async (url: string) => {
     method: "GET",
     headers: {
       Accept: "application/json",
+      "quiz-token": localStorage.getItem("token") || "",
     },
   });
 };

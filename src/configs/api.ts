@@ -1,9 +1,9 @@
 // API Configuration
 const getApiBaseUrl = () => {
   // In development, use the proxy (relative URLs)
-  if (import.meta.env.DEV) {
-    return "/api";
-  }
+  // if (true) {
+  //   return "/api";
+  // }
 
   // In production, use Vercel API routes to avoid mixed content issues
   return "https://hafkhan.duckwichtrust.tech";

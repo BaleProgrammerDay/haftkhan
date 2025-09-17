@@ -111,7 +111,7 @@ export const useWireConnections = () => {
           const result = await API.submitAnswer({
             question_id: 2,
             answer: cleanConnections
-              .map((conn) => `${conn.from}-${conn.to}`)
+              .map((conn) => `${conn.from + 1}-${conn.to - 3}`)
               .join(","),
           });
 
