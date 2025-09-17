@@ -5,6 +5,7 @@ import {
   PromptRequest,
   PromptResponse,
   PromptErrorResponse,
+  GetAllUsersResponse,
 } from "./types";
 import { API_BASE_URL } from "../configs/api";
 
@@ -29,6 +30,13 @@ const GET_REQUEST = async (url: string) => {
 };
 
 export const API = {
+  getUsers: async (): Promise<GetAllUsersResponse> => {
+    const request = await GET_REQUEST("/api/users");
+
+    const data = await request.json();
+
+    return data as GetAllUsersResponse;
+  },
   getUser: async (): Promise<UserResponse | null> => {
     const request = await GET_REQUEST("/api/user");
 
