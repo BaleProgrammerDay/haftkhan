@@ -2,7 +2,7 @@
 const getApiBaseUrl = () => {
   // In development, use the proxy (relative URLs)
   if (import.meta.env.DEV) {
-    return "";
+    return "/api";
   }
 
   // In production, use Vercel API routes to avoid mixed content issues
