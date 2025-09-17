@@ -4,7 +4,8 @@ import styles from "./Khan2.module.scss";
 import { PageProps } from "~/types";
 import { TypingText } from "~/components/TypingText/TypingText";
 import { Slider } from "~/components/Slider/Slider";
-import { BrainFixModal } from "~/components/BrainFixModal";
+import { TimeoutModal } from "~/components/TimeoutModal";
+import { khan2Facts } from "./facts";
 
 import { Scratch } from "./Scratch";
 import { Wires, useWireConnections } from "./Wires";
@@ -17,6 +18,8 @@ import {
 import { API } from "~/api/api";
 import { useDispatch, useSelector } from "react-redux";
 import { Scoreboard } from "./Scoreboard";
+import { MAX_TIMEOUT_ATTEMPTS_Khan2 } from "./Wires/useWireConnections";
+import { shouldShowTimeoutModal } from "~/utils/timeoutModal";
 
 // todo: add teams password
 const getPassword = (username: string) => {
@@ -53,7 +56,7 @@ export const Khan2 = (_props: PageProps) => {
   ];
 
   const [storyIsEnded, setStoryIsEnded] = useState(false);
-  const [showBrainFixModal, setShowBrainFixModal] = useState(false);
+  const [showTimeoutModal, setShowTimeoutModal] = useState(false);
   const [timeoutTriggeredAt, setTimeoutTriggeredAt] = useState<
     string | undefined
   >();
@@ -69,9 +72,11 @@ export const Khan2 = (_props: PageProps) => {
     isChecking,
     isError,
     errorMessage,
-    remainingChances,
+    _attemptHistory,
     resetChances,
   } = useWireConnections();
+
+  console.log("@#@# re", _attemptHistory);
 
   // Wire button colors - paired for left and right sides
   const wireButtonColors = [
@@ -90,11 +95,11 @@ export const Khan2 = (_props: PageProps) => {
 
   // Check if user should see timeout modal on component mount
   useEffect(() => {
-    if (timeoutAttemptHistory > 0 && timeoutAttemptHistory % 2 == 1) {
-      setShowBrainFixModal(true);
+    if (shouldShowTimeoutModal(_attemptHistory, MAX_TIMEOUT_ATTEMPTS_Khan2)) {
+      setShowTimeoutModal(true);
       setTimeoutTriggeredAt(new Date().toISOString());
     }
-  }, [timeoutAttemptHistory]);
+  }, [_attemptHistory]);
 
   // Handle step transition when wires are completed
   useEffect(() => {
@@ -108,17 +113,20 @@ export const Khan2 = (_props: PageProps) => {
     }
   }, [isCompleted]);
 
-  // Show brain fix modal when remaining chances <= 0
+  // Show timeout modal when remaining chances <= 0
   useEffect(() => {
-    if (remainingChances <= 0 && isError) {
-      setShowBrainFixModal(true);
+    if (
+      shouldShowTimeoutModal(_attemptHistory, MAX_TIMEOUT_ATTEMPTS_Khan2) &&
+      isError
+    ) {
+      setShowTimeoutModal(true);
       setTimeoutTriggeredAt(new Date().toISOString());
     }
-  }, [remainingChances, isError]);
+  }, [_attemptHistory, isError]);
 
   // Handle modal close - reset the wire connections and error state
-  const handleBrainFixModalClose = async () => {
-    setShowBrainFixModal(false);
+  const handleTimeoutModalClose = async () => {
+    setShowTimeoutModal(false);
     // Submit answer to question -2 to mark that modal was shown and closed
     await API.submitAnswer({
       question_id: -2,
@@ -156,14 +164,14 @@ export const Khan2 = (_props: PageProps) => {
                 ✅ همه سیم‌ها به درستی متصل شدند!
               </div>
             )}
-            {isError && (
+            {isError && _attemptHistory > 0 && (
               <div className={styles.ErrorMessage}>
                 {errorMessage}
-                {remainingChances > 0 && (
+                {/* {_attemptHistory > 0 && (
                   <div className={styles.ChancesRemaining}>
-                    شانس دیگر برام باقی مانده {remainingChances}
+                    شانس دیگر برام باقی مانده {_attemptHistory}
                   </div>
-                )}
+                )} */}
               </div>
             )}
           </div>
@@ -191,12 +199,15 @@ export const Khan2 = (_props: PageProps) => {
       {/* Scratch - only show after horse dialogue ends */}
       {storyIsEnded && <Scratch password={password} />}
 
-      {/* Brain Fix Modal - shows when remaining chances <= 0 */}
-      <BrainFixModal
-        isOpen={showBrainFixModal}
-        onClose={handleBrainFixModalClose}
+      {/* Timeout Modal - shows when remaining chances <= 0 */}
+      <TimeoutModal
+        isOpen={showTimeoutModal}
+        onClose={handleTimeoutModalClose}
         timeoutTriggeredAt={timeoutTriggeredAt}
-        timeoutAttemptHistory={timeoutAttemptHistory}
+        timeoutAttemptHistory={Math.abs(_attemptHistory)}
+        facts={khan2Facts}
+        title="مغزمو سوزوندی حالا باید ۲ دقیقه وایسی تا مغزمو درست کنم"
+        audioUrl="https://load.filespacer.ir/music/B/Bikalam.Aroom/Loreena.McKennitt.Tango.To.Evora.%5Bsongha.ir%5D.mp3"
       />
     </div>
   );

@@ -15,14 +15,16 @@ import folder from "~/assets/folder.png";
 
 import FolderWrapperStyles from "~/pages/khan-2/Folder/Folder.module.scss";
 import { API } from "~/api/api";
-import { useDispatch } from "react-redux";
-import { userActions } from "~/store/user/slice";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions, perQuestionSelector } from "~/store/user/slice";
 import { useNotification } from "~/context/Notification";
+import { TimeoutModal } from "~/components/TimeoutModal";
+import { khan3Facts } from "./facts";
+import { shouldShowTimeoutModal } from "~/utils/timeoutModal";
 
-// todo: add api
+const MAX_TIMEOUT_ATTEMPTS = 20;
 
-export const Khan3 = (props: PageProps) => {
-  const [showModal, setShowModal] = useState(false);
+export const Khan3 = (_props: PageProps) => {
   const [showAzhdar, setShowAzhdar] = useState(false);
 
   const [isAnimating, setIsAnimating] = useState(false);
@@ -35,8 +37,32 @@ export const Khan3 = (props: PageProps) => {
   const collisionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const dispatch = useDispatch();
+  const perQuestion = useSelector(perQuestionSelector);
+
+  const [password, setPassword] = useState("");
+  const [currentTableIndex, setCurrentTableIndex] = useState(0);
+  const [showTimeoutModal, setShowTimeoutModal] = useState(false);
+  const [timeoutTriggeredAt, setTimeoutTriggeredAt] = useState<
+    string | undefined
+  >();
+
+  const timeoutAttemptHistory = perQuestion?.[-3]?.attempt_history?.length || 0;
+
+  const [_timeoutAttemptHistory, _setTimeoutAttemptHistory] = useState(
+    timeoutAttemptHistory
+  );
 
   const { setNotificationText } = useNotification();
+
+  // Check if user should see timeout modal on component mount
+  useEffect(() => {
+    if (shouldShowTimeoutModal(_timeoutAttemptHistory, MAX_TIMEOUT_ATTEMPTS)) {
+      setShowTimeoutModal(true);
+      setTimeoutTriggeredAt(new Date().toISOString());
+    }
+  }, [_timeoutAttemptHistory]);
+
+  console.log("@#@#", _timeoutAttemptHistory);
 
   useEffect(() => {
     setTimeout(() => {
@@ -172,10 +198,6 @@ export const Khan3 = (props: PageProps) => {
     setIsActivationModalOpen(true);
   };
 
-  const [password, setPassword] = useState("");
-  const [currentTableIndex, setCurrentTableIndex] = useState(0);
-  const [isTableAnimating, setIsTableAnimating] = useState(false);
-
   // 3 different tables to cycle through
   const tableDataSets = [
     // Table 1
@@ -238,11 +260,19 @@ export const Khan3 = (props: PageProps) => {
         answer: password,
       });
 
+      if (data.ok) {
         dispatch(userActions.setLastSolvedQuestion(3));
-        if (data.ok) {
-        dispatch(userActions.setLastSolvedQuestion(3));
+        setIsActivationModalOpen(false);
+        setNotificationText("فعال‌سازی موفق! ✅");
       } else {
-        setNotificationText("رمز عبور اشتباه است. دوباره تلاش کنید. ❌");
+        // Wrong password - submit to track attempt
+        await API.submitAnswer({
+          question_id: -3,
+          answer: "wrong_password",
+        });
+        _setTimeoutAttemptHistory(_timeoutAttemptHistory + 1);
+
+        setNotificationText("رمز عبور اشتباه است. ❌");
       }
     };
 
@@ -251,6 +281,16 @@ export const Khan3 = (props: PageProps) => {
 
   const handleChangePassword = (password: string) => {
     setPassword(password);
+  };
+
+  // Handle timeout modal close - submit completion
+  const handleTimeoutModalClose = async () => {
+    setShowTimeoutModal(false);
+    // Submit answer to question -3 to mark that modal was shown and closed
+    await API.submitAnswer({
+      question_id: -3,
+      answer: "modal_completed",
+    });
   };
 
   return (
@@ -376,6 +416,7 @@ export const Khan3 = (props: PageProps) => {
               direction="ltr"
               justEnglish
               ignoreSpaces
+              isDark
             />
           </div>
 
@@ -388,6 +429,17 @@ export const Khan3 = (props: PageProps) => {
           </button>
         </div>
       </Modal>
+
+      {/* Timeout Modal - shows when remaining chances <= 0 */}
+      <TimeoutModal
+        isOpen={showTimeoutModal}
+        onClose={handleTimeoutModalClose}
+        timeoutTriggeredAt={timeoutTriggeredAt}
+        timeoutAttemptHistory={_timeoutAttemptHistory}
+        facts={khan3Facts}
+        title="حافظه قفل شد! ۲ دقیقه صبر کنید تا دوباره فعال شود"
+        audioUrl="https://load.filespacer.ir/music/B/Bikalam.Aroom/Loreena.McKennitt.Tango.To.Evora.%5Bsongha.ir%5D.mp3"
+      />
     </Page>
   );
 };
