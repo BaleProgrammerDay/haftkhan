@@ -47,7 +47,7 @@ function MessageList({ chatId, phaserRef }: MessageListProps) {
       style={backgroundStyle}
     >
       <div
-        className={clsx("absolute inset-0 pointer-events-none", {
+        className={clsx("absolute inset-0", {
           [" z-999"]: currentChat === Chats.OtaghFekr,
         })}
       >
