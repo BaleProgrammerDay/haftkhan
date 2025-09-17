@@ -56,7 +56,7 @@ export const API = {
     const data = await request.json();
 
     if (data.ok) {
-      return { success: true, message: "Login successful" };
+      return { success: true, message: data.description };
     } else {
       return { success: false, message: "Login failed" };
     }

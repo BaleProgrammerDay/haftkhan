@@ -23,14 +23,45 @@ import { shouldShowTimeoutModal } from "~/utils/timeoutModal";
 
 // todo: add teams password
 const getPassword = (username: string) => {
-  if (username === "منابع انسانی") {
-    return "1234";
-  } else if (username === "مهندسی نرم افزار") {
-    return "5678";
-  } else if (username === "تست") {
-    return "91011";
-  } else {
-    return "";
+  switch (username) {
+    case "مامور 001":
+      return "9872";
+    case "قهرمان":
+      return "2823";
+    case "اکسلنت‌ها":
+      return "8218";
+    case "بازگشت اصلان":
+      return "8201";
+    case "سه کله پو":
+      return "1738";
+    case "هیمالیا":
+      return "3827";
+    case "وهوش":
+      return "2981";
+    case "موقت: اینت":
+      return "1292";
+    case "چای کرک":
+      return "2381";
+    case "FourSure":
+      return "2812";
+    case "حسین کبیر":
+      return "3193";
+    case "پشتیبانی":
+      return "2810";
+    case "شواهد":
+      return "1190";
+    case "رادمردان عرصه کد":
+      return "3192";
+    case "New Folder":
+      return "3193";
+    case "سنگر":
+      return "3810";
+    case "فرضی":
+      return "3912";
+    case "فرضی2":
+      return "3859";
+    default:
+      return "8080";
   }
 };
 
@@ -212,3 +243,4 @@ export const Khan2 = (_props: PageProps) => {
     </div>
   );
 };
+

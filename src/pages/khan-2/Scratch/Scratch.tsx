@@ -144,7 +144,7 @@ const getGif = (username: string) => {
       return tavakoli;
     case "شواهد":
       return aliGif;
-    case "رادمردان عرصه ک":
+    case "رادمردان عرصه کد":
       return yashar;
     case "New Folder":
       return hesamGif;

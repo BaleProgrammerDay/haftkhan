@@ -78,8 +78,6 @@ export const Khan1 = (_props: PageProps) => {
           question_id: 1,
           answer: inputs.password,
         });
-
-        dispatch(userActions.setLastSolvedQuestion(2));
       } else {
         setNotificationText(`مجوز ورود داده نشد.\n با تشکر حراست سداد...`);
       }
