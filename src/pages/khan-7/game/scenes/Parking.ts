@@ -14,7 +14,6 @@ import { Chats } from "../../messenger/types/Chat";
 import { hashStringToNumber } from "../utils";
 import { API } from "~/api/api";
 import { userActions } from "~/store/user/slice";
-
 export class Parking extends Scene {
   rostamVehicle: RostamVehicle;
   spaceKey: Input.Keyboard.Key;
@@ -152,6 +151,7 @@ export class Parking extends Scene {
     this.rostamVehicle.setVelocity(0, 0);
     this.engineSound.stop();
     this.timerEvent.paused = true;
+    this.obstacleSpawnTimer?.remove(false);
   }
 
   spawnObstacle() {
@@ -178,6 +178,8 @@ export class Parking extends Scene {
   }
 
   win() {
+    if (this.done) return;
+    this.done = true;
     store.dispatch(userActions.addToScore());
     API.submitAnswer({
       question_id: hashStringToNumber(this.scene.key),
@@ -194,11 +196,17 @@ export class Parking extends Scene {
         chatId: Chats.Parking,
         message: {
           sender: "me",
-          text: "سلام، 8",
+          text: "سلام، 9",
           type: "text",
         },
       })
     );
+    API.submitAnswer({
+      question_id: hashStringToNumber(this.scene.key),
+      answer: hashStringToNumber(
+        this.scene.key.split("").reverse().join("")
+      ).toString(),
+    }).then(() => {});
   }
 
   loose() {

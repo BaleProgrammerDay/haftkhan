@@ -34,6 +34,7 @@ export class Barghman extends Scene {
   }
 
   changeScene(scene: string) {
+    console.log("!@! Barghman changeScene called, switching to:", scene);
     this.scene.start(scene);
   }
 

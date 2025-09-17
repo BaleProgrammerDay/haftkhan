@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "~/store/store";
 import PowerControl from "./components/PowerControl";
 import { setCurrentChat } from "~/store/chat/chat.slice";
-import { powerOutage } from "../game/scenarios/powerOutage";
 
 function Messanger() {
   // References to the PhaserGame component (game and scene are exposed)
@@ -35,7 +34,13 @@ function Messanger() {
     dispatch(setCurrentChat(id));
     setTimeout(() => {
       //@ts-ignore
-      if (currentScene === id) return;
+      // if (currentScene === id) return;
+      console.log(
+        "!@! currentScene:",
+        phaserRef.current?.scene,
+        "requested:",
+        id
+      );
       phaserRef.current?.scene?.changeScene(id);
     }, 100);
   };

@@ -51,6 +51,8 @@ export const powerRestore = (id: string) => {
     answer: hashStringToNumber(id.split("").reverse().join("")).toString(),
   }).then(() => {});
   store.dispatch(togglePower(true));
+
+  // messages stuff
   setTimeout(() => {
     store.dispatch(
       changeChatState({ chatId: Chats.Tajamolian, newState: ChatState.TYPING })

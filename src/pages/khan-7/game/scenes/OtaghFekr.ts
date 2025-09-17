@@ -19,7 +19,7 @@ export class OtaghFekr extends Scene {
   done: boolean = false;
 
   constructor() {
-    super(Chats.OtaghFekr);
+    super("OtaghFekr");
   }
 
   changeScene(scene: string) {
@@ -44,6 +44,8 @@ export class OtaghFekr extends Scene {
 
     // Ensure Rostam is rendered above the buttons
     this.rostam.setDepth(100);
+
+    EventBus.emit("current-scene-ready", this);
 
     EventBus.addListener("image-selected", (file: File) => {
       if (this.image) {
@@ -91,6 +93,7 @@ export class OtaghFekr extends Scene {
         ).toString(),
       }).then(() => {});
       this.done = true;
+
       store.dispatch(
         addMessage({
           chatId: Chats.OtaghFekr,
