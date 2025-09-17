@@ -101,17 +101,19 @@ export class OtaghFekr extends Scene {
           },
         })
       );
+      store.dispatch(
+        addMessage({
+          chatId: Chats.Noskhe,
+          message: {
+            text: "شماره نسخه خود را وارد کنید",
+            type: "text",
+            sender: "other",
+          },
+        })
+      );
     }
 
     this.rostam.handleInput(this.cursors);
-  }
-
-  destroy() {
-    // Clean up red buttons
-    this.redButtons.forEach((button) => {
-      button.destroy();
-    });
-    this.redButtons = [];
   }
 }
 

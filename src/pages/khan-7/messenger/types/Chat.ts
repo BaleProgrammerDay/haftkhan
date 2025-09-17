@@ -18,6 +18,7 @@ export enum Chats {
   Bruce = "Bruce",
   Parking = "Parking",
   OtaghFekr = "OtaghFekr",
+  Noskhe = "Noskhe",
 }
 
 export enum ChatState {
@@ -47,3 +48,4 @@ export interface Chat {
 export type ChatsList = {
   [key: string]: Chat;
 };
+
