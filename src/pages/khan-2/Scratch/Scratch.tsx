@@ -9,7 +9,7 @@ import aliGif from "./assets/a.gif";
 import amirhosein from "./assets/am.gif";
 import yashar from "./assets/y.gif";
 import tavakoli from "./assets/t.gif";
-import { usernameSelector } from "~/store/user/slice";
+import { usernameSelector, userSelector } from "~/store/user/slice";
 import { useSelector } from "react-redux";
 
 import teaImage from "./assets/tea.jpg";
@@ -103,7 +103,7 @@ const getImage = (username: string) => {
       return packetImage;
     case "شواهد":
       return sangImage;
-    case "رادمردان عرصه ک":
+    case "رادمردان عرصه کد":
       return calenderImage;
     case "New Folder":
       return calenderImage;
