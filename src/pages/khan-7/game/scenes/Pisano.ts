@@ -153,6 +153,7 @@ export class Pisano extends Scene {
                   text: "Perfetto! Grazie!",
                   sender: "other",
                   ltr: true,
+                  type: "text",
                 },
               })
             );

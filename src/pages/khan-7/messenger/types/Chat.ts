@@ -35,6 +35,7 @@ export interface Chat {
   state: ChatState;
   messages: Message[];
   sendFile?: boolean;
+  disablePointerEvents?: boolean;
   input?: {
     placeholder?: string;
     maxLength?: number;
@@ -45,4 +46,3 @@ export interface Chat {
 export type ChatsList = {
   [key: string]: Chat;
 };
-

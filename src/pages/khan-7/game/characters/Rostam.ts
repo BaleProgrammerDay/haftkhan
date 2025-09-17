@@ -23,7 +23,7 @@ export default class Rostam extends Physics.Arcade.Sprite {
       key: "run",
       frames: this.scene.anims.generateFrameNumbers("rostam_walk", {
         start: 0,
-        end: 6,
+        end: 5,
       }),
       frameRate: 8,
       repeat: -1,
@@ -32,7 +32,7 @@ export default class Rostam extends Physics.Arcade.Sprite {
       key: "walk",
       frames: this.scene.anims.generateFrameNumbers("rostam_walk", {
         start: 0,
-        end: 6,
+        end: 5,
       }),
       frameRate: 8,
       repeat: -1,
@@ -41,7 +41,7 @@ export default class Rostam extends Physics.Arcade.Sprite {
       key: "jump",
       frames: this.scene.anims.generateFrameNumbers("rostam_jump", {
         start: 0,
-        end: 6,
+        end: 5,
       }),
       frameRate: 8,
       repeat: -1,
@@ -50,7 +50,7 @@ export default class Rostam extends Physics.Arcade.Sprite {
       key: "idle",
       frames: this.scene.anims.generateFrameNumbers("rostam_idle", {
         start: 0,
-        end: 4,
+        end: 3,
       }),
       frameRate: 8,
       repeat: -1,
@@ -59,7 +59,7 @@ export default class Rostam extends Physics.Arcade.Sprite {
       key: "push",
       frames: this.scene.anims.generateFrameNumbers("rostam_push", {
         start: 0,
-        end: 6,
+        end: 5,
       }),
       frameRate: 8,
       repeat: -1,

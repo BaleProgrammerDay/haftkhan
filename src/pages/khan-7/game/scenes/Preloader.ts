@@ -61,37 +61,17 @@ export class Preloader extends Scene {
       frameWidth: 32,
       frameHeight: 22,
     });
-    this.load.image("door", "door.png");
-    this.load.image("box", "box.png");
-    this.load.image("rostam", "rostam_idle.png");
-    this.load.spritesheet("rostam_walk", "rostam_walk.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
     this.load.spritesheet("rostam_vehicle", "rostam/rostam_vehicle.png", {
       frameWidth: 330,
       frameHeight: 160,
     });
-    this.load.spritesheet("rostam_idle", "rostam_idle.png", {
-      frameWidth: 64,
-      frameHeight: 64,
+    this.load.spritesheet("hulk_transform", "spritesheets/hulk.png", {
+      frameWidth: 384,
+      frameHeight: 228,
     });
-    this.load.spritesheet("rostam_jump", "rostam_jump.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.image("rakhsh", "rakhsh_idle.png");
-    this.load.spritesheet("rakhsh_idle", "rakhsh_idle.png", {
-      frameWidth: 80,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("rakhsh_walk", "rakhsh_walk.png", {
-      frameWidth: 80,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("lightning_particle", "particles/lightning.png", {
-      frameWidth: 32,
-      frameHeight: 22,
+    this.load.spritesheet("hulk_idle", "spritesheets/hulk_idle.png", {
+      frameWidth: 384,
+      frameHeight: 228,
     });
 
     this.load.image("items/wrench", "items/wrench.png");
@@ -100,6 +80,7 @@ export class Preloader extends Scene {
     this.load.image("tower_straight", "general/tower_straight.png");
     this.load.audio("recharge", "sounds/recharge.wav");
     this.load.image("bruce", "characters/bruce.png");
+    this.load.image("star", "particles/star.png");
     // this.load.image('keyboard-keys', '/keyboard-keys.png');
 
     // Parking scene assets
@@ -120,4 +101,3 @@ export class Preloader extends Scene {
     this.scene.start(Chats.TeamPlayer);
   }
 }
-

@@ -33,6 +33,11 @@ export class TeamPlayer extends Scene {
   }
 
   create() {
+    this.boxes = [];
+    this.doors = [];
+    //@ts-ignore
+    this.transparentPlatform = undefined;
+
     const { width, height } = this.scale;
 
     const doorData = [
@@ -75,39 +80,30 @@ export class TeamPlayer extends Scene {
         0
       );
       this.transparentPlatform.add(platform);
-
-      // Observe DOM for removal of #message-3 and remove platform
-      const observer = new MutationObserver(() => {
-        if (!document.getElementById("message-3")) {
-          if (
-            this.transparentPlatform &&
-            this.transparentPlatform.children &&
-            this.transparentPlatform.children.size > 0
-          ) {
-            this.transparentPlatform.clear(true, true);
-          }
-          observer.disconnect();
-        }
+      EventBus.on("deleted", () => {
+        if (this.transparentPlatform)
+          this.transparentPlatform.clear(true, true);
       });
-      observer.observe(document.body, { childList: true, subtree: true });
+      // Observe DOM for removal of #message-3 and remove platform
     }
 
     this.boxes.push(new Box(this, 400, height, "box"));
 
-    // Only create box2 if transparentPlatform exists
     if (
+      msgElem &&
       this.transparentPlatform &&
+      this.transparentPlatform.getChildren() &&
       this.transparentPlatform.getChildren().length > 0
     ) {
       const platformChild =
         this.transparentPlatform.getChildren()[0] as Phaser.GameObjects.Rectangle;
 
       this.boxes.push(
-        new Box(this, 100, platformChild.y - platformChild.height, "box")
+        new Box(this, 100, platformChild.y - platformChild.height - 20, "box")
       );
     } else {
       // Fallback position if transparentPlatform doesn't exist
-      this.boxes.push(new Box(this, 100, height - 200, "box"));
+      this.boxes.push(new Box(this, 100, height, "box"));
     }
 
     this.rostam = new Rostam(this, 250, height, "rostam");
@@ -123,10 +119,15 @@ export class TeamPlayer extends Scene {
       });
     });
 
+    if (this.boxes[1].body)
+      (this.boxes[1].body as Phaser.Physics.Arcade.Body).allowGravity = false;
+
     // Only add colliders if transparentPlatform exists
     if (this.transparentPlatform) {
       this.physics.add.collider(this.rostam, this.transparentPlatform);
       this.physics.add.collider(this.boxes[1], this.transparentPlatform);
+      if (this.boxes[1].body)
+        (this.boxes[1].body as Phaser.Physics.Arcade.Body).allowGravity = true;
     }
 
     EventBus.emit("current-scene-ready", this);
@@ -157,6 +158,7 @@ export class TeamPlayer extends Scene {
           message: {
             text: "تو استخدامی!",
             sender: "other",
+            type: "text",
           },
         })
       );
@@ -168,4 +170,3 @@ export class TeamPlayer extends Scene {
     this.rostam.handleInput(this.cursors);
   }
 }
-

@@ -5,6 +5,7 @@ import { RootState } from "~/store/store";
 import { deleteMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../types/Chat";
 import ImageMessageBubble from "./ImageMessageBubble";
+import { initialChats } from "~/store/chat/chat.constants";
 
 interface MessageListProps {
   chatId: string;
@@ -43,10 +44,17 @@ function MessageList({ chatId, phaserRef }: MessageListProps) {
       id="message-list-container"
       style={backgroundStyle}
     >
-      <div className="absolute inset-0 pointer-events-none z-0">
+      <div className="absolute inset-0 z-0">
         <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
       </div>
-      <div className="relative z-10 p-4 overflow-y-auto space-y-3">
+      <div
+        className={
+          "relative z-10 p-4 overflow-y-auto space-y-3 " +
+          (initialChats[chatId].disablePointerEvents
+            ? " pointer-events-none"
+            : "")
+        }
+      >
         {messages.map((message) => {
           switch (message.type) {
             case "text":
@@ -75,4 +83,3 @@ function MessageList({ chatId, phaserRef }: MessageListProps) {
 }
 
 export default MessageList;
-

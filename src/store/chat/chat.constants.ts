@@ -115,14 +115,21 @@ export const initialChats: { [key: Chats | string]: Chat } = {
     avatar: "/assets/avatars/bruce.png",
     unreadCount: 1,
     state: ChatState.ACTIVE,
+    disablePointerEvents: true,
     messages: [
       {
         id: "1",
-        text: "سلام.",
+        text: "تنهایی می‌خوای با دیو بجنگی؟",
         type: "text",
         sender: "other",
         time: new Date().getTime(),
-        ltr: true,
+      },
+      {
+        id: "2",
+        text: "کافیه یه چیز عوض شه... اون وقت منم میتونم بیام کمکت",
+        type: "text",
+        sender: "other",
+        time: new Date().getTime(),
       },
     ],
     input: {
@@ -185,4 +192,3 @@ export const initialChats: { [key: Chats | string]: Chat } = {
     state: ChatState.NONE,
   },
 };
-

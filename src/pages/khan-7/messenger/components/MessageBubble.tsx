@@ -1,6 +1,7 @@
 import { Message } from "../types/Chat";
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./MessageBubble.module.scss";
+import { EventBus } from "../../game/EventBus";
 
 interface MessageBubbleProps {
   message: Message;
@@ -34,6 +35,7 @@ function MessageBubble({ message, id, onDelete }: MessageBubbleProps) {
   const handleDelete = () => {
     setMenu({ ...menu, visible: false });
     onDelete?.(message.id);
+    EventBus.emit("deleted");
   };
 
   return (
