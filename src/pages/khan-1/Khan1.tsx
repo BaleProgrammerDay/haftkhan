@@ -104,8 +104,10 @@ export const Khan1 = (_props: PageProps) => {
 
       if (response.success) {
         localStorage.setItem("token", response.message);
-        await API.getUser();
-
+        const user = await API.getUser();
+        if (user) {
+          dispatch(userActions.setUser(user));
+        }
         dispatch(userActions.setLastSolvedQuestion(1));
         await API.submitAnswer({
           question_id: 1,

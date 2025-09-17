@@ -32,6 +32,7 @@ function App() {
         const user = await API.getUser();
         if (user) {
           dispatch(userActions.setUser(user));
+          console.log("@#@# user", user);
         }
       } catch (error) {
       } finally {
@@ -43,22 +44,22 @@ function App() {
   }, []);
 
   // Global cheat code: set step with number keys 1-7
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
-      ) {
-        return; // Ignore if typing in input/textarea
-      }
-      const key = e.key;
-      if (key >= "1" && key <= "7") {
-        dispatch(userActions.setLastSolvedQuestion(Number(key)));
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  // useEffect(() => {
+  //   const handleKeyDown = (e: KeyboardEvent) => {
+  //     if (
+  //       e.target instanceof HTMLInputElement ||
+  //       e.target instanceof HTMLTextAreaElement
+  //     ) {
+  //       return; // Ignore if typing in input/textarea
+  //     }
+  //     const key = e.key;
+  //     if (key >= "1" && key <= "7") {
+  //       dispatch(userActions.setLastSolvedQuestion(Number(key)));
+  //     }
+  //   };
+  //   window.addEventListener("keydown", handleKeyDown);
+  //   return () => window.removeEventListener("keydown", handleKeyDown);
+  // }, []);
 
   const { notificationText, setNotificationText } = useNotification();
 
