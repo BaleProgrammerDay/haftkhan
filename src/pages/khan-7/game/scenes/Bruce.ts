@@ -8,6 +8,7 @@ import { addMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../../messenger/types/Chat";
 import { API } from "~/api/api";
 import { hashStringToNumber } from "../utils";
+import { userActions } from "~/store/user/slice";
 
 export class Bruce extends Scene {
   bruce: BruceBanner;
@@ -46,6 +47,7 @@ export class Bruce extends Scene {
           const starsBelow = star1.y > bruceY && star2.y > bruceY;
           if (starsOnSides && starsBelow) {
             //todo
+            store.dispatch(userActions.addToScore());
             API.submitAnswer({
               question_id: hashStringToNumber(this.scene.key),
               answer: hashStringToNumber(

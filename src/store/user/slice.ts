@@ -28,6 +28,9 @@ const userSlice = createSlice({
     setLastSolvedQuestion: (state, action: PayloadAction<number>) => {
       state.last_solved_question = action.payload;
     },
+    addToScore: (state) => {
+      state.total_score += 100;
+    },
   },
 });
 
@@ -47,4 +50,3 @@ export const totalScoreSelector = (state: RootState) => state.user.total_score;
 export const usernameSelector = (state: RootState) => state.user.username;
 
 export const isLoadingSelector = (state: RootState) => state.user.isLoading;
-

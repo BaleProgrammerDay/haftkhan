@@ -3,6 +3,8 @@ import ChatItem from "./ChatItem";
 // import Search from "./icons/Search";
 import PixelLogo from "./PixelLogo";
 import { Chat } from "../types/Chat";
+import { useSelector } from "react-redux";
+import { userSelector } from "~/store/user/slice";
 
 interface ChatSidebarProps {
   chats: ChatsList;
@@ -11,6 +13,7 @@ interface ChatSidebarProps {
 }
 
 function ChatSidebar({ chats, selectedChat, onSelectChat }: ChatSidebarProps) {
+  const user = useSelector(userSelector);
   return (
     <div
       className="w-80 flex flex-col"
@@ -55,7 +58,7 @@ function ChatSidebar({ chats, selectedChat, onSelectChat }: ChatSidebarProps) {
             className="text-sm font-bold"
             style={{ color: "var(--color-neutrals-on-app-bar)" }}
           >
-            ۱,۰۰۰
+            {user.total_score}
           </span>
         </div>
       </div>

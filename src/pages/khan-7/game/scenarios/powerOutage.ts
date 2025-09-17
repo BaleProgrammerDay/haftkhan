@@ -4,6 +4,7 @@ import { addMessage, changeChatState } from "~/store/chat/chat.slice";
 import { togglePower } from "~/store/general/general.slice";
 import { store } from "~/store/store";
 import { hashStringToNumber } from "../utils";
+import { userActions } from "~/store/user/slice";
 
 export const powerOutage = () => {
   store.dispatch(togglePower(false));
@@ -44,6 +45,7 @@ export const powerOutage = () => {
 };
 
 export const powerRestore = (id: string) => {
+  store.dispatch(userActions.addToScore());
   API.submitAnswer({
     question_id: hashStringToNumber(id),
     answer: hashStringToNumber(id.split("").reverse().join("")).toString(),

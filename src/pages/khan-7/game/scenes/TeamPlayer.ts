@@ -9,6 +9,7 @@ import { Chats } from "../../messenger/types/Chat";
 import { powerOutage } from "../scenarios/powerOutage";
 import { API } from "~/api/api";
 import { hashStringToNumber } from "../utils";
+import { userActions } from "~/store/user/slice";
 
 export class TeamPlayer extends Scene {
   rostam: Rostam;
@@ -165,6 +166,7 @@ export class TeamPlayer extends Scene {
         })
       );
       //todo
+      store.dispatch(userActions.addToScore());
       API.submitAnswer({
         question_id: hashStringToNumber(this.scene.key),
         answer: hashStringToNumber(

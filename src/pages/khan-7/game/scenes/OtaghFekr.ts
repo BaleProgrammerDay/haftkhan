@@ -5,6 +5,9 @@ import RedButton from "../objects/RedButton";
 import Rostam from "../characters/Rostam";
 import { store } from "~/store/store";
 import { addMessage } from "~/store/chat/chat.slice";
+import { userActions } from "~/store/user/slice";
+import { API } from "~/api/api";
+import { hashStringToNumber } from "../utils";
 
 export class OtaghFekr extends Scene {
   image: Phaser.GameObjects.Image;
@@ -80,6 +83,13 @@ export class OtaghFekr extends Scene {
     });
 
     if (this.pressedButtons.every((pressed) => pressed) && !this.done) {
+      store.dispatch(userActions.addToScore());
+      API.submitAnswer({
+        question_id: hashStringToNumber(this.scene.key),
+        answer: hashStringToNumber(
+          this.scene.key.split("").reverse().join("")
+        ).toString(),
+      }).then(() => {});
       this.done = true;
       store.dispatch(
         addMessage({
@@ -116,4 +126,3 @@ export class OtaghFekr extends Scene {
     this.rostam.handleInput(this.cursors);
   }
 }
-

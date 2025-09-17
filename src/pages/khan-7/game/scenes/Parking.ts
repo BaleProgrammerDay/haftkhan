@@ -13,6 +13,7 @@ import { addMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../../messenger/types/Chat";
 import { hashStringToNumber } from "../utils";
 import { API } from "~/api/api";
+import { userActions } from "~/store/user/slice";
 
 export class Parking extends Scene {
   rostamVehicle: RostamVehicle;
@@ -177,6 +178,7 @@ export class Parking extends Scene {
   }
 
   win() {
+    store.dispatch(userActions.addToScore());
     API.submitAnswer({
       question_id: hashStringToNumber(this.scene.key),
       answer: hashStringToNumber(
