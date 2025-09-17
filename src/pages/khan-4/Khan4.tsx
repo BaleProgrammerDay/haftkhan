@@ -56,7 +56,7 @@ export const Khan4 = () => {
     | "wizard_break"
     | "wizard_idle"
     | "transforming"
-  >("remembering");
+  >("cant_remembering");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const horseText =
     "نمیفهمم مگه آنتی ویروس رو نصب نکردیم؟ پس چرا هنوزم چیزی یادم نمیاد!!";
