@@ -6,6 +6,7 @@ import Rostam from "../characters/Rostam";
 import { store } from "~/store/store";
 import { addMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../../messenger/types/Chat";
+import { API } from "~/api/api";
 
 export class Pisano extends Scene {
   tower: Tower;
@@ -146,6 +147,11 @@ export class Pisano extends Scene {
           this.drawLeftUnderline(true);
           this.tower.setTexture("tower_straight");
           if (!this.messageIsSent) {
+            //todo
+            API.submitAnswer({
+              question_id: 8,
+              answer: "testanswer",
+            }).then(() => {});
             store.dispatch(
               addMessage({
                 chatId: Chats.Pisano,

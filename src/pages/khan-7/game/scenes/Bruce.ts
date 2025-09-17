@@ -6,6 +6,7 @@ import Star from "../characters/Star";
 import { store } from "~/store/store";
 import { addMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../../messenger/types/Chat";
+import { API } from "~/api/api";
 
 export class Bruce extends Scene {
   bruce: BruceBanner;
@@ -43,6 +44,11 @@ export class Bruce extends Scene {
             (star2.x < bruceX && star1.x > bruceX + bruceWidth);
           const starsBelow = star1.y > bruceY && star2.y > bruceY;
           if (starsOnSides && starsBelow) {
+            //todo
+            API.submitAnswer({
+              question_id: 8,
+              answer: "testanswer",
+            }).then(() => {});
             this.bruce.transform();
             this.transformed = true;
             store.dispatch(

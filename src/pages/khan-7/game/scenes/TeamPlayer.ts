@@ -7,6 +7,7 @@ import { store } from "~/store/store";
 import { addMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../../messenger/types/Chat";
 import { powerOutage } from "../scenarios/powerOutage";
+import { API } from "~/api/api";
 
 export class TeamPlayer extends Scene {
   rostam: Rostam;
@@ -162,6 +163,11 @@ export class TeamPlayer extends Scene {
           },
         })
       );
+      //todo
+      API.submitAnswer({
+        question_id: 8,
+        answer: "testanswer",
+      }).then(() => {});
       this.messageIsSent = true;
       setTimeout(() => {
         powerOutage();

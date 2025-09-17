@@ -101,7 +101,7 @@ export const initialChats: { [key: Chats | string]: Chat } = {
     id: Chats.Bruce,
     name: "بروس بنر",
     avatar: "/assets/avatars/bruce.png",
-    unreadCount: 1,
+    unreadCount: 0,
     state: ChatState.ACTIVE,
     disablePointerEvents: true,
     messages: [
@@ -129,7 +129,7 @@ export const initialChats: { [key: Chats | string]: Chat } = {
     id: Chats.Pisano,
     name: "Bonanno Pisano",
     avatar: "/assets/avatars/pisano.jpg",
-    unreadCount: 1,
+    unreadCount: 0,
     state: ChatState.ACTIVE,
     messages: [
       {
@@ -221,7 +221,7 @@ export const initialChats: { [key: Chats | string]: Chat } = {
     id: Chats.RakhshChat,
     name: "رخش",
     avatar: "/assets/avatars/rakhsh.jpg",
-    unreadCount: 1,
+    unreadCount: 0,
     state: ChatState.ACTIVE,
     messages: [
       {
