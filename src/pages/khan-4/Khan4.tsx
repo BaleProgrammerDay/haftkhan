@@ -21,7 +21,7 @@ const initialConversation = [
   },
   {
     role: "luigi",
-    message: "!\nزود تعمیر میشی و همه چی یادت میاد و آمادۀ حرکت میشی",
+    message: "زود تعمیر میشی. همه چی یادت میاد و آمادۀ حرکت میشی.",
   },
   { role: "user", message: "کو پس نیم ساعته منتظرم..." },
   {
@@ -382,4 +382,3 @@ export const Khan4 = () => {
     </Page>
   );
 };
-

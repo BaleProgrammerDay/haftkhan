@@ -19,7 +19,7 @@ const texts = ["بالاخره پس از ۵ خان رسیدیم", "رسیدیم 
 //فقط کافیه مختصات رو از روی نقشه پیدا کنی و بهم بگی.
 
 //وقتی روی برنامه اشتباهی زد این تست نمایش داده بشه:
-//الان وقت این کارارو نداریم!
+//
 
 //برای مختصات سه عدد میخوایم. شماره نقشه. x و y. مختصات میتونه منفی هم باشه چون نقطه وسط ۰ و ۰ ئه
 
@@ -84,13 +84,15 @@ export const Khan5 = (_props: PageProps) => {
     console.log(percentageX, percentageY);
 
     if (
-      percentageX >= 18.8 &&
+      percentageX >= 18.5 &&
       percentageX <= 21 &&
-      percentageY > 73.28 &&
-      percentageY <= 76.64
+      percentageY > 73 &&
+      percentageY <= 78
     ) {
       setShowPortal(true);
       setShowEnterButton(false);
+    } else {
+      setNotificationText("الان وقت این کارارو نداریم!");
     }
   };
 
@@ -210,7 +212,7 @@ export const Khan5 = (_props: PageProps) => {
                     className={styles.PortalButton}
                     onClick={handleTeleport}
                   >
-                    طی‌الارض
+                    برو
                   </button>
                   <button
                     className={styles.PortalButton}
@@ -227,4 +229,3 @@ export const Khan5 = (_props: PageProps) => {
     </Page>
   );
 };
-
