@@ -37,7 +37,7 @@ function ImageMessageBubble({ message, id, onDelete }: MessageBubbleProps) {
   };
 
   return (
-    <div className={`flex ${isMe ? "justify-start" : "justify-end"}`}>
+    <div className={`flex z-1 ${isMe ? "justify-start" : "justify-end"}`}>
       <div
         id={id}
         ref={bubbleRef}
@@ -62,7 +62,7 @@ function ImageMessageBubble({ message, id, onDelete }: MessageBubbleProps) {
       >
         {message.sender === "other" || isMe ? null : <p>{message.sender}</p>}
         <img
-          className="text-sm leading-relaxed max-w-[40vw] max-h-[40vw] object-cover"
+          className="text-sm leading-relaxed w-[200px] max-h-[200px] object-cover opacity-0"
           src={message.text}
         />
         <p

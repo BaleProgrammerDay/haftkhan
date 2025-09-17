@@ -34,12 +34,21 @@ const chatSlice = createSlice({
       state.list[chatId].messages.push({
         ...message,
         time: new Date().getTime(),
-        id: Date.now().toString(),
+        id: String(state.list[chatId].messages.length + 1),
       });
 
       if (state.current !== chatId && message.sender !== "me") {
         state.list[chatId].unreadCount += 1;
       }
+    },
+    removeMessage(
+      state,
+      action: PayloadAction<{ chatId: Chats; messageId: string }>
+    ) {
+      const { chatId, messageId } = action.payload;
+      state.list[chatId].messages = state.list[chatId].messages.filter(
+        (msg) => msg.id !== messageId
+      );
     },
     toggleSendingFile(
       state,
@@ -64,6 +73,7 @@ export const {
   setCurrentChat,
   deleteMessage,
   addMessage,
+  removeMessage,
   changeChatState,
   toggleSendingFile,
 } = chatSlice.actions;

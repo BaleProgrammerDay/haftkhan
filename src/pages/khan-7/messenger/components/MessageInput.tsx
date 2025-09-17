@@ -6,15 +6,17 @@ import { RootState } from "~/store/store";
 import { initialChats } from "~/store/chat/chat.constants";
 import { EventBus } from "../../game/EventBus";
 import { Chats } from "../types/Chat";
-import { addMessage, toggleSendingFile } from "~/store/chat/chat.slice";
+import {
+  addMessage,
+  removeMessage,
+  toggleSendingFile,
+} from "~/store/chat/chat.slice";
 
 function MessageInput() {
   const [message, setMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const chatID = useSelector((state: RootState) => state.chat.current);
-  const isSendingFileActive = useSelector(
-    (state: RootState) => state.chat.list[chatID].sendFile
-  );
+  const isSendingFileActive = true;
   const dispatch = useDispatch();
 
   const handleSend = () => {
@@ -60,6 +62,7 @@ function MessageInput() {
         };
 
         if (chatID === Chats.OtaghFekr && isSendingFileActive) {
+          dispatch(removeMessage({ chatId: chatID, messageId: "message-3" }));
           dispatch(
             addMessage({
               chatId: Chats.OtaghFekr,
@@ -74,7 +77,7 @@ function MessageInput() {
         }
 
         // Emit the image data through EventBus
-        EventBus.emit("image-selected", imageData);
+        EventBus.emit("image-selected", file);
       };
 
       reader.readAsDataURL(file);

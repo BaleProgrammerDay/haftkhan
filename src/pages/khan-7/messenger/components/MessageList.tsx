@@ -6,6 +6,7 @@ import { deleteMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../types/Chat";
 import ImageMessageBubble from "./ImageMessageBubble";
 import { initialChats } from "~/store/chat/chat.constants";
+import clsx from "clsx";
 
 interface MessageListProps {
   chatId: string;
@@ -17,6 +18,7 @@ function MessageList({ chatId, phaserRef }: MessageListProps) {
   const messages = useSelector(
     (state: RootState) => state.chat.list[chatId as Chats].messages || []
   );
+  const currentChat = useSelector((state: RootState) => state.chat.current);
 
   // Event emitted from the PhaserGame component
   const currentScene = (scene: Phaser.Scene) => {
@@ -44,7 +46,11 @@ function MessageList({ chatId, phaserRef }: MessageListProps) {
       id="message-list-container"
       style={backgroundStyle}
     >
-      <div className="absolute inset-0 z-0">
+      <div
+        className={clsx("absolute inset-0 pointer-events-none", {
+          [" z-999"]: currentChat === Chats.OtaghFekr,
+        })}
+      >
         <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
       </div>
       <div
@@ -83,3 +89,4 @@ function MessageList({ chatId, phaserRef }: MessageListProps) {
 }
 
 export default MessageList;
+
