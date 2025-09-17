@@ -96,6 +96,9 @@ export const initialChats: { [key: Chats | string]: Chat } = {
     unreadCount: 0,
     state: ChatState.ACTIVE,
     messages: [],
+    input: {
+      placeholder: "سر کاری...",
+    },
   },
   [Chats.Bruce]: {
     id: Chats.Bruce,
@@ -232,5 +235,8 @@ export const initialChats: { [key: Chats | string]: Chat } = {
         time: 100000000000,
       },
     ],
+    input: {
+      placeholder: "سر کاری...",
+    },
   },
 };

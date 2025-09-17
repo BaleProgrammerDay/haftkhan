@@ -1,7 +1,9 @@
+import { API } from "~/api/api";
 import { Chats, ChatState } from "../../messenger/types/Chat";
 import { addMessage, changeChatState } from "~/store/chat/chat.slice";
 import { togglePower } from "~/store/general/general.slice";
 import { store } from "~/store/store";
+import { hashStringToNumber } from "../utils";
 
 export const powerOutage = () => {
   store.dispatch(togglePower(false));
@@ -41,7 +43,11 @@ export const powerOutage = () => {
   }, 1000);
 };
 
-export const powerRestore = () => {
+export const powerRestore = (id: string) => {
+  API.submitAnswer({
+    question_id: hashStringToNumber(id),
+    answer: hashStringToNumber(id.split("").reverse().join("")).toString(),
+  }).then(() => {});
   store.dispatch(togglePower(true));
   setTimeout(() => {
     store.dispatch(

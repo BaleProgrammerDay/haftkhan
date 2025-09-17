@@ -126,7 +126,7 @@ export class Barghman extends Scene {
                 this.progressBar.setVisible(true)
 
                 if (this.taskProgress >= 100) {
-                    powerRestore();
+                    powerRestore(this.scene.key);
                     this.done = true;
                     this.particle.visible = false
                     this.progressBar.setVisible(false);

@@ -11,6 +11,8 @@ import Obstacle from "../objects/Obstacle";
 import { store } from "~/store/store";
 import { addMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../../messenger/types/Chat";
+import { hashStringToNumber } from "../utils";
+import { API } from "~/api/api";
 
 export class Parking extends Scene {
   rostamVehicle: RostamVehicle;
@@ -175,6 +177,12 @@ export class Parking extends Scene {
   }
 
   win() {
+    API.submitAnswer({
+      question_id: hashStringToNumber(this.scene.key),
+      answer: hashStringToNumber(
+        this.scene.key.split("").reverse().join("")
+      ).toString(),
+    }).then(() => {});
     this.stopGame();
     this.timerText.setText("00:00");
     this.interactionHelper.removePrompt("space"); // Remove specific prompt
