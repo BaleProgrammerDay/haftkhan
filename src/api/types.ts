@@ -41,6 +41,23 @@ interface PromptErrorResponse {
   description: string;
 }
 
+// ===== Leaderboard =====
+export interface SolvedQuestion {
+  question_id: number;
+  solved_at: string; // ISO 8601 timestamp
+  score: number;
+}
+
+export interface UserAllInfo {
+  username: string;
+  total_score: number;
+  solved_questions: SolvedQuestion[];
+}
+
+export interface GetAllUsersResponse {
+  users: UserAllInfo[];
+}
+
 export type {
   AttemptHistory,
   UserResponse,

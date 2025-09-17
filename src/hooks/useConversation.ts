@@ -25,13 +25,14 @@ export interface ConversationState {
 }
 
 const checkForWizardPhrase = (message: string) => {
-  if (message === "Trigger1") return true;
+  console.log("checkForWizardPhrase", message);
+  if (message === "TRIGGER1") return true;
 
   return false;
 };
 
 const checkForWizardAttackPhrase = (message: string) => {
-  if (message === "Trigger2") return true;
+  if (message === "TRIGGER2") return true;
 
   return false;
 };
