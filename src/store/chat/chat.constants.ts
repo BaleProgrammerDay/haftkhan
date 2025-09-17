@@ -239,4 +239,16 @@ export const initialChats: { [key: Chats | string]: Chat } = {
       placeholder: "سر کاری...",
     },
   },
+  [Chats.Noskhe]: {
+    id: Chats.Noskhe,
+    name: "نسخه پزشکی",
+    avatar: "/assets/avatars/noskhe.png",
+    unreadCount: 0,
+    state: ChatState.ACTIVE,
+    messages: [],
+    input: {
+      placeholder: "از من بپرس...",
+    },
+  },
 };
+

@@ -15,7 +15,8 @@ import {
 function MessageInput() {
   const [message, setMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const chatID = useSelector((state: RootState) => state.chat.current);
+  const currentChat = useSelector((state: RootState) => state.chat.current);
+  const isDisabled = initialChats[currentChat].input?.disabled;
   const isSendingFileActive = true;
   const dispatch = useDispatch();
 
@@ -24,6 +25,65 @@ function MessageInput() {
     if (message.trim()) {
       EventBus.emit("new-message", message);
       setMessage("");
+
+      if (currentChat === Chats.Noskhe) {
+        dispatch(
+          addMessage({
+            chatId: Chats.Noskhe,
+            message: {
+              sender: "me",
+              type: "text",
+              text: message.trim(),
+            },
+          })
+        );
+
+        if (message.trim() === "247568") {
+          dispatch(
+            addMessage({
+              chatId: Chats.Noskhe,
+              message: {
+                text: "درحال جست و جو",
+                type: "text",
+                sender: "other",
+              },
+            })
+          );
+          setTimeout(() => {
+            dispatch(
+              addMessage({
+                chatId: Chats.Noskhe,
+                message: {
+                  text: "شماره نسخه درست است",
+                  type: "text",
+                  sender: "other",
+                },
+              })
+            );
+            dispatch(
+              addMessage({
+                chatId: Chats.Noskhe,
+                message: {
+                  text: `چو بشنید کاووس کآنجا چه بود  
+نکرد آنچنان کینِ شاهان ستود  
+
+فرستاد پاسخ که اکنون ز خاک  
+برآید همی بوی مشک از مغاک؟  
+
+اگر مرگ را داروئی بودی  
+جهان از غم و رنج خالی شدی  
+
+کنون نوشدارو دهیمت مگر  
+که گردد جوانی ز پیری به بر؟
+`,
+                  type: "text",
+                  sender: "other",
+                },
+              })
+            );
+          }, 5000);
+        }
+      }
     }
   };
 
@@ -35,8 +95,6 @@ function MessageInput() {
     }
   };
 
-  const currentChat = useSelector((state: RootState) => state.chat.current);
-  const isDisabled = initialChats[currentChat].input?.disabled;
   useEffect(() => {
     setMessage("");
   }, [currentChat]);
@@ -61,8 +119,10 @@ function MessageInput() {
           type: file.type,
         };
 
-        if (chatID === Chats.OtaghFekr && isSendingFileActive) {
-          dispatch(removeMessage({ chatId: chatID, messageId: "message-3" }));
+        if (currentChat === Chats.OtaghFekr && isSendingFileActive) {
+          dispatch(
+            removeMessage({ chatId: currentChat, messageId: "message-3" })
+          );
           dispatch(
             addMessage({
               chatId: Chats.OtaghFekr,
@@ -73,7 +133,7 @@ function MessageInput() {
               },
             })
           );
-          dispatch(toggleSendingFile({ chatId: chatID, active: false }));
+          dispatch(toggleSendingFile({ chatId: currentChat, active: false }));
         }
 
         // Emit the image data through EventBus
@@ -169,3 +229,4 @@ function MessageInput() {
 }
 
 export default MessageInput;
+
