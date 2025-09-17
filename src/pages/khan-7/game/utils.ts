@@ -4,5 +4,5 @@ export function hashStringToNumber(str: string): number {
     hash = (hash << 5) - hash + str.charCodeAt(i);
     hash |= 0;
   }
-  return Math.abs(hash);
+  return Math.round(Math.abs(hash) / 100000);
 }
