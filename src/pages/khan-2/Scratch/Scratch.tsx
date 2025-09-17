@@ -151,7 +151,7 @@ const getGif = (username: string) => {
     case "سنگر":
       return tavakoli;
     case "فرضی":
-      return tavakoli;
+      return amirhosein;
     case "فرضی2":
       return tavakoli;
   }
