@@ -47,7 +47,7 @@ export const Khan5 = (_props: PageProps) => {
     const callAPI = async () => {
       const data = await API.submitAnswer({
         question_id: 5,
-        answer: portalX + "," + portalY + "," + mapNumber,
+        answer: `mapNumber-${portalX}-${portalY}`,
       });
 
       if (data.ok) {
