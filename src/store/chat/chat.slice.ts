@@ -5,7 +5,7 @@ import { Chats } from "~/pages/khan-7/messenger/types/Chat";
 
 const chatSlice = createSlice({
   name: "chat",
-  initialState: { current: Chats.TeamPlayer, list: initialChats },
+  initialState: { current: Chats.Olad, list: initialChats },
   reducers: {
     setCurrentChat(state, action: PayloadAction<Chats>) {
       state.current = action.payload;
@@ -68,4 +68,3 @@ export const {
   toggleSendingFile,
 } = chatSlice.actions;
 export const chatReducer = chatSlice.reducer;
-

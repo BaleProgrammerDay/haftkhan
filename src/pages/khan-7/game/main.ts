@@ -7,6 +7,7 @@ import { Barghman } from "./scenes/Barghman";
 import { Pisano } from "./scenes/Pisano";
 import { Bruce } from "./scenes/Bruce";
 import { Parking } from "./scenes/Parking";
+import { Olad } from "./scenes/Olad";
 
 //  Find out more information about the Game Config at:
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
@@ -34,6 +35,7 @@ const config: Phaser.Types.Core.GameConfig = {
   scene: [
     Boot,
     Preloader,
+    Olad,
     TeamPlayer,
     RakhshChat,
     Barghman,

@@ -9,6 +9,7 @@ export interface Message {
 }
 
 export enum Chats {
+  Olad = "Olad",
   TeamPlayer = "TeamPlayer",
   RakhshChat = "RakhshChat",
   Barghman = "Barghman",

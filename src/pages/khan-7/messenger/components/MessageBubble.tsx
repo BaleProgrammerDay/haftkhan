@@ -72,7 +72,8 @@ function MessageBubble({ message, id, onDelete }: MessageBubbleProps) {
               : "var(--color-neutrals-n-200)",
           }}
         >
-          {new Date(message.time).toLocaleString()}
+          {/* {new Date(message.time).toLocaleString()} */}
+          مدتی قبل...
         </p>
       </div>
       {menu.visible && (
@@ -110,4 +111,3 @@ function MessageBubble({ message, id, onDelete }: MessageBubbleProps) {
 }
 
 export default MessageBubble;
-
