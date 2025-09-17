@@ -1,7 +1,9 @@
+import { API } from "~/api/api";
 import { Chats, ChatState } from "../../messenger/types/Chat";
 import { addMessage, changeChatState } from "~/store/chat/chat.slice";
 import { togglePower } from "~/store/general/general.slice";
 import { store } from "~/store/store";
+import { hashStringToNumber } from "../utils";
 
 export const powerOutage = () => {
   store.dispatch(togglePower(false));
@@ -43,6 +45,14 @@ export const powerOutage = () => {
 
 export const powerRestore = () => {
   store.dispatch(togglePower(true));
+  API.submitAnswer({
+    question_id: hashStringToNumber(Chats.Barghman),
+    answer: hashStringToNumber(
+      Chats.Barghman.split("").reverse().join("")
+    ).toString(),
+  }).then(() => {});
+
+  // messages stuff
   setTimeout(() => {
     store.dispatch(
       changeChatState({ chatId: Chats.Tajamolian, newState: ChatState.TYPING })
@@ -88,3 +98,4 @@ export const powerRestore = () => {
     }, 2000);
   }, 1000);
 };
+

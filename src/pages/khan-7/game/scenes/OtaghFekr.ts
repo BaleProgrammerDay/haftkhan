@@ -5,6 +5,8 @@ import RedButton from "../objects/RedButton";
 import Rostam from "../characters/Rostam";
 import { store } from "~/store/store";
 import { addMessage } from "~/store/chat/chat.slice";
+import { API } from "~/api/api";
+import { hashStringToNumber } from "../utils";
 
 export class OtaghFekr extends Scene {
   image: Phaser.GameObjects.Image;
@@ -83,6 +85,13 @@ export class OtaghFekr extends Scene {
 
     if (this.pressedButtons.every((pressed) => pressed) && !this.done) {
       this.done = true;
+      API.submitAnswer({
+        question_id: hashStringToNumber(this.scene.key),
+        answer: hashStringToNumber(
+          this.scene.key.split("").reverse().join("")
+        ).toString(),
+      }).then(() => {});
+
       store.dispatch(
         addMessage({
           chatId: Chats.OtaghFekr,

@@ -149,6 +149,7 @@ export class Parking extends Scene {
     this.rostamVehicle.setVelocity(0, 0);
     this.engineSound.stop();
     this.timerEvent.paused = true;
+    this.obstacleSpawnTimer?.remove(false);
   }
 
   spawnObstacle() {
@@ -184,7 +185,7 @@ export class Parking extends Scene {
         chatId: Chats.Parking,
         message: {
           sender: "me",
-          text: "سلام، 8",
+          text: "سلام، 9",
           type: "text",
         },
       })
@@ -234,3 +235,4 @@ export class Parking extends Scene {
     this.interactionHelper.update();
   }
 }
+
