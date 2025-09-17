@@ -38,7 +38,7 @@ const getPassword = (username: string) => {
       return "3827";
     case "وهوش":
       return "2981";
-    case "موقت: اینت":
+    case "موقت: اینتر اقلیم":
       return "1292";
     case "چای کرک":
       return "2381";

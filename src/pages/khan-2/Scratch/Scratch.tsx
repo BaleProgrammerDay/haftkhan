@@ -91,7 +91,7 @@ const getImage = (username: string) => {
       return teaImage;
     case "وهوش":
       return sangImage;
-    case "موقت: اینت":
+    case "موقت: اینتر اقلیم":
       return packetImage;
     case "چای کرک":
       return teaImage;
@@ -132,7 +132,7 @@ const getGif = (username: string) => {
       return amirhosein;
     case "وهوش":
       return aliGif;
-    case "موقت: اینت":
+    case "موقت: اینتر اقلیم":
       return yashar;
     case "چای کرک":
       return aliGif;

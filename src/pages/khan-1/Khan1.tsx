@@ -26,7 +26,7 @@ const getLength = (nameTeam: string) => {
       return 5;
     case "وهوش":
       return 4;
-    case "موقت: اینت":
+    case "موقت: اینتر اقلیم":
       return 5;
     case "چای کرک":
       return 4;
