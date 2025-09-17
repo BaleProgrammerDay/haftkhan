@@ -10,15 +10,47 @@ import { userActions } from "~/store/user/slice";
 import { useDispatch } from "react-redux";
 
 // todo: add teams template
-const getTemplate = (nameTeam: string) => {
-  if (nameTeam === "منابع انسانی") {
-    return "*** *** ***";
-  } else if (nameTeam === "مهندسی نرم افزار") {
-    return "*** ***";
-  } else if (nameTeam === "تست") {
-    return "که گفتت که با شیر کن کارزار";
+const getLength = (nameTeam: string) => {
+  switch (nameTeam) {
+    case "مامور 001":
+      return 4;
+    case "قهرمان":
+      return 5;
+    case "اکسلنت‌ها":
+      return 4;
+    case "بازگشت اصلان":
+      return 5;
+    case "سه کله پوک":
+      return 4;
+    case "هیمالیا":
+      return 5;
+    case "وهوش":
+      return 4;
+    case "موقت: اینت":
+      return 5;
+    case "چای کرک":
+      return 4;
+    case "FourSure":
+      return 5;
+    case "حسین کبیر":
+      return 4;
+    case "پشتیبانی":
+      return 5;
+    case "شواهد":
+      return 4;
+    case "رادمردان عرصه کد":
+      return 5;
+    case "New Folder":
+      return 4;
+    case "سنگر":
+      return 5;
+    case "فرضی":
+      return 4;
+    case "فرضی2":
+      return 5;
+    default:
+      return 4;
   }
-  return "";
 };
 
 export const Khan1 = (_props: PageProps) => {
@@ -86,7 +118,7 @@ export const Khan1 = (_props: PageProps) => {
     handleLogin();
   };
 
-  const pattern = getTemplate(inputs.username);
+  const pattern = getLength(inputs.username);
 
   return (
     <div className={styles.Page}>
@@ -114,8 +146,7 @@ export const Khan1 = (_props: PageProps) => {
 
           <div className={styles.PasswordInput}>
             <PasswordInput
-              length={9}
-              template={pattern}
+              length={pattern}
               direction="rtl"
               onChange={(password) => handleSecondInputChange(password)}
             />
