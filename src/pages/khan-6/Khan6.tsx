@@ -12,12 +12,15 @@ import { userActions, perQuestionSelector } from "~/store/user/slice";
 import { useDispatch, useSelector } from "react-redux";
 import { TimeoutModal } from "~/components/TimeoutModal";
 import { khan6Facts } from "./facts";
+import { shouldShowTimeoutModal } from "~/utils/timeoutModal";
 
 //بعد از وارد کردن رمز:
 //سیستمش باز شد! نگاه کن اکانت بله‌ش بالاست.
 
 // todo: add api
 // todo: add dialogs
+
+const MAX_TIMEOUT_ATTEMPTS = 3;
 
 export const Khan6 = (_props: PageProps) => {
   // Initial comic state
@@ -51,20 +54,23 @@ export const Khan6 = (_props: PageProps) => {
 
   const dispatch = useDispatch();
   const perQuestion = useSelector(perQuestionSelector);
-  const timeoutAttemptHistory = perQuestion?.[-6]?.attempt_history?.length || 0;
+  const timeoutAttemptHistory =
+    perQuestion?.[-6]?.attempt_history?.length || 0;
 
-  const [remainingChances, setRemainingChances] = useState(
-    timeoutAttemptHistory > 0 ? 0 : 3
+  const [_timeoutAttemptHistory, _setTimeoutAttemptHistory] = useState(
+    timeoutAttemptHistory
   );
+
+  console.log("@#@# khan6", _timeoutAttemptHistory);
 
   // Check if user should see timeout modal on component mount
   useEffect(() => {
     if (!showVideo) return;
-    if (timeoutAttemptHistory > 0 && timeoutAttemptHistory % 2 == 1) {
+    if (shouldShowTimeoutModal(_timeoutAttemptHistory, MAX_TIMEOUT_ATTEMPTS)) {
       setShowTimeoutModal(true);
       setTimeoutTriggeredAt(new Date().toISOString());
     }
-  }, [timeoutAttemptHistory, showVideo]);
+  }, [_timeoutAttemptHistory, showVideo]);
 
   useEffect(() => {
     if (showComic) return; // Don't start animation until comic is dismissed
@@ -142,42 +148,28 @@ export const Khan6 = (_props: PageProps) => {
           setShowFolder(true);
         }, 2000);
       } else {
-        // Wrong password - reduce chances
-        const newRemainingChances = remainingChances - 1;
-        setRemainingChances(newRemainingChances);
-
-        if (newRemainingChances > 0) {
-          setNotificationText(
-            `رمز عبور اشتباه است. ${newRemainingChances} شانس دیگر باقی مانده. ❌`
-          );
-        } else {
-          // No chances left - trigger timeout
-          setNotificationText("رمز عبور اشتباه است. سیستم قفل شد! 🔒");
-          setShowTimeoutModal(true);
-          setTimeoutTriggeredAt(new Date().toISOString());
-
-          // Submit to question -2 to track timeout
-          await API.submitAnswer({
-            question_id: -6,
-            answer: "timeout_triggered",
-          });
-        }
+        // Wrong password - submit to track attempt
+        await API.submitAnswer({
+          question_id: -6,
+          answer: "wrong_password",
+        });
+        _setTimeoutAttemptHistory(_timeoutAttemptHistory + 1);
+        
+        setNotificationText("رمز عبور اشتباه است. ❌");
       }
     };
 
     callAPI();
   };
 
-  // Handle timeout modal close - reset chances and submit completion
+  // Handle timeout modal close - submit completion
   const handleTimeoutModalClose = async () => {
     setShowTimeoutModal(false);
-    // Submit answer to question -2 to mark that modal was shown and closed
+    // Submit answer to question -6 to mark that modal was shown and closed
     await API.submitAnswer({
       question_id: -6,
       answer: "modal_completed",
     });
-    // Reset chances when modal closes
-    setRemainingChances(0);
   };
 
   const toggleAudioPlayback = () => {
@@ -326,6 +318,7 @@ export const Khan6 = (_props: PageProps) => {
                         length={4}
                         onChange={setPassword}
                         direction="ltr"
+                        isDark
                       />
                       <Button
                         onClick={handleSubmit}
@@ -348,7 +341,7 @@ export const Khan6 = (_props: PageProps) => {
         isOpen={showTimeoutModal}
         onClose={handleTimeoutModalClose}
         timeoutTriggeredAt={timeoutTriggeredAt}
-        timeoutAttemptHistory={timeoutAttemptHistory}
+        timeoutAttemptHistory={_timeoutAttemptHistory}
         facts={khan6Facts}
         title="سیستم امنیتی قفل شد! ۲ دقیقه صبر کنید تا دوباره فعال شود"
         audioUrl="https://load.filespacer.ir/music/B/Bikalam.Aroom/Loreena.McKennitt.Tango.To.Evora.%5Bsongha.ir%5D.mp3"

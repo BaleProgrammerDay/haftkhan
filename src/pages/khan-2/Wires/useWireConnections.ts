@@ -11,6 +11,8 @@ interface Connection {
 // todo: handle timeour when there is no remaining chances
 // todo: handle add attempt history to user
 
+export const MAX_TIMEOUT_ATTEMPTS_Khan2 = 3;
+
 export const useWireConnections = () => {
   const [activeWire, setActiveWire] = useState<number | null>(null);
   const [connections, setConnections] = useState<Connection[]>([]);
@@ -20,11 +22,9 @@ export const useWireConnections = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const attemptHistory =
-    useSelector(perQuestionSelector)?.[2]?.attempt_history.length ?? 0;
+    useSelector(perQuestionSelector)?.[-2]?.attempt_history?.length || 0;
 
-  const [remainingChances, setRemainingChances] = useState(
-    3 - attemptHistory > 0 ? 3 - attemptHistory : 0
-  );
+  const [_attemptHistory, _setAttemptHistory] = useState(attemptHistory);
 
   const dispatch = useDispatch();
 
@@ -122,24 +122,29 @@ export const useWireConnections = () => {
           } else {
             // Wrong connections
             setIsError(true);
-            const newRemainingChances = remainingChances - 1;
-            setRemainingChances(newRemainingChances);
-            
+            const newAttemptHistory = attemptHistory + 1;
+            _setAttemptHistory(newAttemptHistory);
+
             setErrorMessage(
               `سیم کشی رو اشتباه انجام دادی...\n` +
-                (newRemainingChances > 0
-                  ? `${newRemainingChances} شانس دیگر برام باقی مانده`
+                (MAX_TIMEOUT_ATTEMPTS_Khan2 - newAttemptHistory >= 0
+                  ? `${
+                      newAttemptHistory == 0
+                        ? "آخرین شانس"
+                        : MAX_TIMEOUT_ATTEMPTS_Khan2 -
+                          newAttemptHistory +
+                          "شانس دیگر برام باقی مانده"
+                    } `
                   : "")
             );
-            
+
             // If no chances left, submit to question -2 to trigger timeout modal
-            if (newRemainingChances <= 0) {
-              API.submitAnswer({
-                question_id: -2,
-                answer: "timeout_triggered",
-              });
-            }
-            
+
+            API.submitAnswer({
+              question_id: -2,
+              answer: "timeout_triggered",
+            });
+
             setTimeout(() => {
               setConnections([]);
               setIsError(false);
@@ -161,7 +166,7 @@ export const useWireConnections = () => {
 
   // Reset function to restore chances and clear error state
   const resetChances = () => {
-    setRemainingChances(0);
+    _setAttemptHistory(0);
     setIsError(false);
     setErrorMessage("");
     setConnections([]);
@@ -178,7 +183,7 @@ export const useWireConnections = () => {
     isChecking,
     isError,
     errorMessage,
-    remainingChances,
+    _attemptHistory,
     resetChances,
   };
 };

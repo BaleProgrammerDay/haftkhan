@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styles from './TimeoutModal.module.scss';
+import React, { useState, useEffect, useRef } from "react";
+import styles from "./TimeoutModal.module.scss";
 
 interface TimeoutModalProps {
   isOpen: boolean;
@@ -17,17 +17,17 @@ const defaultFacts = [
   "امنیت سیستم در حال بررسی است...",
   "لطفا کمی صبر کنید تا سیستم دوباره فعال شود...",
   "در حال بازگردانی سیستم امنیتی...",
-  "لطفا صبر کنید تا قفل سیستم باز شود..."
+  "لطفا صبر کنید تا قفل سیستم باز شود...",
 ];
 
-export const TimeoutModal: React.FC<TimeoutModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  timeoutTriggeredAt, 
+export const TimeoutModal: React.FC<TimeoutModalProps> = ({
+  isOpen,
+  onClose,
+  timeoutTriggeredAt,
   timeoutAttemptHistory = 0,
   facts,
   title = "سیستم قفل شد! ۲ دقیقه صبر کنید تا دوباره فعال شود",
-  audioUrl = 'https://load.filespacer.ir/music/B/Bikalam.Aroom/Loreena.McKennitt.Tango.To.Evora.%5Bsongha.ir%5D.mp3'
+  audioUrl = "https://load.filespacer.ir/music/B/Bikalam.Aroom/Loreena.McKennitt.Tango.To.Evora.%5Bsongha.ir%5D.mp3",
 }) => {
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
   const [currentFactIndex, setCurrentFactIndex] = useState(0);
@@ -40,18 +40,27 @@ export const TimeoutModal: React.FC<TimeoutModalProps> = ({
       const factSetIndex = timeoutAttemptHistory % facts.length;
       return facts[factSetIndex];
     }
-    
+
     // Fallback to default facts
     return defaultFacts;
   };
 
   const displayFacts = getFacts();
 
+  console.log(displayFacts)
+
   useEffect(() => {
     if (!isOpen) return;
 
-    // Disable all mouse clicks globally
+    // Disable all mouse clicks globally except on modal elements
     const disableClicks = (e: Event) => {
+      const target = e.target as Element;
+
+      // Allow clicks on modal elements
+      if (target.closest("[data-timeout-modal]")) {
+        return true; // Allow the click
+      }
+
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
@@ -61,30 +70,30 @@ export const TimeoutModal: React.FC<TimeoutModalProps> = ({
     // Add click blocker to all elements
     const addClickBlockers = () => {
       // Block clicks on document
-      document.addEventListener('click', disableClicks, true);
-      document.addEventListener('mousedown', disableClicks, true);
-      document.addEventListener('mouseup', disableClicks, true);
-      
+      document.addEventListener("click", disableClicks, true);
+      document.addEventListener("mousedown", disableClicks, true);
+      document.addEventListener("mouseup", disableClicks, true);
+
       // Block clicks on all existing elements
-      const allElements = document.querySelectorAll('*');
-      allElements.forEach(element => {
-        element.addEventListener('click', disableClicks, true);
-        element.addEventListener('mousedown', disableClicks, true);
-        element.addEventListener('mouseup', disableClicks, true);
+      const allElements = document.querySelectorAll("*");
+      allElements.forEach((element) => {
+        element.addEventListener("click", disableClicks, true);
+        element.addEventListener("mousedown", disableClicks, true);
+        element.addEventListener("mouseup", disableClicks, true);
       });
     };
 
     // Remove click blockers
     const removeClickBlockers = () => {
-      document.removeEventListener('click', disableClicks, true);
-      document.removeEventListener('mousedown', disableClicks, true);
-      document.removeEventListener('mouseup', disableClicks, true);
-      
-      const allElements = document.querySelectorAll('*');
-      allElements.forEach(element => {
-        element.removeEventListener('click', disableClicks, true);
-        element.removeEventListener('mousedown', disableClicks, true);
-        element.removeEventListener('mouseup', disableClicks, true);
+      document.removeEventListener("click", disableClicks, true);
+      document.removeEventListener("mousedown", disableClicks, true);
+      document.removeEventListener("mouseup", disableClicks, true);
+
+      const allElements = document.querySelectorAll("*");
+      allElements.forEach((element) => {
+        element.removeEventListener("click", disableClicks, true);
+        element.removeEventListener("mousedown", disableClicks, true);
+        element.removeEventListener("mouseup", disableClicks, true);
       });
     };
 
@@ -95,10 +104,10 @@ export const TimeoutModal: React.FC<TimeoutModalProps> = ({
         audioRef.current.loop = true;
         audioRef.current.volume = 0.3; // Set volume to 30%
       }
-      
+
       if (audioEnabled) {
         audioRef.current.play().catch((error) => {
-          console.log('Audio playback failed:', error);
+          console.log("Audio playback failed:", error);
         });
       }
     };
@@ -122,8 +131,8 @@ export const TimeoutModal: React.FC<TimeoutModalProps> = ({
     // Disable all clicks immediately
     addClickBlockers();
     // Add visual indicator that clicks are disabled
-    document.body.style.pointerEvents = 'none';
-    document.body.style.cursor = 'not-allowed';
+    document.body.style.pointerEvents = "none";
+    document.body.style.cursor = "not-allowed";
 
     // Play background music
     playBackgroundMusic();
@@ -142,8 +151,8 @@ export const TimeoutModal: React.FC<TimeoutModalProps> = ({
           // Re-enable clicks before closing
           removeClickBlockers();
           // Restore visual indicators
-          document.body.style.pointerEvents = 'auto';
-          document.body.style.cursor = 'auto';
+          document.body.style.pointerEvents = "auto";
+          document.body.style.cursor = "auto";
           onClose();
           return 0;
         }
@@ -153,7 +162,9 @@ export const TimeoutModal: React.FC<TimeoutModalProps> = ({
 
     // Change fact every 6 seconds with random selection
     const factTimer = setInterval(() => {
-      setCurrentFactIndex(() => Math.floor(Math.random() * displayFacts.length));
+      setCurrentFactIndex(() =>
+        Math.floor(Math.random() * displayFacts.length)
+      );
     }, 6000);
 
     return () => {
@@ -162,22 +173,22 @@ export const TimeoutModal: React.FC<TimeoutModalProps> = ({
       // Re-enable clicks when modal closes
       removeClickBlockers();
       // Restore visual indicators
-      document.body.style.pointerEvents = 'auto';
-      document.body.style.cursor = 'auto';
+      document.body.style.pointerEvents = "auto";
+      document.body.style.cursor = "auto";
       // Stop audio when modal closes
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
       }
     };
-  }, [isOpen, onClose, timeoutTriggeredAt, audioEnabled, displayFacts.length]);
+  }, [isOpen, onClose, timeoutTriggeredAt, audioEnabled, displayFacts?.length]);
 
   // Function to enable audio playback
   const enableAudio = () => {
     setAudioEnabled(true);
     if (audioRef.current && isOpen) {
       audioRef.current.play().catch((error) => {
-        console.log('Audio playback failed:', error);
+        console.log("Audio playback failed:", error);
       });
     }
   };
@@ -199,29 +210,39 @@ export const TimeoutModal: React.FC<TimeoutModalProps> = ({
   const progress = ((120 - timeLeft) / 120) * 100;
 
   return (
-    <div className={styles.overlay} style={{ pointerEvents: 'auto', cursor: 'auto' }}>
-      <div className={styles.modal} style={{ pointerEvents: 'auto', cursor: 'auto' }}>
+    <div
+      className={styles.overlay}
+      style={{ pointerEvents: "auto", cursor: "auto" }}
+      data-timeout-modal
+    >
+      <div
+        className={styles.modal}
+        style={{ pointerEvents: "auto", cursor: "auto" }}
+        data-timeout-modal
+      >
         <div className={styles.header}>
           <h2 className={styles.title}>{title}</h2>
           {!audioEnabled && (
-            <button 
+            <button
               className={styles.playButton}
               onClick={enableAudio}
+              data-timeout-modal
             >
               🎵 پخش موسیقی
             </button>
           )}
         </div>
-        
+
         <div className={styles.content}>
           <div className={styles.timerSection}>
             <div className={styles.timer}>
               <div className={styles.timeDisplay}>
-                {minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}
+                {minutes.toString().padStart(2, "0")}:
+                {seconds.toString().padStart(2, "0")}
               </div>
               <div className={styles.progressBar}>
-                <div 
-                  className={styles.progressFill} 
+                <div
+                  className={styles.progressFill}
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -231,7 +252,9 @@ export const TimeoutModal: React.FC<TimeoutModalProps> = ({
           <div className={styles.factsSection}>
             <h3 className={styles.factsTitle}>آیا می‌دانستید؟</h3>
             <div className={styles.factContainer}>
-              <p className={styles.factText}>{displayFacts[currentFactIndex]}</p>
+              <p className={styles.factText}>
+                {displayFacts[currentFactIndex]}
+              </p>
             </div>
           </div>
         </div>
@@ -239,3 +262,4 @@ export const TimeoutModal: React.FC<TimeoutModalProps> = ({
     </div>
   );
 };
+
