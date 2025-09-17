@@ -73,6 +73,14 @@ export class Preloader extends Scene {
       frameWidth: 384,
       frameHeight: 228,
     });
+    this.load.spritesheet("red_button", "buttons.png", {
+      frameWidth: 63.5,
+      frameHeight: 43,
+    });
+    this.load.spritesheet("red_button", "buttons.png", {
+      frameWidth: 63.5,
+      frameHeight: 43,
+    });
 
     this.load.image("items/wrench", "items/wrench.png");
     this.load.image("power_gen", "general/power_gen.png");
