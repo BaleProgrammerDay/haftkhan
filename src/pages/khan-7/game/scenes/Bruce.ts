@@ -7,6 +7,7 @@ import { store } from "~/store/store";
 import { addMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../../messenger/types/Chat";
 import { API } from "~/api/api";
+import { hashStringToNumber } from "../utils";
 
 export class Bruce extends Scene {
   bruce: BruceBanner;
@@ -46,8 +47,10 @@ export class Bruce extends Scene {
           if (starsOnSides && starsBelow) {
             //todo
             API.submitAnswer({
-              question_id: 8,
-              answer: "testanswer",
+              question_id: hashStringToNumber(this.scene.key),
+              answer: hashStringToNumber(
+                this.scene.key.split("").reverse().join("")
+              ).toString(),
             }).then(() => {});
             this.bruce.transform();
             this.transformed = true;

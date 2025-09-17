@@ -7,6 +7,7 @@ import { store } from "~/store/store";
 import { addMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../../messenger/types/Chat";
 import { API } from "~/api/api";
+import { hashStringToNumber } from "../utils";
 
 export class Pisano extends Scene {
   tower: Tower;
@@ -149,8 +150,10 @@ export class Pisano extends Scene {
           if (!this.messageIsSent) {
             //todo
             API.submitAnswer({
-              question_id: 8,
-              answer: "testanswer",
+              question_id: hashStringToNumber(this.scene.key),
+              answer: hashStringToNumber(
+                this.scene.key.split("").reverse().join("")
+              ).toString(),
             }).then(() => {});
             store.dispatch(
               addMessage({

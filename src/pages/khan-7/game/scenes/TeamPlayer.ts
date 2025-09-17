@@ -8,6 +8,7 @@ import { addMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../../messenger/types/Chat";
 import { powerOutage } from "../scenarios/powerOutage";
 import { API } from "~/api/api";
+import { hashStringToNumber } from "../utils";
 
 export class TeamPlayer extends Scene {
   rostam: Rostam;
@@ -165,8 +166,10 @@ export class TeamPlayer extends Scene {
       );
       //todo
       API.submitAnswer({
-        question_id: 8,
-        answer: "testanswer",
+        question_id: hashStringToNumber(this.scene.key),
+        answer: hashStringToNumber(
+          this.scene.key.split("").reverse().join("")
+        ).toString(),
       }).then(() => {});
       this.messageIsSent = true;
       setTimeout(() => {
