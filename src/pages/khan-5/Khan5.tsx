@@ -26,7 +26,6 @@ const texts = ["بالاخره پس از ۵ خان رسیدیم", "رسیدیم 
 //بعد که مختصات رو درست وارد کرد:
 // دکمه ای با نام "ورود به قلعۀ ارژنگ" نمایش داده میشود.
 
-// todo: add api
 // todo: add dialogs
 
 export const Khan5 = (_props: PageProps) => {
@@ -229,3 +228,4 @@ export const Khan5 = (_props: PageProps) => {
     </Page>
   );
 };
+

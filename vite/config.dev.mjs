@@ -14,8 +14,8 @@ export default defineConfig({
   base: "./",
   plugins: [react(), tailwindcss()],
   define: {
-    'import.meta.env.DEV': true,
-    'import.meta.env.PROD': false,
+    "import.meta.env.DEV": true,
+    "import.meta.env.PROD": false,
   },
   server: {
     port: 3000,
