@@ -35,7 +35,13 @@ function Messanger() {
     dispatch(setCurrentChat(id));
     setTimeout(() => {
       //@ts-ignore
-      if (currentScene === id) return;
+      // if (currentScene === id) return;
+      console.log(
+        "!@! currentScene:",
+        phaserRef.current?.scene,
+        "requested:",
+        id
+      );
       phaserRef.current?.scene?.changeScene(id);
     }, 100);
   };
