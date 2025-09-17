@@ -16,6 +16,7 @@ import {
 } from "~/store/user/slice";
 import { API } from "~/api/api";
 import { useDispatch, useSelector } from "react-redux";
+import { Scoreboard } from "./Scoreboard";
 
 // todo: add teams password
 const getPassword = (username: string) => {
@@ -33,6 +34,9 @@ const getPassword = (username: string) => {
 export const Khan2 = (_props: PageProps) => {
   const dispatch = useDispatch();
   const username = useSelector(usernameSelector);
+  if (username == "adminadmin") {
+    return <Scoreboard />;
+  }
   const timeoutAttemptHistory =
     useSelector(perQuestionSelector)?.[-2]?.attempt_history?.length || 0;
 
@@ -197,4 +201,3 @@ export const Khan2 = (_props: PageProps) => {
     </div>
   );
 };
-
