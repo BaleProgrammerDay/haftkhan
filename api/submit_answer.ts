@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-const BACKEND_URL = 'http://37.32.26.173:8080';
+const BACKEND_URL = 'test_url';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Set CORS headers

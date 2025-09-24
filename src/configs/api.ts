@@ -6,8 +6,7 @@ const getApiBaseUrl = () => {
   // }
 
   // In production, use Vercel API routes to avoid mixed content issues
-  return "http://37.32.26.173:8081";
+  return "test_url";
 };
 
 export const API_BASE_URL = getApiBaseUrl();
-
