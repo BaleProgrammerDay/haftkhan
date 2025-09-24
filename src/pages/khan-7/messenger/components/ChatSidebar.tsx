@@ -3,8 +3,12 @@ import ChatItem from "./ChatItem";
 // import Search from "./icons/Search";
 import PixelLogo from "./PixelLogo";
 import { Chat } from "../types/Chat";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { userSelector } from "~/store/user/slice";
+// EventBus no longer needed here; handled inside chaos module
+import { useChaosContainer } from "../chaos/audioChaos";
+import ChaosItem from "../chaos/ChaosItem";
 
 interface ChatSidebarProps {
   chats: ChatsList;
@@ -14,6 +18,8 @@ interface ChatSidebarProps {
 
 function ChatSidebar({ chats, selectedChat, onSelectChat }: ChatSidebarProps) {
   const user = useSelector(userSelector);
+  const chaosContainer = useChaosContainer();
+
   return (
     <div
       className="w-80 flex flex-col"
@@ -22,6 +28,10 @@ function ChatSidebar({ chats, selectedChat, onSelectChat }: ChatSidebarProps) {
         borderLeftColor: "var(--color-neutrals-n-30)",
         borderLeftWidth: "1px",
         borderLeftStyle: "solid",
+        ...chaosContainer.style,
+        overflow: chaosContainer.active ? "visible" : "scroll",
+        overflowX: "hidden",
+        maxWidth: "100%",
       }}
     >
       {/* Header */}
@@ -64,7 +74,10 @@ function ChatSidebar({ chats, selectedChat, onSelectChat }: ChatSidebarProps) {
       </div>
 
       {/* Chat List */}
-      <div className="flex-1 overflow-y-auto">
+      <div
+        className="flex-1 overflow-y-auto relative"
+        style={{ overflow: "visible" }}
+      >
         {Object.values(chats)
           .filter((chat) => chat.messages.length > 0)
           .sort((a, b) => {
@@ -74,12 +87,13 @@ function ChatSidebar({ chats, selectedChat, onSelectChat }: ChatSidebarProps) {
             );
           })
           .map((chat) => (
-            <ChatItem
-              key={chat.id}
-              chat={chat}
-              isSelected={selectedChat.id === chat.id}
-              onClick={() => onSelectChat(chat.id)}
-            />
+            <ChaosItem id={chat.id} key={chat.id}>
+              <ChatItem
+                chat={chat}
+                isSelected={selectedChat.id === chat.id}
+                onClick={() => onSelectChat(chat.id)}
+              />
+            </ChaosItem>
           ))}
       </div>
     </div>
@@ -87,3 +101,4 @@ function ChatSidebar({ chats, selectedChat, onSelectChat }: ChatSidebarProps) {
 }
 
 export default ChatSidebar;
+

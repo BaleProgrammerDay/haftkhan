@@ -8,6 +8,10 @@ import ImageMessageBubble from "./ImageMessageBubble";
 import AudioMessageBubble from "./AudioMessageBubble";
 import { initialChats } from "~/store/chat/chat.constants";
 import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
+// EventBus handled inside chaos module
+import { useChaosContainer } from "../chaos/audioChaos";
+import ChaosItem from "../chaos/ChaosItem";
 
 interface MessageListProps {
   chatId: string;
@@ -20,6 +24,8 @@ function MessageList({ chatId, phaserRef }: MessageListProps) {
     (state: RootState) => state.chat.list[chatId as Chats].messages || []
   );
   const currentChat = useSelector((state: RootState) => state.chat.current);
+
+  const chaosContainer = useChaosContainer();
 
   // Event emitted from the PhaserGame component
   const currentScene = (scene: Phaser.Scene) => {
@@ -61,35 +67,39 @@ function MessageList({ chatId, phaserRef }: MessageListProps) {
             ? " pointer-events-none"
             : "")
         }
+        style={{ overflow: "visible", ...chaosContainer.style }}
       >
         {messages.map((message) => {
           switch (message.type) {
             case "text":
               return (
-                <MessageBubble
-                  key={message.id}
-                  message={message}
-                  id={"message-" + message.id}
-                  onDelete={handleDelete}
-                />
+                <ChaosItem id={message.id} key={message.id}>
+                  <MessageBubble
+                    message={message}
+                    id={"message-" + message.id}
+                    onDelete={handleDelete}
+                  />
+                </ChaosItem>
               );
             case "image":
               return (
-                <ImageMessageBubble
-                  key={message.id}
-                  message={message}
-                  id={"message-" + message.id}
-                  onDelete={handleDelete}
-                />
+                <ChaosItem id={message.id} key={message.id}>
+                  <ImageMessageBubble
+                    message={message}
+                    id={"message-" + message.id}
+                    onDelete={handleDelete}
+                  />
+                </ChaosItem>
               );
             case "audio":
               return (
-                <AudioMessageBubble
-                  key={message.id}
-                  message={message}
-                  id={"message-" + message.id}
-                  onDelete={handleDelete}
-                />
+                <ChaosItem id={message.id} key={message.id}>
+                  <AudioMessageBubble
+                    message={message}
+                    id={"message-" + message.id}
+                    onDelete={handleDelete}
+                  />
+                </ChaosItem>
               );
           }
         })}

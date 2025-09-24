@@ -100,6 +100,40 @@ export const initialChats: { [key: Chats | string]: Chat } = {
       placeholder: "سر کاری...",
     },
   },
+  [Chats.Golzar]: {
+    id: Chats.Golzar,
+    name: "محمدرضا",
+    avatar: "/assets/avatars/golzar.png",
+    unreadCount: 0,
+    state: ChatState.ACTIVE,
+    messages: [
+      {
+        id: "1",
+        text: "سلام داش گلم",
+        type: "text",
+        sender: "other",
+        time: 1000,
+      },
+      {
+        id: "1",
+        text: "ببین چه ترکی خوندم",
+        type: "text",
+        sender: "other",
+        time: 1005,
+      },
+      {
+        id: "1",
+        text: "ببین چه ترکی خوندم",
+        type: "audio",
+        sender: "other",
+        time: 2000000000000 - 1000000000004,
+        audio: "/assets/sounds/golzar.mp3",
+      },
+    ],
+    input: {
+      placeholder: "از من بپرس...",
+    },
+  },
   [Chats.Bruce]: {
     id: Chats.Bruce,
     name: "بروس بنر",
@@ -246,40 +280,6 @@ export const initialChats: { [key: Chats | string]: Chat } = {
     unreadCount: 0,
     state: ChatState.ACTIVE,
     messages: [],
-    input: {
-      placeholder: "از من بپرس...",
-    },
-  },
-  [Chats.Golzar]: {
-    id: Chats.Golzar,
-    name: "گلزار",
-    avatar: "/assets/avatars/golzar.png",
-    unreadCount: 0,
-    state: ChatState.ACTIVE,
-    messages: [
-      {
-        id: "1",
-        text: "سلام داش گلم",
-        type: "text",
-        sender: "other",
-        time: 1000,
-      },
-      {
-        id: "1",
-        text: "ببین چه ترکی خوندم",
-        type: "text",
-        sender: "other",
-        time: 1005,
-      },
-      {
-        id: "1",
-        text: "ببین چه ترکی خوندم",
-        type: "audio",
-        sender: "other",
-        time: 1005,
-        audio: "https://dl.musicdel.ir/tag/music/1403/07/13/Mohammadreza%20Golzar%20-%20Kharab%20Kardi%20(128).mp3",
-      },
-    ],
     input: {
       placeholder: "از من بپرس...",
     },
