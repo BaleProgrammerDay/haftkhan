@@ -21,7 +21,8 @@ import { Khan6o5 } from "./pages/khan-6.5/khan6o5";
 
 // handle error bundary
 function App() {
-  const lastSolvedQuestion = useSelector(lastSolvedQuestionSelector);
+  // const lastSolvedQuestion = useSelector(lastSolvedQuestionSelector);
+  const lastSolvedQuestion: number = 6;
   const isLoading = useSelector(isLoadingSelector);
 
   const dispatch = useDispatch();

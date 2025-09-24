@@ -1,11 +1,12 @@
 export interface Message {
   id: string;
-  type: "text" | "image";
+  type: "text" | "image" | "audio";
   text: string;
   sender: "me" | "other" | string;
   time: number;
   ltr?: boolean;
   deletable?: boolean;
+  audio?: string;
 }
 
 export enum Chats {
@@ -19,6 +20,7 @@ export enum Chats {
   Parking = "Parking",
   OtaghFekr = "OtaghFekr",
   Noskhe = "Noskhe",
+  Golzar = "Golzar",
 }
 
 export enum ChatState {

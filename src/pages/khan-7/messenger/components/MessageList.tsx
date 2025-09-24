@@ -5,6 +5,7 @@ import { RootState } from "~/store/store";
 import { deleteMessage } from "~/store/chat/chat.slice";
 import { Chats } from "../types/Chat";
 import ImageMessageBubble from "./ImageMessageBubble";
+import AudioMessageBubble from "./AudioMessageBubble";
 import { initialChats } from "~/store/chat/chat.constants";
 import clsx from "clsx";
 
@@ -75,6 +76,15 @@ function MessageList({ chatId, phaserRef }: MessageListProps) {
             case "image":
               return (
                 <ImageMessageBubble
+                  key={message.id}
+                  message={message}
+                  id={"message-" + message.id}
+                  onDelete={handleDelete}
+                />
+              );
+            case "audio":
+              return (
+                <AudioMessageBubble
                   key={message.id}
                   message={message}
                   id={"message-" + message.id}

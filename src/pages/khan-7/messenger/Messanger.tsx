@@ -15,6 +15,8 @@ function Messanger() {
 
   const dispatch = useDispatch();
   const chats = useSelector((state: RootState) => state.chat.list);
+
+  console.log("@#@#", chats);
   const currentScene = useSelector((state: RootState) => state.chat.current);
   const selectedChatIndex = useSelector(
     (state: RootState) => state.chat.current
